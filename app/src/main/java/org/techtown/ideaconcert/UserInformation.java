@@ -80,9 +80,9 @@ public class UserInformation extends Application {
         if (login_method.equals("Google")) {
             FirebaseAuth.getInstance().signOut();
         }
-//        user_first_name = null;
-//        user_middle_name = null;
-//        user_last_name = null;
+
+        login_method = null;
+        user_id = null;
         user_name = null;
         userEmail = null;
         SharedPreferences loginData = getSharedPreferences("loginData", MODE_PRIVATE);
