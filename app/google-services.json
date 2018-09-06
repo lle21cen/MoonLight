@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "255248352382",
+    "firebase_url": "https://core-yew-215501.firebaseio.com",
+    "project_id": "core-yew-215501",
+    "storage_bucket": "core-yew-215501.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:255248352382:android:af750eabc47c8884",
+        "android_client_info": {
+          "package_name": "org.techtown.ideaconcert"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "255248352382-fsqqu057l65b0jd6hi2ulqnegum5g9un.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.techtown.ideaconcert",
+            "certificate_hash": "38f88f4db2570393f714d487b6c7615657283674"
+          }
+        },
+        {
+          "client_id": "255248352382-g5h5e9uit6le20gu4o8hqk25ocj3ahqq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqFFuTMmOAICGaDQJ63umTPNKxVydBrvk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "255248352382-g5h5e9uit6le20gu4o8hqk25ocj3ahqq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
