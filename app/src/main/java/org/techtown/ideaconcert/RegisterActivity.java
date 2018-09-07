@@ -1,7 +1,6 @@
 package org.techtown.ideaconcert;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -12,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,11 +27,18 @@ public class RegisterActivity extends AppCompatActivity {
 
     final static private String RegisterURL = "http://lle21cen.cafe24.com/Register.php";
     final static private String dupCheckURL = "http://lle21cen.cafe24.com/DupCheck.php";
+    final static private String emailCertificationURL = "http://lle21cen.cafe24.com/EmailCertification.php";
 
     EditText idText, passwordText, passwordConfirm;
     TextView dupCheck, passwordCheck, passwordConfirmCheck;
     String passwd1, passwd2;
     boolean isPasswordAvailable = false, isIdAvailable = false;
+
+    // For email verification.
+    Button emailVerifyBtn;
+    EditText emailCode;
+    TextView emailCodeSubmitBtn;
+    LinearLayout emailLayout;
 
     final int REGISTER_SUCCESS = 97;
 
@@ -51,9 +58,7 @@ public class RegisterActivity extends AppCompatActivity {
         passwordConfirmCheck = (TextView) findViewById(R.id.passwordConfirmCheck);
 
         Button registerButton = (Button) findViewById(R.id.button);
-
         formAvailabilityTest();
-
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,17 +71,14 @@ public class RegisterActivity extends AppCompatActivity {
                     if (userId.isEmpty()) {
                         idText.requestFocus();
                         return;
-                    }
-                    else if (userPassword.isEmpty()) {
+                    } else if (userPassword.isEmpty()) {
                         passwordText.requestFocus();
                         return;
-                    }
-                    else if (userName.isEmpty()) {
+                    } else if (userName.isEmpty()) {
                         nameText.requestFocus();
                         Toast.makeText(RegisterActivity.this, "Write ID you want.", Toast.LENGTH_SHORT).show();
                         return;
-                    }
-                    else if (userEmail.isEmpty()) {
+                    } else if (userEmail.isEmpty()) {
                         Toast.makeText(RegisterActivity.this, "Write your e-mail", Toast.LENGTH_SHORT).show();
                         emailText.requestFocus();
                         return;
@@ -155,6 +157,73 @@ public class RegisterActivity extends AppCompatActivity {
                 isIdAvailable = false;
             }
         });
+
+        // For email verification.
+        emailLayout = findViewById(R.id.linear5);
+        emailCode = findViewById(R.id.email_verify_code);
+        emailCodeSubmitBtn = findViewById(R.id.email_code_submit_btn);
+        emailVerifyBtn = findViewById(R.id.email_verify_btn);
+        emailVerifyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // if (Email is suitable)
+                emailLayout.setVisibility(View.VISIBLE);
+
+                // set 5 minute timer
+
+                // Send verification code to user's email
+                Response.Listener<String> responseListener = new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonResponse = new JSONObject(response);
+                            AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+                            builder.setMessage("We send a verification number to your e-mail.\nPlease Submit the code in 5 minute").setCancelable(false)
+                                    .setPositiveButton("확인", null).create().show();
+                        } catch (Exception e) {
+                            Log.d("Email check error", e.getMessage());
+                        }
+                    }
+                };
+                IdAndEmailCheck idAndEmailCheck = new IdAndEmailCheck(Request.Method.POST, emailCertificationURL, responseListener, null);
+//                String userEmail = emailText.getText().toString();
+                String userEmail = "lle21cen@naver.com"; // 테스트용
+                idAndEmailCheck.sendUserEmail(userEmail);
+                RequestQueue requestQueue = Volley.newRequestQueue(RegisterActivity.this);
+                requestQueue.add(idAndEmailCheck);
+            }
+        });
+        emailCodeSubmitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(RegisterActivity.this, "clicked!", Toast.LENGTH_SHORT).show();
+                Response.Listener<String> responseListener = new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonResponse = new JSONObject(response);
+                            boolean verification = jsonResponse.getBoolean("verification");
+                            Toast.makeText(RegisterActivity.this, ""+verification, Toast.LENGTH_SHORT).show();
+
+                            if (verification) {
+                                emailCodeSubmitBtn.setText(getString(R.string.verified));
+                                emailCodeSubmitBtn.setTextColor(Color.parseColor("#32cd32"));
+                            } else {
+                                Toast.makeText(RegisterActivity.this, "기회 몇 번?", Toast.LENGTH_SHORT).show();
+                                emailCode.requestFocus();
+                            }
+                        } catch (Exception e) {
+                            Log.d("code check error", e.getMessage());
+                        }
+                    }
+                };
+                IdAndEmailCheck idAndEmailCheck = new IdAndEmailCheck(Request.Method.POST, emailCertificationURL, responseListener, null);
+                String userCode = emailCode.getText().toString();
+                idAndEmailCheck.sendUserCode(userCode);
+                RequestQueue requestQueue = Volley.newRequestQueue(RegisterActivity.this);
+                requestQueue.add(idAndEmailCheck);
+            }
+        });
     }
 
     public void dupCheck(View v) {
@@ -183,11 +252,11 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             }
         };
-        IDDuplicationCheck idDuplicationCheck = new IDDuplicationCheck(Request.Method.POST, dupCheckURL, responseListener, null);
+        IdAndEmailCheck idAndEmailCheck = new IdAndEmailCheck(Request.Method.POST, dupCheckURL, responseListener, null);
         String userID = idText.getText().toString();
-        idDuplicationCheck.setUserID(userID);
+        idAndEmailCheck.checkUserID(userID);
         RequestQueue requestQueue = Volley.newRequestQueue(RegisterActivity.this);
-        requestQueue.add(idDuplicationCheck);
+        requestQueue.add(idAndEmailCheck);
     }
 
     public void formAvailabilityTest() {

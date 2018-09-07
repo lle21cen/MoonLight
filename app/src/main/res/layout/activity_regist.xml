@@ -24,16 +24,16 @@
             android:layout_marginTop="16dp"
             android:ems="10"
             android:hint="@string/identification"
-            android:maxLength="20"
             android:inputType="textVisiblePassword"
+            android:maxLength="20"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/dupCheckButton"
-            android:onClick="dupCheck"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
+            android:onClick="dupCheck"
             android:text="중복 검사" />
     </LinearLayout>
 
@@ -56,8 +56,8 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="@string/password"
-            android:maxLength="20"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:maxLength="20" />
 
         <TextView
             android:id="@+id/passwordCheck"
@@ -86,10 +86,10 @@
             android:id="@+id/regist_pwd_confirm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxLength="20"
             android:ems="10"
             android:hint="@string/password_confirm"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:maxLength="20" />
 
         <TextView
             android:id="@+id/passwordConfirmCheck"
@@ -98,7 +98,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="25dp"
             android:text="일치"
-            android:textColor="#32cd32"/>
+            android:textColor="#32cd32" />
     </LinearLayout>
 
     <EditText
@@ -114,18 +114,70 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linear3" />
 
-    <EditText
-        android:id="@+id/regist_email"
+
+    <LinearLayout
+        android:id="@+id/linear4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:ems="10"
-        android:hint="@string/email"
-        android:inputType="textEmailAddress"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/regist_name" />
+        app:layout_constraintTop_toBottomOf="@+id/regist_name" >
+
+        <EditText
+            android:id="@+id/regist_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:ems="10"
+            android:hint="@string/email"
+            android:textAlignment="center"
+            android:inputType="textEmailAddress"/>
+
+        <Button
+            android:id="@+id/email_verify_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:text="verify" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linear5"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linear4" >
+
+        <EditText
+            android:id="@+id/email_verify_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:ems="5"
+            android:hint="@string/code"
+            android:textAlignment="center"
+            android:inputType="numberDecimal"/>
+
+        <TextView
+            android:id="@+id/email_code_submit_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:onClick="dupCheck"
+            android:text="@string/submit" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/button"
@@ -134,9 +186,9 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:ems="10"
-        android:text="회원가입"
+        android:text="join"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/regist_email" />
+        app:layout_constraintTop_toBottomOf="@id/linear5" />
 
 </android.support.constraint.ConstraintLayout>

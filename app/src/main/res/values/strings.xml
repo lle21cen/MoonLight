@@ -7,4 +7,7 @@
     <string name="password_confirm">password confirm</string>
     <string name="email">email</string>
     <string name="name">name</string>
+    <string name="submit">submit</string>
+    <string name="code">code</string>
+    <string name="verified">verified</string>
 </resources>
