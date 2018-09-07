@@ -90,7 +90,6 @@ public class RegisterActivity extends AppCompatActivity {
                             try {
                                 JSONObject jsonResponse = new JSONObject(response);
                                 boolean success = jsonResponse.getBoolean("success");
-
                                 if (success) {
                                     AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
                                     builder.setMessage("회원 등록에 성공했습니다. 로그인을 진행해 주세요.")
@@ -108,8 +107,8 @@ public class RegisterActivity extends AppCompatActivity {
                                             .setNegativeButton("확인", null)
                                             .create().show();
                                 }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                            } catch (Exception e) {
+                                Log.d("Join Error", e.getMessage());
                             }
                         }
                     };
@@ -166,10 +165,6 @@ public class RegisterActivity extends AppCompatActivity {
         emailVerifyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // if (Email is suitable)
-                emailLayout.setVisibility(View.VISIBLE);
-
-                // set 5 minute timer
 
                 // Send verification code to user's email
                 Response.Listener<String> responseListener = new Response.Listener<String>() {
@@ -177,10 +172,24 @@ public class RegisterActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         try {
                             JSONObject jsonResponse = new JSONObject(response);
-                            AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                            builder.setMessage("We send a verification number to your e-mail.\nPlease Submit the code in 5 minute").setCancelable(false)
-                                    .setPositiveButton("확인", null).create().show();
-                        } catch (Exception e) {
+                            boolean exist = jsonResponse.getBoolean("exist");
+                            if (exist) {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+                                builder.setMessage("This e-mail is already used. Please use another one.").setCancelable(false)
+                                        .setNegativeButton("OK", null).create().show();
+                            }
+                            else {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+                                builder.setMessage("We send a verification number to your e-mail.\nPlease submit the code in 5 minute").setCancelable(false)
+                                        .setPositiveButton("OK", null).create().show();
+
+                                // if (E-mail is suitable)
+                                emailLayout.setVisibility(View.VISIBLE);
+
+                                // set 5 minute timer
+                            }
+                        }
+                        catch (Exception e) {
                             Log.d("Email check error", e.getMessage());
                         }
                     }
@@ -196,32 +205,32 @@ public class RegisterActivity extends AppCompatActivity {
         emailCodeSubmitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(RegisterActivity.this, "clicked!", Toast.LENGTH_SHORT).show();
-                Response.Listener<String> responseListener = new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject jsonResponse = new JSONObject(response);
-                            boolean verification = jsonResponse.getBoolean("verification");
-                            Toast.makeText(RegisterActivity.this, ""+verification, Toast.LENGTH_SHORT).show();
-
-                            if (verification) {
-                                emailCodeSubmitBtn.setText(getString(R.string.verified));
-                                emailCodeSubmitBtn.setTextColor(Color.parseColor("#32cd32"));
-                            } else {
-                                Toast.makeText(RegisterActivity.this, "기회 몇 번?", Toast.LENGTH_SHORT).show();
-                                emailCode.requestFocus();
-                            }
-                        } catch (Exception e) {
-                            Log.d("code check error", e.getMessage());
-                        }
-                    }
-                };
-                IdAndEmailCheck idAndEmailCheck = new IdAndEmailCheck(Request.Method.POST, emailCertificationURL, responseListener, null);
-                String userCode = emailCode.getText().toString();
-                idAndEmailCheck.sendUserCode(userCode);
-                RequestQueue requestQueue = Volley.newRequestQueue(RegisterActivity.this);
-                requestQueue.add(idAndEmailCheck);
+//                Toast.makeText(RegisterActivity.this, "clicked!", Toast.LENGTH_SHORT).show();
+//                Response.Listener<String> responseListener = new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        try {
+//                            JSONObject jsonResponse = new JSONObject(response);
+//                            boolean verification = jsonResponse.getBoolean("verification");
+//                            Toast.makeText(RegisterActivity.this, ""+verification, Toast.LENGTH_SHORT).show();
+//
+//                            if (verification) {
+//                                emailCodeSubmitBtn.setText(getString(R.string.verified));
+//                                emailCodeSubmitBtn.setTextColor(Color.parseColor("#32cd32"));
+//                            } else {
+//                                Toast.makeText(RegisterActivity.this, "기회 몇 번?", Toast.LENGTH_SHORT).show();
+//                                emailCode.requestFocus();
+//                            }
+//                        } catch (Exception e) {
+//                            Log.d("code check error", e.getMessage());
+//                        }
+//                    }
+//                };
+//                IdAndEmailCheck idAndEmailCheck = new IdAndEmailCheck(Request.Method.POST, emailCertificationURL, responseListener, null);
+//                String userCode = emailCode.getText().toString();
+//                idAndEmailCheck.sendUserCode(userCode);
+//                RequestQueue requestQueue = Volley.newRequestQueue(RegisterActivity.this);
+//                requestQueue.add(idAndEmailCheck);
             }
         });
     }
