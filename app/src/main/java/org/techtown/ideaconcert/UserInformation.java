@@ -9,11 +9,11 @@ import com.google.firebase.auth.FirebaseAuth;
 public class UserInformation extends Application {
     private String login_method; /* Normal, Facebook, Google */
     private String user_id;
+    private String user_name;
+    private String userEmail;
 //    private String user_first_name; // Only Facebook
 //    private String user_middle_name; // Only Facebook
 //    private String user_last_name; // Only Facebook
-    private String user_name;
-    private String userEmail;
 
     public String getLogin_method() {
         return login_method;
@@ -88,7 +88,7 @@ public class UserInformation extends Application {
         SharedPreferences loginData = getSharedPreferences("loginData", MODE_PRIVATE);
         SharedPreferences.Editor editor = loginData.edit();
         editor.clear();
-        editor.commit();
+        editor.apply();
     }
     public void setUserInformation(String method, String id, String name, String email, boolean autoLogin) {
         login_method = method;
@@ -104,7 +104,7 @@ public class UserInformation extends Application {
             editor.putString("userEmail", email);
             editor.apply();
         }
-        // Family name, Given Name needs?
+        // Family name, Given Name need?
     }
 
 }
