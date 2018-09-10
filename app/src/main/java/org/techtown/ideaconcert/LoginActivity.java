@@ -51,7 +51,7 @@ import java.util.Arrays;
 
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
-    final int LOGIN_SUCCESS = 100, LOGIN_FAIL = 99, REGIST_CODE = 98;
+    final int LOGIN_SUCCESS = 100, LOGIN_FAIL = 99, REGISTER_CODE = 98;
 
     // For Facebook
     CallbackManager callbackManager;
@@ -302,7 +302,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.btn_regist:
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                startActivityForResult(intent, REGIST_CODE);
+                startActivityForResult(intent, REGISTER_CODE);
                 break;
         }
     }

@@ -57,33 +57,11 @@ public class RegisterActivity extends AppCompatActivity {
         passwordCheck = (TextView) findViewById(R.id.passwordCheck);
         passwordConfirmCheck = (TextView) findViewById(R.id.passwordConfirmCheck);
 
-        Button registerButton = (Button) findViewById(R.id.button);
+        Button registerButton = (Button) findViewById(R.id.btn_join);
         formAvailabilityTest();
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                if (isIdAvailable && isPasswordAvailable) {
-                String userId = idText.getText().toString();
-                String userPassword = passwordText.getText().toString();
-                String userName = nameText.getText().toString();
-                String userEmail = emailText.getText().toString();
-//
-//                    if (userId.isEmpty()) {
-//                        idText.requestFocus();
-//                        return;
-//                    } else if (userPassword.isEmpty()) {
-//                        passwordText.requestFocus();
-//                        return;
-//                    } else if (userName.isEmpty()) {
-//                        nameText.requestFocus();
-//                        Toast.makeText(RegisterActivity.this, "Write ID you want.", Toast.LENGTH_SHORT).show();
-//                        return;
-//                    } else if (userEmail.isEmpty()) {
-//                        Toast.makeText(RegisterActivity.this, "Write your e-mail", Toast.LENGTH_SHORT).show();
-//                        emailText.requestFocus();
-//                        return;
-//                    }
-
                 Response.Listener<String> responseListener = new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -91,52 +69,25 @@ public class RegisterActivity extends AppCompatActivity {
                             JSONObject jsonResponse = new JSONObject(response);
                             boolean success = jsonResponse.getBoolean("success");
                             if (success) {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                                builder.setMessage("회원 등록에 성공했습니다. 로그인을 진행해 주세요.")
-                                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                setResult(REGISTER_SUCCESS);
-                                                finish();
-                                            }
-                                        })
-                                        .create().show();
+                                // succes
+                                Toast.makeText(RegisterActivity.this, "Success", Toast.LENGTH_SHORT).show();
                             } else {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                                builder.setMessage("회원 등록에 실패했습니다.\n문제가 계속되면 관리자에게 문의바랍니다.")
-                                        .setNegativeButton("확인", null)
-                                        .create().show();
+                                // error masage
+                                // fail
+                                Toast.makeText(RegisterActivity.this, "Fail", Toast.LENGTH_SHORT).show();
                             }
                         } catch (Exception e) {
-                            Log.d("Join Error", e.getMessage());
+                            Log.e("join error", e.getMessage());
                         }
                     }
                 };
-                RegisterRequest registerRequest = new RegisterRequest(Request.Method.POST, RegisterURL, responseListener, null);
-                registerRequest.doRegister(userId, userPassword, userName, userEmail);
-                RequestQueue requestQueue = Volley.newRequestQueue(RegisterActivity.this);
-                requestQueue.add(registerRequest);
-//                }
-//                else if (!isIdAvailable) {
-//                    AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-//                    builder.setMessage("아이디를 입력하고 중복검사를 눌러주세요.")
-//                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//                                    idText.requestFocus();
-//                                }
-//                            })
-//                            .create().show();
-//                } else {
-//                    AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-//                    builder.setMessage("비밀번호가 올바르지 않거나 일치하지 않습니다.")
-//                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//                                    passwordText.requestFocus();
-//                                }
-//                            })
-//                            .create().show();
+
+//                if (isEmailAvailable && isIdAvailable && isPasswordAvailable) {
+                    RegisterRequest registerRequest = new RegisterRequest(Request.Method.POST, RegisterURL, responseListener, null);
+                    String userId = idText.getText().toString();
+                    registerRequest.doRegister(userId);
+                    RequestQueue requestQueue = Volley.newRequestQueue(RegisterActivity.this);
+                    requestQueue.add(registerRequest);
 //                }
             }
         });
@@ -243,8 +194,7 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             }
         });
-        emailCodeSubmitBtn.setOnClickListener(new View.OnClickListener()
-        {
+        emailCodeSubmitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Response.Listener<String> responseListener = new Response.Listener<String>() {
@@ -254,7 +204,6 @@ public class RegisterActivity extends AppCompatActivity {
                             JSONObject jsonResponse = new JSONObject(response);
                             boolean success = jsonResponse.getBoolean("success");
                             if (success) {
-                                Toast.makeText(RegisterActivity.this, "same", Toast.LENGTH_SHORT).show();
                                 String userID = jsonResponse.getString("userID");
                                 String userEmail = jsonResponse.getString("userEmail");
                                 Toast.makeText(RegisterActivity.this, userEmail + " " + userID, Toast.LENGTH_SHORT).show();

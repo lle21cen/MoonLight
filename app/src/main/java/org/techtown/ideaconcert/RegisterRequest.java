@@ -13,12 +13,9 @@ public class RegisterRequest extends StringRequest {
         super(method, url, listener, errorListener);
     }
 
-    public void doRegister(String userID, String userPassword, String userName, String userEmail) {
+    public void doRegister(String userID) {
         parameters = new HashMap<>();
         parameters.put("userID", userID);
-        parameters.put("userPassword", userPassword);
-        parameters.put("userName", userName);
-        parameters.put("userEmail", userEmail);
     }
 
     public Map<String, String> getParams() {

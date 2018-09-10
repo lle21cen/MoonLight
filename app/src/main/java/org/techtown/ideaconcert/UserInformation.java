@@ -39,29 +39,6 @@ public class UserInformation extends Application {
         this.user_name = user_name;
     }
 
-//    public String getUser_first_name() {
-//        return user_first_name;
-//    }
-//
-//    public void setUser_first_name(String user_first_name) {
-//        this.user_first_name = user_first_name;
-//    }
-//
-//    public String getUser_middle_name() {
-//        return user_middle_name;
-//    }
-//
-//    public void setUser_middle_name(String user_middle_name) {
-//        this.user_middle_name = user_middle_name;
-//    }
-//
-//    public String getUser_last_name() {
-//        return user_last_name;
-//    }
-//
-//    public void setUser_last_name(String user_last_name) {
-//        this.user_last_name = user_last_name;
-//    }
 
     public String getUserEmail() {
         return userEmail;
