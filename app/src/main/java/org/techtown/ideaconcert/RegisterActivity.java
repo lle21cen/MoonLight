@@ -20,7 +20,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -28,11 +27,12 @@ public class RegisterActivity extends AppCompatActivity {
     final static private String RegisterURL = "http://lle21cen.cafe24.com/Register.php";
     final static private String dupCheckURL = "http://lle21cen.cafe24.com/DupCheck.php";
     final static private String emailCertificationURL = "http://lle21cen.cafe24.com/EmailCertification.php";
+    final static private String verificationCodeCheckURL = "http://lle21cen.cafe24.com/VerificationCodeCheck.php";
 
     EditText idText, passwordText, passwordConfirm;
     TextView dupCheck, passwordCheck, passwordConfirmCheck;
     String passwd1, passwd2;
-    boolean isPasswordAvailable = false, isIdAvailable = false;
+    private boolean isPasswordAvailable = false, isIdAvailable = false, isEmailAvailable = false;
 
     // For email verification.
     Button emailVerifyBtn;
@@ -62,81 +62,82 @@ public class RegisterActivity extends AppCompatActivity {
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isIdAvailable && isPasswordAvailable) {
-                    String userId = idText.getText().toString();
-                    String userPassword = passwordText.getText().toString();
-                    String userName = nameText.getText().toString();
-                    String userEmail = emailText.getText().toString();
+//                if (isIdAvailable && isPasswordAvailable) {
+                String userId = idText.getText().toString();
+                String userPassword = passwordText.getText().toString();
+                String userName = nameText.getText().toString();
+                String userEmail = emailText.getText().toString();
+//
+//                    if (userId.isEmpty()) {
+//                        idText.requestFocus();
+//                        return;
+//                    } else if (userPassword.isEmpty()) {
+//                        passwordText.requestFocus();
+//                        return;
+//                    } else if (userName.isEmpty()) {
+//                        nameText.requestFocus();
+//                        Toast.makeText(RegisterActivity.this, "Write ID you want.", Toast.LENGTH_SHORT).show();
+//                        return;
+//                    } else if (userEmail.isEmpty()) {
+//                        Toast.makeText(RegisterActivity.this, "Write your e-mail", Toast.LENGTH_SHORT).show();
+//                        emailText.requestFocus();
+//                        return;
+//                    }
 
-                    if (userId.isEmpty()) {
-                        idText.requestFocus();
-                        return;
-                    } else if (userPassword.isEmpty()) {
-                        passwordText.requestFocus();
-                        return;
-                    } else if (userName.isEmpty()) {
-                        nameText.requestFocus();
-                        Toast.makeText(RegisterActivity.this, "Write ID you want.", Toast.LENGTH_SHORT).show();
-                        return;
-                    } else if (userEmail.isEmpty()) {
-                        Toast.makeText(RegisterActivity.this, "Write your e-mail", Toast.LENGTH_SHORT).show();
-                        emailText.requestFocus();
-                        return;
-                    }
-
-                    Response.Listener<String> responseListener = new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            try {
-                                JSONObject jsonResponse = new JSONObject(response);
-                                boolean success = jsonResponse.getBoolean("success");
-                                if (success) {
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                                    builder.setMessage("회원 등록에 성공했습니다. 로그인을 진행해 주세요.")
-                                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    setResult(REGISTER_SUCCESS);
-                                                    finish();
-                                                }
-                                            })
-                                            .create().show();
-                                } else {
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                                    builder.setMessage("회원 등록에 실패했습니다.\n문제가 계속되면 관리자에게 문의바랍니다.")
-                                            .setNegativeButton("확인", null)
-                                            .create().show();
-                                }
-                            } catch (Exception e) {
-                                Log.d("Join Error", e.getMessage());
+                Response.Listener<String> responseListener = new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonResponse = new JSONObject(response);
+                            boolean success = jsonResponse.getBoolean("success");
+                            if (success) {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+                                builder.setMessage("회원 등록에 성공했습니다. 로그인을 진행해 주세요.")
+                                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                setResult(REGISTER_SUCCESS);
+                                                finish();
+                                            }
+                                        })
+                                        .create().show();
+                            } else {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+                                builder.setMessage("회원 등록에 실패했습니다.\n문제가 계속되면 관리자에게 문의바랍니다.")
+                                        .setNegativeButton("확인", null)
+                                        .create().show();
                             }
+                        } catch (Exception e) {
+                            Log.d("Join Error", e.getMessage());
                         }
-                    };
-                    RegisterRequest registerRequest = new RegisterRequest(Request.Method.POST, RegisterURL, responseListener, null);
-                    registerRequest.doRegister(userId, userPassword, userName, userEmail);
-                    RequestQueue requestQueue = Volley.newRequestQueue(RegisterActivity.this);
-                    requestQueue.add(registerRequest);
-                } else if (!isIdAvailable) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                    builder.setMessage("아이디를 입력하고 중복검사를 눌러주세요.")
-                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    idText.requestFocus();
-                                }
-                            })
-                            .create().show();
-                } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                    builder.setMessage("비밀번호가 올바르지 않거나 일치하지 않습니다.")
-                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    passwordText.requestFocus();
-                                }
-                            })
-                            .create().show();
-                }
+                    }
+                };
+                RegisterRequest registerRequest = new RegisterRequest(Request.Method.POST, RegisterURL, responseListener, null);
+                registerRequest.doRegister(userId, userPassword, userName, userEmail);
+                RequestQueue requestQueue = Volley.newRequestQueue(RegisterActivity.this);
+                requestQueue.add(registerRequest);
+//                }
+//                else if (!isIdAvailable) {
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+//                    builder.setMessage("아이디를 입력하고 중복검사를 눌러주세요.")
+//                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    idText.requestFocus();
+//                                }
+//                            })
+//                            .create().show();
+//                } else {
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+//                    builder.setMessage("비밀번호가 올바르지 않거나 일치하지 않습니다.")
+//                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    passwordText.requestFocus();
+//                                }
+//                            })
+//                            .create().show();
+//                }
             }
         });
         idText.addTextChangedListener(new TextWatcher() {
@@ -165,6 +166,10 @@ public class RegisterActivity extends AppCompatActivity {
         emailVerifyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String userId = idText.getText().toString();
+                String userPassword = passwordText.getText().toString();
+                String userName = nameText.getText().toString();
+                String userEmail = emailText.getText().toString();
 
                 // Send verification code to user's email
                 Response.Listener<String> responseListener = new Response.Listener<String>() {
@@ -177,8 +182,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
                                 builder.setMessage("This e-mail is already used. Please use another one.").setCancelable(false)
                                         .setNegativeButton("OK", null).create().show();
-                            }
-                            else {
+                            } else {
                                 AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
                                 builder.setMessage("We send a verification number to your e-mail.\nPlease submit the code in 5 minute").setCancelable(false)
                                         .setPositiveButton("OK", null).create().show();
@@ -188,49 +192,94 @@ public class RegisterActivity extends AppCompatActivity {
 
                                 // set 5 minute timer
                             }
-                        }
-                        catch (Exception e) {
-                            Log.d("Email check error", e.getMessage());
+                        } catch (Exception e) {
+                            Log.e("Email check error", e.getMessage());
                         }
                     }
                 };
-                IdAndEmailCheck idAndEmailCheck = new IdAndEmailCheck(Request.Method.POST, emailCertificationURL, responseListener, null);
-//                String userEmail = emailText.getText().toString();
-                String userEmail = "lle21cen@naver.com"; // 테스트용
-                idAndEmailCheck.sendUserEmail(userEmail);
-                RequestQueue requestQueue = Volley.newRequestQueue(RegisterActivity.this);
-                requestQueue.add(idAndEmailCheck);
+                if (!isIdAvailable) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+                    builder.setMessage("아이디를 입력하고 중복검사를 눌러주세요.")
+                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    idText.requestFocus();
+                                    return;
+                                }
+                            })
+                            .create().show();
+                } else if (!isPasswordAvailable) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+                    builder.setMessage("비밀번호가 올바르지 않거나 일치하지 않습니다.")
+                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    passwordText.requestFocus();
+                                    return;
+                                }
+                            })
+                            .create().show();
+                } else if (userId.isEmpty()) {
+                    idText.requestFocus();
+                    return;
+                } else if (userPassword.isEmpty()) {
+                    passwordText.requestFocus();
+                    return;
+                } else if (userName.isEmpty()) {
+                    nameText.requestFocus();
+                    Toast.makeText(RegisterActivity.this, "Whart is your name?", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (userEmail.isEmpty()) {
+                    Toast.makeText(RegisterActivity.this, "Write your e-mail", Toast.LENGTH_SHORT).show();
+                    emailText.requestFocus();
+                    return;
+                } else {
+                    IdCheckAndRegister idCheckAndRegister = new IdCheckAndRegister(Request.Method.POST, emailCertificationURL, responseListener, null);
+//              userEmail = emailText.getText().toString();
+                    userEmail = "lle21cen@naver.com"; // 테스트용
+                    idCheckAndRegister.doRegister(userId, userPassword, userName, userEmail);
+                    RequestQueue requestQueue = Volley.newRequestQueue(RegisterActivity.this);
+                    requestQueue.add(idCheckAndRegister);
+                }
             }
         });
-        emailCodeSubmitBtn.setOnClickListener(new View.OnClickListener() {
+        emailCodeSubmitBtn.setOnClickListener(new View.OnClickListener()
+        {
             @Override
             public void onClick(View v) {
-//                Toast.makeText(RegisterActivity.this, "clicked!", Toast.LENGTH_SHORT).show();
-//                Response.Listener<String> responseListener = new Response.Listener<String>() {
-//                    @Override
-//                    public void onResponse(String response) {
-//                        try {
-//                            JSONObject jsonResponse = new JSONObject(response);
-//                            boolean verification = jsonResponse.getBoolean("verification");
-//                            Toast.makeText(RegisterActivity.this, ""+verification, Toast.LENGTH_SHORT).show();
-//
-//                            if (verification) {
-//                                emailCodeSubmitBtn.setText(getString(R.string.verified));
-//                                emailCodeSubmitBtn.setTextColor(Color.parseColor("#32cd32"));
-//                            } else {
-//                                Toast.makeText(RegisterActivity.this, "기회 몇 번?", Toast.LENGTH_SHORT).show();
-//                                emailCode.requestFocus();
-//                            }
-//                        } catch (Exception e) {
-//                            Log.d("code check error", e.getMessage());
-//                        }
-//                    }
-//                };
-//                IdAndEmailCheck idAndEmailCheck = new IdAndEmailCheck(Request.Method.POST, emailCertificationURL, responseListener, null);
-//                String userCode = emailCode.getText().toString();
-//                idAndEmailCheck.sendUserCode(userCode);
-//                RequestQueue requestQueue = Volley.newRequestQueue(RegisterActivity.this);
-//                requestQueue.add(idAndEmailCheck);
+                Response.Listener<String> responseListener = new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonResponse = new JSONObject(response);
+                            boolean success = jsonResponse.getBoolean("success");
+                            if (success) {
+                                Toast.makeText(RegisterActivity.this, "same", Toast.LENGTH_SHORT).show();
+                                String userID = jsonResponse.getString("userID");
+                                String userEmail = jsonResponse.getString("userEmail");
+                                Toast.makeText(RegisterActivity.this, userEmail + " " + userID, Toast.LENGTH_SHORT).show();
+
+                                emailCodeSubmitBtn.setText(getString(R.string.verified));
+                                emailCodeSubmitBtn.setTextColor(Color.parseColor("#32cd32"));
+                                isEmailAvailable = true;
+                            } else {
+                                Toast.makeText(RegisterActivity.this, "not same", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegisterActivity.this, "기회 몇 번?", Toast.LENGTH_SHORT).show();
+                                emailCode.requestFocus();
+                            }
+                        } catch (Exception e) {
+                            Log.d("code check error", e.getMessage());
+                        }
+                    }
+                };
+                IdCheckAndRegister idCheckAndRegister = new IdCheckAndRegister(Request.Method.POST, verificationCodeCheckURL, responseListener, null);
+                String userCode = emailCode.getText().toString();
+//                String userEmail = emailText.getText().toString();
+                String userEmail = "lle21cen@naver.com"; // 테스트용
+//                String userID = idText.getText().toString();
+                idCheckAndRegister.sendUserCode(userEmail, userCode);
+                RequestQueue requestQueue = Volley.newRequestQueue(RegisterActivity.this);
+                requestQueue.add(idCheckAndRegister);
             }
         });
     }
@@ -261,11 +310,11 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             }
         };
-        IdAndEmailCheck idAndEmailCheck = new IdAndEmailCheck(Request.Method.POST, dupCheckURL, responseListener, null);
+        IdCheckAndRegister idCheckAndRegister = new IdCheckAndRegister(Request.Method.POST, dupCheckURL, responseListener, null);
         String userID = idText.getText().toString();
-        idAndEmailCheck.checkUserID(userID);
+        idCheckAndRegister.checkUserID(userID);
         RequestQueue requestQueue = Volley.newRequestQueue(RegisterActivity.this);
-        requestQueue.add(idAndEmailCheck);
+        requestQueue.add(idCheckAndRegister);
     }
 
     public void formAvailabilityTest() {
