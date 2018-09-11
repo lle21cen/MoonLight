@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -51,8 +52,6 @@ import java.util.Arrays;
 
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
-    final int LOGIN_SUCCESS = 100, LOGIN_FAIL = 99, REGISTER_CODE = 98;
-
     // For Facebook
     CallbackManager callbackManager;
     LoginButton facebook_login;
@@ -79,6 +78,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         final Button toRegistActivity = findViewById(R.id.btn_regist);
         toRegistActivity.setOnClickListener(this);
 
+        // 인터넷 연결 상태 확인하는 코드 추가하기.
+
         // --------------------------------------------------------------------------
         //                               For save login data
         loginData = getSharedPreferences("loginData", MODE_PRIVATE);
@@ -101,7 +102,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
         if (isLoggedIn) {
             setUserInfomationsByFacebook(accessToken);
-            setResult(LOGIN_SUCCESS);
+            setResult(ActivityCodes.LOGIN_SUCCESS);
             finish();
         }
         // Button management
@@ -181,7 +182,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             String email = response.getJSONObject().getString("email");
                             String name = response.getJSONObject().getString("name");
                             userInformation.setUserInformation("Facebook", id, name, email, auto_login.isChecked());
-                            setResult(LOGIN_SUCCESS);
+                            setResult(ActivityCodes.LOGIN_SUCCESS);
                             finish();
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -204,7 +205,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 GoogleSignInAccount account = result.getSignInAccount();
 
                 if (account == null) {
-                    setResult(LOGIN_FAIL);
+                    setResult(ActivityCodes.LOGIN_FAIL);
                     finish();
                 }
                 Log.d(TAG, "이름 = " + account.getDisplayName());
@@ -215,10 +216,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 // 사용자 정보 입력하고 액티비티 종료, 이름 형식 정리 필요
                 userInformation.setUserInformation("Google", account.getId(), account.getDisplayName(), account.getEmail(), auto_login.isChecked());
-                setResult(LOGIN_SUCCESS);
+                setResult(ActivityCodes.LOGIN_SUCCESS);
                 finish();
-//                firebaseAuthWithGoogle(account);
             }
+        }
+        else if (requestCode == ActivityCodes.REGISTER_REQUEST) {
+            Toast.makeText(this, "It's from Register Act", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -228,32 +231,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         FirebaseUser currentUser = auth.getCurrentUser();
         if (currentUser != null) {
             userInformation.setUserInformation("Google", currentUser.getUid(), currentUser.getDisplayName(), currentUser.getEmail(), auto_login.isChecked());
-            setResult(LOGIN_SUCCESS);
+            setResult(ActivityCodes.LOGIN_SUCCESS);
             finish();
         }
     }
 
-    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
+    @Override
+    protected void onRestart() {
+        super.onRestart();
 
-        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        auth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithCredential:success");
-                            setResult(LOGIN_SUCCESS);
-                            finish();
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
     }
 
     @Override
@@ -276,10 +262,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                                 builder.setMessage("로그인에 성공했습니다 ").setCancelable(false)
                                         .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
-                                                setResult(LOGIN_SUCCESS);
+                                                setResult(ActivityCodes.LOGIN_SUCCESS);
                                                 finish();
                                             }
                                         }).create().show();
@@ -287,8 +272,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 Toast.makeText(LoginActivity.this, "로그인에 실패했습니다.", Toast.LENGTH_LONG).show();
                             }
                         } catch (Exception e) {
-                            e.printStackTrace();
-                            Log.d("db error", e.getMessage());
+                            Log.d("dberror", e.getMessage());
                         }
                     }
                 };
@@ -302,7 +286,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.btn_regist:
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                startActivityForResult(intent, REGISTER_CODE);
+                startActivityForResult(intent, ActivityCodes.REGISTER_REQUEST);
                 break;
         }
     }

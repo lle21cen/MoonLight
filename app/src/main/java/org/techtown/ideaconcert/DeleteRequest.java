@@ -6,14 +6,12 @@ import com.android.volley.toolbox.StringRequest;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RegisterRequest extends StringRequest {
+public class DeleteRequest extends StringRequest {
     private Map<String, String> parameters;
+    static final String deleteUserURL = "http://lle21cen.cafe24.com/DeleteUser.php";
 
-    public RegisterRequest(int method, String url, Response.Listener<String> listener, Response.ErrorListener errorListener) {
-        super(method, url, listener, errorListener);
-    }
-
-    public void doRegister(String userID) {
+    public DeleteRequest(Response.Listener<String> listener, String userID) {
+        super(Method.POST, deleteUserURL, listener, null);
         parameters = new HashMap<>();
         parameters.put("userID", userID);
     }

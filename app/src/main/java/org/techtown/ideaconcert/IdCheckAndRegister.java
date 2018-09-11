@@ -6,7 +6,7 @@ import com.android.volley.toolbox.StringRequest;
 import java.util.HashMap;
 import java.util.Map;
 
-public class IdCheckAndRegister extends StringRequest{
+public class IdCheckAndRegister extends StringRequest {
     private Map<String, String> parameters;
 
     public IdCheckAndRegister(int method, String url, Response.Listener<String> listener, Response.ErrorListener errorListener) {
@@ -31,6 +31,7 @@ public class IdCheckAndRegister extends StringRequest{
         parameters.put("userEmail", userEmail);
         parameters.put("userCode", userCode);
     }
+
     public Map<String, String> getParams() {
         return parameters;
     }

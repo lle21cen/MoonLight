@@ -125,7 +125,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/regist_name" >
+        app:layout_constraintTop_toBottomOf="@+id/regist_name">
 
         <EditText
             android:id="@+id/regist_email"
@@ -135,10 +135,10 @@
             android:layout_marginStart="8dp"
             android:ems="10"
             android:hint="@string/email"
-            android:textAlignment="center"
-            android:inputType="textEmailAddress"/>
+            android:inputType="textEmailAddress"
+            android:textAlignment="center" />
 
-        <Button
+        <TextView
             android:id="@+id/email_verify_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -148,16 +148,16 @@
 
     <LinearLayout
         android:id="@+id/linear5"
-        android:visibility="visible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:orientation="horizontal"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linear4" >
+        app:layout_constraintTop_toBottomOf="@+id/linear4">
 
         <EditText
             android:id="@+id/email_verify_code"
@@ -167,8 +167,8 @@
             android:layout_marginStart="8dp"
             android:ems="5"
             android:hint="@string/code"
-            android:textAlignment="center"
-            android:inputType="numberDecimal"/>
+            android:inputType="numberDecimal"
+            android:textAlignment="center" />
 
         <TextView
             android:id="@+id/email_code_submit_btn"
@@ -178,6 +178,16 @@
             android:onClick="dupCheck"
             android:text="@string/submit" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/timer_view"
+        android:text="00:00"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linear5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/btn_join"
@@ -189,6 +199,6 @@
         android:text="join"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linear5" />
+        app:layout_constraintTop_toBottomOf="@id/timer_view" />
 
 </android.support.constraint.ConstraintLayout>
