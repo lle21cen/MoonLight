@@ -200,6 +200,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
         if (requestCode == GOOGLE_SIGN_IN) {
+            Toast.makeText(this, "Google", Toast.LENGTH_SHORT).show();
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (result.isSuccess()) {
                 GoogleSignInAccount account = result.getSignInAccount();
@@ -218,6 +219,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 userInformation.setUserInformation("Google", account.getId(), account.getDisplayName(), account.getEmail(), auto_login.isChecked());
                 setResult(ActivityCodes.LOGIN_SUCCESS);
                 finish();
+                // firebaseAuthWithGoogle(account);
+            }
+            else {
+                Toast.makeText(this, "Google Fail : " + result.getStatus().getStatusMessage(), Toast.LENGTH_SHORT).show();
             }
         }
         else if (requestCode == ActivityCodes.REGISTER_REQUEST) {
@@ -234,6 +239,28 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             setResult(ActivityCodes.LOGIN_SUCCESS);
             finish();
         }
+    }
+    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
+
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        auth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithCredential:success");
+                            setResult(ActivityCodes.LOGIN_SUCCESS);
+                            finish();
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
     @Override
@@ -291,3 +318,4 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 }
+

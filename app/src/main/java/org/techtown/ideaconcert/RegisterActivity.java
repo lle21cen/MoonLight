@@ -1,10 +1,13 @@
 package org.techtown.ideaconcert;
 
 import android.app.Application;
+import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Looper;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -29,6 +32,19 @@ import java.util.regex.Pattern;
 
 public class RegisterActivity extends AppCompatActivity {
 
+    /*
+    사용자 회원가입 화면.
+    구현 사항
+    1. 아이디 입력(EditText) & 중복검사(TextView)
+    2. 패스워드 입력 & 패스워드 확인 입력(EditText) -> 둘의 일치 여부를 문자 하나 칠 때마다 검사.
+    3. 이름 텍스트 입력
+    4. 이메일 입력(EditText) -> 비밀번호 형식 검사, 위의 1,2,3번의 올바른 입력 여부 검사
+    5. 서버측(php): verify 클릭 시 해당 이메일로 인증번호 전송(6자리 난수), 1,2,3,4의 정보들과 함께 데이터베이스에 암호화 저장 & 1,2,3,4 영역 수정불가.
+    6. 사용자가 이메일로 온 인증번호를 입력하고 제출 버튼(submit) 클릭시 서버측에서 인증번호를 비교하고 결과(success)를 반환
+    7. 사용자의 인증번호 제출은 5분 시간과 5번의 기회로 제한되며, 제한에 걸릴 시 인증번호를 다시 요구하도록 유도 & 1,2,3,4 영역 수정가능.
+    8. 회원가입 버튼(Join)을 누르지 않고 엑티비티를 종료 시키는 모든 경우(강제 종료 포함) 임시 저장되었던 사용자의 정보를 지움.
+     */
+
     final static private String dupCheckURL = "http://lle21cen.cafe24.com/DupCheck.php"; // 아이디 중복체크 URL
     final static private String emailVerifyAndRegisterURL = "http://lle21cen.cafe24.com/EmailVerifyAndRegister.php"; // 이메일 중복체크와 디비에 회원 등록하는 URL
     final static private String verificationCodeCheckURL = "http://lle21cen.cafe24.com/VerificationCodeCheck.php"; // 사용자가 입력한 인증코드를 비교하는 URL
@@ -45,14 +61,19 @@ public class RegisterActivity extends AppCompatActivity {
     LinearLayout emailLayout;
 
     AlertDialog.Builder builder;
-    int seconds = 300, countdownInterval = 1000;
+    final int time_limit = 300;
+    int seconds = time_limit, countdownInterval = 1000; // 인증코드 제출 시 5분제한을 위한 타이머 변수
+    private int submitChance = 0; // 인증코드 제출 시 5회 제한을 위한 변수
 
-    boolean isJoinBtnClicked=false;
-
+    boolean isJoinBtnClicked = false; // 회원가입 버튼을 눌렀을 시 true로 변하며 activity가 종료되었는데 true가 아닌경우 회원가입을 무효처리함.
+    ForceQuitManageService forceQuitManageService; // 강제종료 시 남아있는 데이터를 제거하기 위한 서비스 변수.
+    CountDownTimer countDownTimer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_regist);
+        forceQuitManageService = new ForceQuitManageService();
+        startService(new Intent(this, forceQuitManageService.getClass()));
 
         idText = (EditText) findViewById(R.id.regist_id);
         passwordText = (EditText) findViewById(R.id.regist_pwd);
@@ -65,7 +86,7 @@ public class RegisterActivity extends AppCompatActivity {
         passwordConfirmCheck = (TextView) findViewById(R.id.passwordConfirmCheck);
         countdown_txt = (TextView) findViewById(R.id.timer_view);
 
-        final CountDownTimer countDownTimer = new CountDownTimer(5 * countdownInterval, countdownInterval) {
+        countDownTimer = new CountDownTimer(time_limit * countdownInterval, countdownInterval) {
             @Override
             public void onTick(long l) {
                 seconds--;
@@ -74,7 +95,28 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                Toast.makeText(RegisterActivity.this, "finish", Toast.LENGTH_SHORT).show();
+                // 5분 제한 시간 안에 코드를 입력하지 못한 경우이므로 인증코드를 다시 받도록 유도.
+                AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+                builder.setMessage("Time out. Try again?").setPositiveButton("RETRY", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // 기존에 보냈던 사용자 데이터지우기
+                        DeleteRequest deleteRequest = new DeleteRequest(deleteResponseListener, idText.getText().toString());
+                        RequestQueue requestQueue = Volley.newRequestQueue(RegisterActivity.this);
+                        requestQueue.add(deleteRequest);
+                        emailText.requestFocus();
+                        idText.setEnabled(true);
+                        passwordText.setEnabled(true);
+                        passwordConfirm.setEnabled(true);
+                        nameText.setEnabled(true);
+                    }
+                }).setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        setResult(ActivityCodes.REGISTER_FAIL);
+                        finish();
+                    }
+                }).create().show();
             }
         };
 
@@ -90,9 +132,8 @@ public class RegisterActivity extends AppCompatActivity {
                     countDownTimer.cancel();
                     setResult(ActivityCodes.REGISTER_SUCCESS);
                     finish();
-                }
-                else {
-                    // 회원가입 버튼을 누르기 전에 뭔가를 바꾼 경우. 다시 입력하도록 하도로 할 필요
+                } else {
+                    // 회원가입 버튼을 누르기 전에 뭔가를 바꾼 경우. 다시 입력하도록 하도록 할 필요??
                 }
             }
         });
@@ -137,16 +178,22 @@ public class RegisterActivity extends AppCompatActivity {
                                 builder.setMessage("This e-mail is already used. Please use another one.").create().show();
                             } else {
                                 builder.setMessage("We send a verification number to your e-mail.\nPlease submit the code in 5 minute").setCancelable(false).create().show();
-
+                                submitChance = 5;
                                 countdown_txt.setVisibility(View.VISIBLE);
                                 countDownTimer.start();
                                 emailLayout.setVisibility(View.VISIBLE);
+
+                                idText.setEnabled(false);
+                                passwordText.setEnabled(false);
+                                passwordConfirm.setEnabled(false);
+                                nameText.setEnabled(false);
                             }
                         } catch (Exception e) {
                             Log.e("Email check error", e.getMessage());
                         }
                     }
                 };
+                /*
                 if (!isIdAvailable) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
                     builder.setMessage("아이디를 입력하고 중복검사를 눌러주세요.")
@@ -186,14 +233,16 @@ public class RegisterActivity extends AppCompatActivity {
                 } else if (!checkEmail(userEmail)) {
                     builder.setMessage("Email format is invalid").create().show();
                     emailText.requestFocus();
-                } else {
+                }
+                else {
+                */
                     IdCheckAndRegister idCheckAndRegister = new IdCheckAndRegister(Request.Method.POST, emailVerifyAndRegisterURL, responseListener, null);
 //              userEmail = emailText.getText().toString();
                     userEmail = "lle21cen@naver.com"; // 테스트용
                     idCheckAndRegister.doRegister(userId, userPassword, userName, userEmail);
                     RequestQueue requestQueue = Volley.newRequestQueue(RegisterActivity.this);
                     requestQueue.add(idCheckAndRegister);
-                }
+                //}
             }
         });
         emailCodeSubmitBtn.setOnClickListener(new View.OnClickListener() {
@@ -210,8 +259,38 @@ public class RegisterActivity extends AppCompatActivity {
                                 emailCodeSubmitBtn.setTextColor(Color.parseColor("#32cd32"));
                                 isEmailAvailable = true;
                             } else {
-                                Toast.makeText(RegisterActivity.this, "not same", Toast.LENGTH_SHORT).show();
-                                Toast.makeText(RegisterActivity.this, "기회 몇 번?", Toast.LENGTH_SHORT).show();
+                                submitChance--;
+                                Toast.makeText(RegisterActivity.this, "Chance: "+submitChance+"/5", Toast.LENGTH_SHORT).show();
+                                if (submitChance == 0) {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+                                    builder.setMessage("Chance over. Retry?").setPositiveButton("RETRY", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            // 기존에 보냈던 사용자 데이터지우기
+                                            DeleteRequest deleteRequest = new DeleteRequest(deleteResponseListener, idText.getText().toString());
+                                            RequestQueue requestQueue = Volley.newRequestQueue(RegisterActivity.this);
+                                            requestQueue.add(deleteRequest);
+                                            // 기본정보를 재입력 가능하게 하고 인증코드는 안보이게 함.
+                                            emailText.requestFocus();
+                                            idText.setEnabled(true);
+                                            passwordText.setEnabled(true);
+                                            passwordConfirm.setEnabled(true);
+                                            nameText.setEnabled(true);
+                                            submitChance = 5;
+                                            emailCode.setText("");
+                                            emailLayout.setVisibility(View.GONE);
+                                            countdown_txt.setVisibility(View.GONE);
+                                            countDownTimer.cancel();
+                                            seconds = time_limit;
+                                        }
+                                    }).setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            setResult(ActivityCodes.REGISTER_FAIL);
+                                            finish();
+                                        }
+                                    }).create().show();
+                                }
                                 emailCode.requestFocus();
                             }
                         } catch (Exception e) {
@@ -228,6 +307,8 @@ public class RegisterActivity extends AppCompatActivity {
                 requestQueue.add(idCheckAndRegister);
             }
         });
+
+
     }
 
     public void dupCheck(View v) {
@@ -248,6 +329,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 }).create().show();
                     } else {
                         Toast.makeText(RegisterActivity.this, "아이디를 사용하실 수 있습니다.", Toast.LENGTH_SHORT).show();
+                        forceQuitManageService.setUserID(idText.getText().toString());
                         passwordText.requestFocus();
                         isIdAvailable = true;
                     }
@@ -357,29 +439,29 @@ public class RegisterActivity extends AppCompatActivity {
         super.onDestroy();
         Toast.makeText(this, "Destroy", Toast.LENGTH_SHORT).show();
 
-        Response.Listener<String> responseListener = new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject jsonResponse = new JSONObject(response);
-                    boolean success = jsonResponse.getBoolean("success");
-                    String errmsg = jsonResponse.getString("errmsg");
-                    if (success) {
-
-                    } else {
-                        Log.d("delete data", errmsg);
-                    }
-                } catch (Exception e) {
-                    Log.d("duplication check error", e.getMessage());
-                }
-            }
-        };
-
         if (!isJoinBtnClicked) {
-            DeleteRequest deleteRequest = new DeleteRequest(responseListener, idText.getText().toString());
+            DeleteRequest deleteRequest = new DeleteRequest(deleteResponseListener, idText.getText().toString());
             RequestQueue requestQueue = Volley.newRequestQueue(RegisterActivity.this);
             requestQueue.add(deleteRequest);
         }
     }
-    
+
+    Response.Listener<String> deleteResponseListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonResponse = new JSONObject(response);
+                boolean success = jsonResponse.getBoolean("success");
+                String errmsg = jsonResponse.getString("errmsg");
+                if (success) {
+
+                } else {
+                    Log.d("delete data", errmsg);
+                }
+            } catch (Exception e) {
+                Log.d("dp error for delete", e.getMessage());
+            }
+        }
+    };
+
 }

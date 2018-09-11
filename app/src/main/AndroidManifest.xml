@@ -48,6 +48,11 @@
         </activity>
         <activity android:name=".RegisterActivity" />
 
+        <service
+            android:name=".ForceQuitManageService"
+            android:enabled="true"
+            android:exported="true"
+            android:stopWithTask="false" />
     </application>
 
 </manifest>
