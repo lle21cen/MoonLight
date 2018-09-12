@@ -292,7 +292,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             case R.id.find:
                 // id/Password찾기 버튼 리스너
                 intent = new Intent(LoginActivity.this, FindIDPasswordActivity.class);
-                startactivityfor
+                startActivityForResult(intent, ActivityCodes.FIND_REQUEST);
                 break;
         }
     }
