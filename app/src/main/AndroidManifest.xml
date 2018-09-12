@@ -53,6 +53,8 @@
             android:enabled="true"
             android:exported="true"
             android:stopWithTask="false" />
+
+        <activity android:name=".FindIDPasswordActivity" />
     </application>
 
 </manifest>

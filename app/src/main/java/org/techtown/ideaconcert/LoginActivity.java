@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.solver.widgets.ConstraintAnchor;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -12,11 +13,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -67,9 +68,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     // For Database login
     EditText edit_userID, edit_userPass;
-    private SharedPreferences loginData;
+    //private SharedPreferences loginData;
     private CheckBox auto_login;
     Button btn_login;
+    TextView btn_find;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,8 +83,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         // 인터넷 연결 상태 확인하는 코드 추가하기.
 
         // --------------------------------------------------------------------------
+        //                               find id or password
+        btn_find = findViewById(R.id.find);
+        btn_find.setOnClickListener(this);
+
+        // --------------------------------------------------------------------------
         //                               For save login data
-        loginData = getSharedPreferences("loginData", MODE_PRIVATE);
+        //loginData = getSharedPreferences("loginData", MODE_PRIVATE);
         auto_login = findViewById(R.id.auto_login);
 
         // --------------------------------------------------------------------------
@@ -219,14 +226,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 userInformation.setUserInformation("Google", account.getId(), account.getDisplayName(), account.getEmail(), auto_login.isChecked());
                 setResult(ActivityCodes.LOGIN_SUCCESS);
                 finish();
-                // firebaseAuthWithGoogle(account);
-            }
-            else {
+            } else {
                 Toast.makeText(this, "Google Fail : " + result.getStatus().getStatusMessage(), Toast.LENGTH_SHORT).show();
             }
-        }
-        else if (requestCode == ActivityCodes.REGISTER_REQUEST) {
-            Toast.makeText(this, "It's from Register Act", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -239,34 +241,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             setResult(ActivityCodes.LOGIN_SUCCESS);
             finish();
         }
-    }
-    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
-
-        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        auth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithCredential:success");
-                            setResult(ActivityCodes.LOGIN_SUCCESS);
-                            finish();
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-
     }
 
     @Override
@@ -315,7 +289,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivityForResult(intent, ActivityCodes.REGISTER_REQUEST);
                 break;
+            case R.id.find:
+                // id/Password찾기 버튼 리스너
+                intent = new Intent(LoginActivity.this, FindIDPasswordActivity.class);
+                startactivityfor
+                break;
         }
     }
 }
-

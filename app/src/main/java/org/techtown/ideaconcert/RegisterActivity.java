@@ -68,6 +68,7 @@ public class RegisterActivity extends AppCompatActivity {
     boolean isJoinBtnClicked = false; // 회원가입 버튼을 눌렀을 시 true로 변하며 activity가 종료되었는데 true가 아닌경우 회원가입을 무효처리함.
     ForceQuitManageService forceQuitManageService; // 강제종료 시 남아있는 데이터를 제거하기 위한 서비스 변수.
     CountDownTimer countDownTimer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -193,7 +194,6 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                     }
                 };
-                /*
                 if (!isIdAvailable) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
                     builder.setMessage("아이디를 입력하고 중복검사를 눌러주세요.")
@@ -233,16 +233,14 @@ public class RegisterActivity extends AppCompatActivity {
                 } else if (!checkEmail(userEmail)) {
                     builder.setMessage("Email format is invalid").create().show();
                     emailText.requestFocus();
-                }
-                else {
-                */
+                } else {
                     IdCheckAndRegister idCheckAndRegister = new IdCheckAndRegister(Request.Method.POST, emailVerifyAndRegisterURL, responseListener, null);
-//              userEmail = emailText.getText().toString();
-                    userEmail = "lle21cen@naver.com"; // 테스트용
+                    userEmail = emailText.getText().toString();
+//                    userEmail = "lle21cen@naver.com"; // 테스트용
                     idCheckAndRegister.doRegister(userId, userPassword, userName, userEmail);
                     RequestQueue requestQueue = Volley.newRequestQueue(RegisterActivity.this);
                     requestQueue.add(idCheckAndRegister);
-                //}
+                }
             }
         });
         emailCodeSubmitBtn.setOnClickListener(new View.OnClickListener() {
@@ -260,7 +258,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 isEmailAvailable = true;
                             } else {
                                 submitChance--;
-                                Toast.makeText(RegisterActivity.this, "Chance: "+submitChance+"/5", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegisterActivity.this, "Chance: " + submitChance + "/5", Toast.LENGTH_SHORT).show();
                                 if (submitChance == 0) {
                                     AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
                                     builder.setMessage("Chance over. Retry?").setPositiveButton("RETRY", new DialogInterface.OnClickListener() {
@@ -447,6 +445,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     Response.Listener<String> deleteResponseListener = new Response.Listener<String>() {
+        // DB에서 임시저장된 사용자 정보를 삭제하는 리스너
         @Override
         public void onResponse(String response) {
             try {
@@ -459,9 +458,8 @@ public class RegisterActivity extends AppCompatActivity {
                     Log.d("delete data", errmsg);
                 }
             } catch (Exception e) {
-                Log.d("dp error for delete", e.getMessage());
+                Log.d("db error for delete", e.getMessage());
             }
         }
     };
-
 }
