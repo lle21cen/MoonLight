@@ -130,13 +130,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     @Override
                     public void onCancel() {
                         // App code
-                        Log.d(TAG, "onCancel");
+                        Log.e(TAG, "onCancel");
                     }
 
                     @Override
                     public void onError(FacebookException exception) {
                         // App code
-                        Log.d(TAG, "onError");
+                        Log.e(TAG, "onError");
                     }
                 });
         // --------------------------------------------------------------------------
@@ -216,11 +216,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     setResult(ActivityCodes.LOGIN_FAIL);
                     finish();
                 }
-                Log.d(TAG, "이름 = " + account.getDisplayName());
-                Log.d(TAG, "이메일 = " + account.getEmail());
-                Log.d(TAG, "getId() = " + account.getId());
-                Log.d(TAG, "getAccount() = " + account.getAccount());
-                Log.d(TAG, "getIdToken() = " + account.getIdToken());
+                Log.e(TAG, "이름 = " + account.getDisplayName());
+                Log.e(TAG, "이메일 = " + account.getEmail());
+                Log.e(TAG, "getId() = " + account.getId());
+                Log.e(TAG, "getAccount() = " + account.getAccount());
+                Log.e(TAG, "getIdToken() = " + account.getIdToken());
 
                 // 사용자 정보 입력하고 액티비티 종료, 이름 형식 정리 필요
                 userInformation.setUserInformation("Google", account.getId(), account.getDisplayName(), account.getEmail(), auto_login.isChecked());
@@ -273,7 +273,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 Toast.makeText(LoginActivity.this, "로그인에 실패했습니다.", Toast.LENGTH_LONG).show();
                             }
                         } catch (Exception e) {
-                            Log.d("dberror", e.getMessage());
+                            Log.e("dberror", e.getMessage());
                         }
                     }
                 };

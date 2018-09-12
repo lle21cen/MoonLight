@@ -236,7 +236,6 @@ public class RegisterActivity extends AppCompatActivity {
                 } else {
                     IdCheckAndRegister idCheckAndRegister = new IdCheckAndRegister(Request.Method.POST, emailVerifyAndRegisterURL, responseListener, null);
                     userEmail = emailText.getText().toString();
-//                    userEmail = "lle21cen@naver.com"; // 테스트용
                     idCheckAndRegister.doRegister(userId, userPassword, userName, userEmail);
                     RequestQueue requestQueue = Volley.newRequestQueue(RegisterActivity.this);
                     requestQueue.add(idCheckAndRegister);
@@ -256,6 +255,8 @@ public class RegisterActivity extends AppCompatActivity {
                                 emailCodeSubmitBtn.setText(getString(R.string.verified));
                                 emailCodeSubmitBtn.setTextColor(Color.parseColor("#32cd32"));
                                 isEmailAvailable = true;
+                                countDownTimer.cancel();
+                                Toast.makeText(RegisterActivity.this, "Confirm", Toast.LENGTH_SHORT).show();
                             } else {
                                 submitChance--;
                                 Toast.makeText(RegisterActivity.this, "Chance: " + submitChance + "/5", Toast.LENGTH_SHORT).show();
@@ -292,14 +293,13 @@ public class RegisterActivity extends AppCompatActivity {
                                 emailCode.requestFocus();
                             }
                         } catch (Exception e) {
-                            Log.d("code check error", e.getMessage());
+                            Log.e("code check error", e.getMessage());
                         }
                     }
                 };
                 IdCheckAndRegister idCheckAndRegister = new IdCheckAndRegister(Request.Method.POST, verificationCodeCheckURL, responseListener, null);
                 String userCode = emailCode.getText().toString();
-//                String userEmail = emailText.getText().toString();
-                String userEmail = "lle21cen@naver.com"; // 테스트용
+                String userEmail = emailText.getText().toString();
                 idCheckAndRegister.sendUserCode(userEmail, userCode);
                 RequestQueue requestQueue = Volley.newRequestQueue(RegisterActivity.this);
                 requestQueue.add(idCheckAndRegister);
@@ -332,7 +332,7 @@ public class RegisterActivity extends AppCompatActivity {
                         isIdAvailable = true;
                     }
                 } catch (Exception e) {
-                    Log.d("duplication check error", e.getMessage());
+                    Log.e("duplication check error", e.getMessage());
                 }
             }
         };
@@ -455,10 +455,10 @@ public class RegisterActivity extends AppCompatActivity {
                 if (success) {
 
                 } else {
-                    Log.d("delete data", errmsg);
+                    Log.e("delete data", errmsg);
                 }
             } catch (Exception e) {
-                Log.d("db error for delete", e.getMessage());
+                Log.e("db error for delete", e.getMessage());
             }
         }
     };

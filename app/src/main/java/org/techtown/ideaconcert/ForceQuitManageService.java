@@ -34,7 +34,7 @@ public class ForceQuitManageService extends Service {
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
-        Log.d("Task Force Quit", "Remove user data");
+        Log.e("Task Force Quit", "Remove user data");
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -45,10 +45,10 @@ public class ForceQuitManageService extends Service {
                     if (success) {
 
                     } else {
-                        Log.d("delete error", errmsg);
+                        Log.e("delete error", errmsg);
                     }
                 } catch (Exception e) {
-                    Log.d("dp error for delete", e.getMessage());
+                    Log.e("dp error for delete", e.getMessage());
                 }
             }
         };
@@ -58,7 +58,7 @@ public class ForceQuitManageService extends Service {
             requestQueue.add(deleteRequest);
         } catch (Exception e)
         {
-            Log.d("Network access error", e.getMessage());
+            Log.e("Network access error", e.getMessage());
         }
         finally {
             stopSelf();
