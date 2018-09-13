@@ -2,6 +2,7 @@ package org.techtown.ideaconcert;
 
 import android.app.Application;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -173,6 +174,7 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         try {
+                            ShowProgressDialog.dismissProgressDialog();
                             JSONObject jsonResponse = new JSONObject(response);
                             boolean exist = jsonResponse.getBoolean("exist");
                             if (exist) {
@@ -230,7 +232,7 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(RegisterActivity.this, "Write your e-mail", Toast.LENGTH_SHORT).show();
                     emailText.requestFocus();
                     return;
-                } else if (!checkEmail(userEmail)) {
+                } else if (!ValidatePwdEmail.validateEmail(userEmail)) {
                     builder.setMessage("Email format is invalid").create().show();
                     emailText.requestFocus();
                 } else {
@@ -239,6 +241,7 @@ public class RegisterActivity extends AppCompatActivity {
                     idCheckAndRegister.doRegister(userId, userPassword, userName, userEmail);
                     RequestQueue requestQueue = Volley.newRequestQueue(RegisterActivity.this);
                     requestQueue.add(idCheckAndRegister);
+                    ShowProgressDialog.showProgressDialog(RegisterActivity.this);
                 }
             }
         });
@@ -249,6 +252,7 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         try {
+                            ShowProgressDialog.dismissProgressDialog();
                             JSONObject jsonResponse = new JSONObject(response);
                             boolean success = jsonResponse.getBoolean("success");
                             if (success) {
@@ -303,10 +307,9 @@ public class RegisterActivity extends AppCompatActivity {
                 idCheckAndRegister.sendUserCode(userEmail, userCode);
                 RequestQueue requestQueue = Volley.newRequestQueue(RegisterActivity.this);
                 requestQueue.add(idCheckAndRegister);
+                ShowProgressDialog.showProgressDialog(RegisterActivity.this);
             }
         });
-
-
     }
 
     public void dupCheck(View v) {
@@ -314,11 +317,12 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 try {
+                    ShowProgressDialog.dismissProgressDialog();
                     JSONObject jsonResponse = new JSONObject(response);
                     boolean exist = jsonResponse.getBoolean("exist");
                     if (exist) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                        builder.setMessage("이 아이디는 이미 사용중입니다. ").setCancelable(false)
+                        builder.setMessage("이 아이디는 이미 사용중입니다.").setCancelable(false)
                                 .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
@@ -341,6 +345,7 @@ public class RegisterActivity extends AppCompatActivity {
         idCheckAndRegister.checkUserID(userID);
         RequestQueue requestQueue = Volley.newRequestQueue(RegisterActivity.this);
         requestQueue.add(idCheckAndRegister);
+        ShowProgressDialog.showProgressDialog(this);
     }
 
     public void formAvailabilityTest() {
@@ -393,7 +398,6 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-
         passwd1 = passwordText.getText().toString();
         passwordConfirm.addTextChangedListener(new TextWatcher() {
 
@@ -423,21 +427,12 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    public static boolean checkEmail(String email) {
-        // 이메일 형식검사.
-        String regex = "^[_a-zA-Z0-9-\\.]+@[\\.a-zA-Z0-9-]+\\.[a-zA-Z]+$";
-        Pattern p = Pattern.compile(regex);
-        Matcher m = p.matcher(email);
-        boolean isNormal = m.matches();
-        return isNormal;
-    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Toast.makeText(this, "Destroy", Toast.LENGTH_SHORT).show();
-
         if (!isJoinBtnClicked) {
+            // 회원가입 버튼을 누르지 않고 Activity가 종료되면 임시저장하였던 사용자 정보를 삭제
             DeleteRequest deleteRequest = new DeleteRequest(deleteResponseListener, idText.getText().toString());
             RequestQueue requestQueue = Volley.newRequestQueue(RegisterActivity.this);
             requestQueue.add(deleteRequest);
