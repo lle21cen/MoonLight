@@ -11,4 +11,5 @@
     <string name="code">code</string>
     <string name="verified">verified</string>
     <string name="timer_format">%02d:%02d</string>
+    <string name="title_search">작가/작품명 검색</string>
 </resources>

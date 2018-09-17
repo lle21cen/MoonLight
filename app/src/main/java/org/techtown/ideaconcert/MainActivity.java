@@ -3,9 +3,13 @@ package org.techtown.ideaconcert;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
@@ -13,8 +17,10 @@ public class MainActivity extends AppCompatActivity {
 
     UserInformation info;
     final int LOGIN_REQ_CODE = 1001;
-    Button login_logout_btn;
+    ImageButton mypage_btn; // 타이틀바의 사람 모양 버튼
     boolean isLoginTurn = true;
+
+    ViewPager vp; // TEST
 
     private SharedPreferences loginData;
     @Override
@@ -23,18 +29,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         info = (UserInformation) getApplication();
-        login_logout_btn = findViewById(R.id.to_login_activity);
-        login_logout_btn.setOnClickListener(new View.OnClickListener() {
+
+        mypage_btn = findViewById(R.id.title_mypage_btn);
+        mypage_btn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 if (isLoginTurn) {
                     Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                     startActivityForResult(intent, LOGIN_REQ_CODE);
-                }
-                else {
+                } else {
                     isLoginTurn = true;
                     info.logoutSession();
-                    login_logout_btn.setText("로그인");
                 }
             }
         });
@@ -42,6 +47,14 @@ public class MainActivity extends AppCompatActivity {
         // 이미 저장된 사용자 로그인 정보가 있는지 확인
         loginData = getSharedPreferences("loginData", MODE_PRIVATE);
         loadPrevInfo();
+
+        // 광고 배너를 위한 viewpager 선언
+        vp = findViewById(R.id.main_pager);
+        vp.setAdapter(new pagerAdapter(getSupportFragmentManager()));
+        vp.setCurrentItem(0);
+
+        // 광고 배너에 넣을 이미지가 몇개인지 개수를 알아와서 그 개수로 초기화
+        BannerFragment.totalPageNum= 3;
     }
 
     @Override
@@ -51,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
             testInfo();
             if (resultCode == LOGIN_SUCCESS) {
                 isLoginTurn = false;
-                login_logout_btn.setText("로그아웃");
             }
             else if (resultCode == LOGIN_FAIL) {
                 Toast.makeText(this, "Login Fail", Toast.LENGTH_SHORT).show();
@@ -69,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
             info.setUserInformation(method, id, name, email, false);
             testInfo();
             isLoginTurn = false;
-            login_logout_btn.setText("로그아웃");
         }
     }
 
@@ -80,4 +91,25 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "Name = " + info.getUser_name(), Toast.LENGTH_SHORT).show();
         Toast.makeText(this, "Email = " + info.getUserEmail(), Toast.LENGTH_SHORT).show();
     }
+    private class pagerAdapter extends FragmentStatePagerAdapter
+    {
+        public pagerAdapter(FragmentManager fm)
+        {
+            super(fm);
+        }
+        @Override
+        public Fragment getItem(int position)
+        {
+            BannerFragment bannerFragment = new BannerFragment();
+            bannerFragment.setPageNumber(position);
+            return bannerFragment;
+        }
+        @Override
+        public int getCount()
+        {
+            // 데이터베이스에서 배너 광고 개수 가져와서 리턴하도록 수정해야 함
+            return 3;
+        }
+    }
+
 }
