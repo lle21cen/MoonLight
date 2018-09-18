@@ -6,17 +6,87 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <include layout="@layout/mainpage_custom_title_bar"
-        app:layout_constraintBottom_toTopOf="parent"
-        android:id="@+id/main_titlebar"/>
+    <include
+        android:id="@+id/main_titlebar"
+        layout="@layout/mainpage_custom_title_bar"
+        app:layout_constraintBottom_toTopOf="parent" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/main_pager"
-        app:layout_constraintTop_toBottomOf="@+id/main_titlebar"
         android:layout_width="match_parent"
+        android:layout_height="142dp"
         android:background="#ece6e6"
-        android:layout_height="142dp">
-    </android.support.v4.view.ViewPager>
+        app:layout_constraintTop_toBottomOf="@+id/main_titlebar" />
 
+    <HorizontalScrollView
+        android:id="@+id/main_category_scroll"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/main_open_category"
+        app:layout_constraintTop_toBottomOf="@+id/main_pager">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="인기"
+                android:textSize="15dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="연애"
+                android:textSize="15dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="학원"
+                android:textSize="15dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="무협"
+                android:textSize="15dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="액션"
+                android:textSize="15dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="코믹"
+                android:textSize="15dp" />
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <ImageButton
+        android:id="@+id/main_open_category"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginRight="2dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:baselineAlignBottom="true"
+        android:src="@drawable/ic_open_icon"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_pager" />
 
 </android.support.constraint.ConstraintLayout>
