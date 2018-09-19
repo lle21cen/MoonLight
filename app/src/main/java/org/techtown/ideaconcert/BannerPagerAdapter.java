@@ -35,8 +35,7 @@ public class BannerPagerAdapter extends PagerAdapter {
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, final int position) {
-        View view;
-        view = inflater.inflate(R.layout.banner_layout, null);
+        View view = inflater.inflate(R.layout.banner_layout, null);
         final ImageView bannerImg = view.findViewById(R.id.banner_img);
         final TextView indicator_red_txt = view.findViewById(R.id.banner_indi_red);
         final TextView indicator_white_txt = view.findViewById(R.id.banner_indi_white);

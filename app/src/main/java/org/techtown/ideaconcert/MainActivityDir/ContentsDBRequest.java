@@ -8,9 +8,8 @@ import java.util.Map;
 
 public class ContentsDBRequest extends StringRequest{
     private Map<String, String> parameters;
-    final static private String URL = "http://lle21cen.cafe24.com/GetCategoryContents.php";
 
-    public ContentsDBRequest(Response.Listener<String> listener) {
+    public ContentsDBRequest(Response.Listener<String> listener, String URL) {
         super(Method.POST, URL, listener, null);
         parameters = new HashMap<>();
     }

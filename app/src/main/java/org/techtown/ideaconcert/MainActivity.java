@@ -24,6 +24,8 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.techtown.ideaconcert.MainActivityDir.ArrivalContentsListener;
+import org.techtown.ideaconcert.MainActivityDir.CategoryContentsListener;
 import org.techtown.ideaconcert.MainActivityDir.ContentsDBRequest;
 import org.techtown.ideaconcert.MainActivityDir.GetBitmapImageFromURL;
 
@@ -31,6 +33,9 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+    final int CONTENTS_WIDTH = 200, CONTENTS_HEIGHT = 250; // 카테고리 컨텐츠와 큐레이션 컨텐츠의 가로, 세로 길이
+    final private String categoryContentsURL = "http://lle21cen.cafe24.com/GetCategoryContents.php";
+    final private String arrivalContentsURL = "http://lle21cen.cafe24.com/GetArrivalContents.php";
 
     UserInformation info; // 로그인 한 사용자의 정보를 저장. Application 수준에서 관리됨.
     ImageButton mypage_btn; // 타이틀바의 사람 모양 버튼
@@ -94,7 +99,15 @@ public class MainActivity extends AppCompatActivity {
         };
 
         // 카테고리별 콘텐츠 정보를 데이터베이스에서 얻어와서 scroll view에 설정
-        ContentsDBRequest contentsDBRequest = new ContentsDBRequest(categoryContentsListener);
+//        LinearLayout categoryContentsLayout = findViewById(R.id.main_category_layout);
+//        CategoryContentsListener categoryContentsListener = new CategoryContentsListener(categoryContentsLayout, this);
+        ContentsDBRequest contentsDBRequest = new ContentsDBRequest(CategoryContentsListener, categoryContentsURL);
+        requestQueue.add(contentsDBRequest);
+
+        // 신작 콘텐츠 정보를 데이터베이스에서 얻어와서 scroll view에 설정
+        LinearLayout contentsLayout = findViewById(R.id.main_arrival_layout);
+        ArrivalContentsListener arrivalContentsListener = new ArrivalContentsListener(contentsLayout, this);
+        contentsDBRequest = new ContentsDBRequest(arrivalContentsListener, arrivalContentsURL);
         requestQueue.add(contentsDBRequest);
         ShowProgressDialog.showProgressDialog(this);
     }
@@ -126,7 +139,6 @@ public class MainActivity extends AppCompatActivity {
                 JSONArray result = jsonResponse.getJSONArray("result");
                 boolean exist = jsonResponse.getBoolean("exist");
 
-
                 if (exist) {
                     num_banner_data = jsonResponse.getInt("num_result");
                     for (int i = 0; i < num_banner_data; i++) {
@@ -149,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
     // 카테고리 콘텐츠 데이터베이스에서 url과 정보를 가져와 처리하는 리스너
-    Response.Listener<String> categoryContentsListener = new Response.Listener<String>() {
+    Response.Listener<String> CategoryContentsListener = new Response.Listener<String>() {
         @Override
         public void onResponse(String response) {
             try {
@@ -161,8 +173,8 @@ public class MainActivity extends AppCompatActivity {
 
                 if (exist) {
                     LinearLayout contentsLayout = findViewById(R.id.main_contents_layout);
-                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    lp.setMargins(10,10,10,10);
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(CONTENTS_WIDTH, CONTENTS_HEIGHT);
+                    lp.setMargins(10, 10, 10, 10);
                     int num_category_contents_data = jsonResponse.getInt("num_result");
                     for (int i = 0; i < num_category_contents_data; i++) {
                         // 데이터베이스에 들어있는 콘텐츠의 수만큼 for문을 돌려 layout에 image추가
