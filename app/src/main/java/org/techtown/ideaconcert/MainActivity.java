@@ -3,14 +3,19 @@ package org.techtown.ideaconcert;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Layout;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -19,25 +24,25 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.techtown.ideaconcert.MainActivityDir.ContentsDBRequest;
+import org.techtown.ideaconcert.MainActivityDir.GetBitmapImageFromURL;
 
 import java.net.URL;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    final int LOGIN_SUCCESS = 100, LOGIN_FAIL = 99;
 
-    UserInformation info;
-    final int LOGIN_REQ_CODE = 1001;
+    UserInformation info; // 로그인 한 사용자의 정보를 저장. Application 수준에서 관리됨.
     ImageButton mypage_btn; // 타이틀바의 사람 모양 버튼
-    boolean isLoginTurn = true;
+    boolean isLoginTurn = true; // 로그인이 된 상태인지 안된 상태인지 판단. true일 경우 로그인이 안 된 상태
 
-    private SharedPreferences loginData;
-    private ArrayList<URL> urlArray;
+    private SharedPreferences loginData; // 사용자의 로그인 정보를 파일로 저장하여 로그인 상태를 유지함
 
-    private int num_banner_data;
-
-    private Handler bannerHandler;
-    ViewPager pager;
+    ViewPager pager; // 배너
+    private final int BANNER_FLIP_TIME = 5000; // 배너가 자동으로 넘어가는 시간 (1000 = 1초)
+    private ArrayList<URL> bannerUrlArray; // 배너 데이터베이스에 있는 URL을 저장하여 BannerPagerAdapter 클래스에서 사용
+    private int num_banner_data; // 배너 데이터베이스에 들어있는 데이터의 개수를 저장
+    private Handler bannerHandler; // 배너가 일정 시간 경과 시 자동으로 넘어가도록 만드는 핸들러
 
     @SuppressLint("HandlerLeak")
     @Override
@@ -46,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         info = (UserInformation) getApplication();
-        urlArray = new ArrayList<>();
+        bannerUrlArray = new ArrayList<>();
 
         mypage_btn = findViewById(R.id.title_mypage_btn);
         mypage_btn.setOnClickListener(new View.OnClickListener() {
@@ -54,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (isLoginTurn) {
                     Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                    startActivityForResult(intent, LOGIN_REQ_CODE);
+                    startActivityForResult(intent, ActivityCodes.LOGIN_REQUEST);
                 } else {
                     isLoginTurn = true;
                     info.logoutSession();
@@ -66,30 +71,32 @@ public class MainActivity extends AppCompatActivity {
         loginData = getSharedPreferences("loginData", MODE_PRIVATE);
         loadPrevInfo();
 
+        // 광고 배너 페이저 초기화
+        pager = findViewById(R.id.main_pager);
+
         // 광고 배너에 넣을 이미지가 몇개인지 개수를 알아와서 그 개수로 초기화
         BannerDBRequest bannerDBRequest = new BannerDBRequest(bannerListener);
         RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
         requestQueue.add(bannerDBRequest);
-        ShowProgressDialog.showProgressDialog(this);
-
-        // 광고 배너 페이저 초기화
-        pager = findViewById(R.id.main_pager);
 
         // 광고 배너 핸들러 => 자동으로 넘기는 기능을 담당
-         bannerHandler = new Handler() {
+        bannerHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 int cur = pager.getCurrentItem();
-                if (cur == num_banner_data-1) {
+                if (cur == num_banner_data - 1) {
                     pager.setCurrentItem(0);
-                }
-                else
-                {
-                    pager.setCurrentItem(cur+1);
+                } else {
+                    pager.setCurrentItem(cur + 1);
                 }
                 super.handleMessage(msg);
             }
         };
+
+        // 카테고리별 콘텐츠 정보를 데이터베이스에서 얻어와서 scroll view에 설정
+        ContentsDBRequest contentsDBRequest = new ContentsDBRequest(categoryContentsListener);
+        requestQueue.add(contentsDBRequest);
+        ShowProgressDialog.showProgressDialog(this);
     }
 
     // 광고 배너가 일정 주기로 자동으로 넘어가도록 하는 Thread
@@ -100,9 +107,9 @@ public class MainActivity extends AppCompatActivity {
             while (true) {
                 try {
                     // 5초에 한번 Handler에 신호를 보내 배너가 다음으로 넘어가도록 함.
-                    Thread.sleep(5000);
+                    Thread.sleep(BANNER_FLIP_TIME);
                     bannerHandler.sendEmptyMessage(0);
-                }catch (Exception e) {
+                } catch (Exception e) {
                     Log.e("thread", e.getMessage());
                 }
             }
@@ -114,7 +121,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onResponse(String response) {
             try {
-                ShowProgressDialog.dismissProgressDialog();
                 JSONObject jsonResponse = new JSONObject(response);
                 // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
                 JSONArray result = jsonResponse.getJSONArray("result");
@@ -123,19 +129,18 @@ public class MainActivity extends AppCompatActivity {
 
                 if (exist) {
                     num_banner_data = jsonResponse.getInt("num_result");
-                    for (int i=0; i<num_banner_data; i++) {
+                    for (int i = 0; i < num_banner_data; i++) {
                         // 데이터베이스에 들어있는 배너의 수만큼 for문을 돌려 url을 배열에 저장
                         JSONObject temp = result.getJSONObject(i);
-                        urlArray.add(new URL(temp.getString("url")));
+                        bannerUrlArray.add(new URL(temp.getString("url")));
                     }
 
                     // 광고 배너 ViewPager 관련 변수 선언, 초기화
-                    BannerPagerAdapter adapter = new BannerPagerAdapter(getLayoutInflater(), num_banner_data, urlArray);
+                    BannerPagerAdapter adapter = new BannerPagerAdapter(getLayoutInflater(), num_banner_data, bannerUrlArray);
                     pager.setAdapter(adapter);
                     bannerThread.start();
-                }
-                else {
-                    Log.e("No Banner","표시 할 배너가 없습니다.");
+                } else {
+                    Log.e("No Banner", "표시 할 배너가 없습니다.");
                 }
             } catch (Exception e) {
                 Log.e("bannerListener", e.getMessage());
@@ -143,21 +148,67 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    // 카테고리 콘텐츠 데이터베이스에서 url과 정보를 가져와 처리하는 리스너
+    Response.Listener<String> categoryContentsListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+                ShowProgressDialog.dismissProgressDialog();
+                JSONObject jsonResponse = new JSONObject(response);
+                // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
+                JSONArray result = jsonResponse.getJSONArray("result");
+                boolean exist = jsonResponse.getBoolean("exist");
+
+                if (exist) {
+                    LinearLayout contentsLayout = findViewById(R.id.main_contents_layout);
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    lp.setMargins(10,10,10,10);
+                    int num_category_contents_data = jsonResponse.getInt("num_result");
+                    for (int i = 0; i < num_category_contents_data; i++) {
+                        // 데이터베이스에 들어있는 콘텐츠의 수만큼 for문을 돌려 layout에 image추가
+                        try {
+                            JSONObject temp = result.getJSONObject(i);
+                            URL url = new URL(temp.getString("url"));
+
+                            GetBitmapImageFromURL getBitmapImageFromURL = new GetBitmapImageFromURL(url);
+                            getBitmapImageFromURL.start();
+                            getBitmapImageFromURL.join();
+                            Bitmap bitmap = getBitmapImageFromURL.getBitmap();
+
+                            ImageView contentsImg = new ImageView(MainActivity.this);
+                            contentsImg.setImageBitmap(bitmap);
+
+                            contentsImg.setLayoutParams(lp);
+                            contentsLayout.addView(contentsImg);
+//                            Log.e("size", "" + bitmap.getHeight() + ", " + bitmap.getWidth());
+                        } catch (Exception e) {
+                            Log.e("setBitmap error", e.getMessage());
+                        }
+                    }
+                } else {
+                    Log.e("No Banner", "표시 할 배너가 없습니다.");
+                }
+            } catch (Exception e) {
+                Log.e("contentsListener", e.getMessage());
+            }
+        }
+    };
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == LOGIN_REQ_CODE) {
+        if (requestCode == ActivityCodes.LOGIN_REQUEST) {
             testInfo();
-            if (resultCode == LOGIN_SUCCESS) {
+            if (resultCode == ActivityCodes.LOGIN_SUCCESS) {
                 isLoginTurn = false;
-            } else if (resultCode == LOGIN_FAIL) {
+            } else if (resultCode == ActivityCodes.LOGIN_FAIL) {
                 Toast.makeText(this, "Login Fail", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
     public void loadPrevInfo() {
-        // method, id, name, email
+        // 이전에 로그인 했던 사용자의 정보를 가져와 저장.
         String method = loginData.getString("loginMethod", null);
         String id = loginData.getString("userID", null);
         String name = loginData.getString("userName", null);

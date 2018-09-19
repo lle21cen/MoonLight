@@ -1,8 +1,6 @@
 package org.techtown.ideaconcert;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.util.Log;
@@ -12,9 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.InputStream;
-import java.lang.reflect.Array;
-import java.net.HttpURLConnection;
+import org.techtown.ideaconcert.MainActivityDir.GetBitmapImageFromURL;
+
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -23,7 +20,6 @@ public class BannerPagerAdapter extends PagerAdapter {
     LayoutInflater inflater;
     private int count;
     private ArrayList<URL> urls;
-    private Bitmap bitmap;
 
     public BannerPagerAdapter(LayoutInflater inflater, int count, ArrayList<URL> urls) {
         this.inflater = inflater;
@@ -44,27 +40,11 @@ public class BannerPagerAdapter extends PagerAdapter {
         final ImageView bannerImg = view.findViewById(R.id.banner_img);
         final TextView indicator_red_txt = view.findViewById(R.id.banner_indi_red);
         final TextView indicator_white_txt = view.findViewById(R.id.banner_indi_white);
-        Thread bannerThread = new Thread() {
-            // URL에서 이미지를 읽어와 ImageView에 적용하기 위한 Thread
-            // 서버에 연결하기 위해 Thread 사용
-            @Override
-            public void run() {
-                try {
-                    URL url = urls.get(position);
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setDoInput(true);
-                    conn.connect();
-
-                    InputStream is = conn.getInputStream();
-                    bitmap = BitmapFactory.decodeStream(is);
-                } catch (Exception e) {
-                    Log.e("bannerThread", e.getMessage());
-                }
-            }
-        };
+        GetBitmapImageFromURL bannerThread = new GetBitmapImageFromURL(urls.get(position));
         bannerThread.start();
         try {
             bannerThread.join();
+            Bitmap bitmap = bannerThread.getBitmap();
             bannerImg.setImageBitmap(bitmap);
 //            Log.e("size", ""+bitmap.getHeight()+", " +bitmap.getWidth());
             indicator_red_txt.setText(""+(position+1));
@@ -72,8 +52,6 @@ public class BannerPagerAdapter extends PagerAdapter {
         }catch (Exception e) {
             Log.e("setBitmap error", e.getMessage());
         }
-
-//        Log.e("instantiate", "" + position);
         container.addView(view);
         return view;
     }

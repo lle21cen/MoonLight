@@ -180,7 +180,8 @@ public class RegisterActivity extends AppCompatActivity {
                             if (exist) {
                                 builder.setMessage("This e-mail is already used. Please use another one.").create().show();
                             } else {
-                                builder.setMessage("We send a verification number to your e-mail.\nPlease submit the code in 5 minute").setCancelable(false).create().show();
+                                builder.setMessage("We send a verification number to your e-mail.\nPlease submit the code in 5 minute")
+                                        .setCancelable(false).create().show();
                                 submitChance = 5;
                                 countdown_txt.setVisibility(View.VISIBLE);
                                 countDownTimer.start();
@@ -263,14 +264,14 @@ public class RegisterActivity extends AppCompatActivity {
                                 Toast.makeText(RegisterActivity.this, "Confirm", Toast.LENGTH_SHORT).show();
                             } else {
                                 submitChance--;
-                                Toast.makeText(RegisterActivity.this, "Chance: " + submitChance + "/5", Toast.LENGTH_SHORT).show();
-                                if (submitChance == 0) {
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                                    builder.setMessage("Chance over. Retry?").setPositiveButton("RETRY", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            // 기존에 보냈던 사용자 데이터지우기
-                                            DeleteRequest deleteRequest = new DeleteRequest(deleteResponseListener, idText.getText().toString());
+                                            Toast.makeText(RegisterActivity.this, "Chance: " + submitChance + "/5", Toast.LENGTH_SHORT).show();
+                                            if (submitChance == 0) {
+                                                AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+                                                builder.setMessage("Chance over. Retry?").setPositiveButton("RETRY", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        // 기존에 보냈던 사용자 데이터지우기
+                                                        DeleteRequest deleteRequest = new DeleteRequest(deleteResponseListener, idText.getText().toString());
                                             RequestQueue requestQueue = Volley.newRequestQueue(RegisterActivity.this);
                                             requestQueue.add(deleteRequest);
                                             // 기본정보를 재입력 가능하게 하고 인증코드는 안보이게 함.
