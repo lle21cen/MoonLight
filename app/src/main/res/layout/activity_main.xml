@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivityDir.MainActivity">
 
     <include
         android:id="@+id/main_titlebar"
@@ -28,6 +28,7 @@
         app:layout_constraintTop_toBottomOf="@+id/main_pager">
 
         <TextView
+            android:id="@+id/main_pop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -35,6 +36,7 @@
             android:textSize="15dp" />
 
         <TextView
+            android:id="@+id/main_love"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -42,6 +44,7 @@
             android:textSize="15dp" />
 
         <TextView
+            android:id="@+id/main_edu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -49,6 +52,7 @@
             android:textSize="15dp" />
 
         <TextView
+            android:id="@+id/main_chivalry"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -56,6 +60,7 @@
             android:textSize="15dp" />
 
         <TextView
+            android:id="@+id/main_action"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -63,6 +68,7 @@
             android:textSize="15dp" />
 
         <TextView
+            android:id="@+id/main_comic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -71,7 +77,7 @@
 
     </LinearLayout>
 
-    <ImageButton
+    <Button
         android:id="@+id/main_open_category"
         android:layout_width="30dp"
         android:layout_height="30dp"
@@ -79,7 +85,7 @@
         android:layout_marginRight="2dp"
         android:layout_marginTop="5dp"
         android:baselineAlignBottom="true"
-        android:src="@drawable/ic_open_icon"
+        android:background="@drawable/ic_open_icon"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_pager" />
 

@@ -62,11 +62,11 @@
             android:layout_marginRight="5dp"
             android:background="@drawable/ic_money_icon" />
 
-        <ImageButton
+        <Button
             android:id="@+id/title_mypage_btn"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/ic_person_icon" />
+            android:background="@drawable/ic_person_icon" />
     </LinearLayout>
 
 </RelativeLayout>

@@ -1,21 +1,21 @@
-package org.techtown.ideaconcert;
+package org.techtown.ideaconcert.MainActivityDir;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Layout;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -24,21 +24,23 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.techtown.ideaconcert.MainActivityDir.ArrivalContentsListener;
-import org.techtown.ideaconcert.MainActivityDir.CategoryContentsListener;
-import org.techtown.ideaconcert.MainActivityDir.ContentsDBRequest;
-import org.techtown.ideaconcert.MainActivityDir.GetBitmapImageFromURL;
+import org.techtown.ideaconcert.ActivityCodes;
+import org.techtown.ideaconcert.ContentsMainDir.ContentsMainActivity;
+import org.techtown.ideaconcert.LoginActivity;
+import org.techtown.ideaconcert.R;
+import org.techtown.ideaconcert.ShowProgressDialog;
+import org.techtown.ideaconcert.UserInformation;
 
 import java.net.URL;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     final int CONTENTS_WIDTH = 200, CONTENTS_HEIGHT = 250; // 카테고리 컨텐츠와 큐레이션 컨텐츠의 가로, 세로 길이
     final private String categoryContentsURL = "http://lle21cen.cafe24.com/GetCategoryContents.php";
     final private String arrivalContentsURL = "http://lle21cen.cafe24.com/GetArrivalContents.php";
 
     UserInformation info; // 로그인 한 사용자의 정보를 저장. Application 수준에서 관리됨.
-    ImageButton mypage_btn; // 타이틀바의 사람 모양 버튼
+    Button mypage_btn, open_category_btn; // 타이틀바의 사람 모양 버튼
     boolean isLoginTurn = true; // 로그인이 된 상태인지 안된 상태인지 판단. true일 경우 로그인이 안 된 상태
 
     private SharedPreferences loginData; // 사용자의 로그인 정보를 파일로 저장하여 로그인 상태를 유지함
@@ -49,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
     private int num_banner_data; // 배너 데이터베이스에 들어있는 데이터의 개수를 저장
     private Handler bannerHandler; // 배너가 일정 시간 경과 시 자동으로 넘어가도록 만드는 핸들러
 
+    private TextView pop, love, edu, chivalry, action, comic;
+
     @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +61,23 @@ public class MainActivity extends AppCompatActivity {
 
         info = (UserInformation) getApplication();
         bannerUrlArray = new ArrayList<>();
+
+        open_category_btn = findViewById(R.id.main_open_category);
+        open_category_btn.setOnClickListener(this); // 카테고리 펼처보기 버튼 setOnClickListener 설정
+
+        pop = findViewById(R.id.main_pop);
+        love = findViewById(R.id.main_love);
+        edu = findViewById(R.id.main_edu);
+        chivalry = findViewById(R.id.main_chivalry);
+        action = findViewById(R.id.main_action);
+        comic = findViewById(R.id.main_comic);
+
+        pop.setOnClickListener(this);
+        love.setOnClickListener(this);
+        edu.setOnClickListener(this);
+        chivalry.setOnClickListener(this);
+        action.setOnClickListener(this);
+        comic.setOnClickListener(this);
 
         mypage_btn = findViewById(R.id.title_mypage_btn);
         mypage_btn.setOnClickListener(new View.OnClickListener() {
@@ -100,7 +121,6 @@ public class MainActivity extends AppCompatActivity {
 
         // 카테고리별 콘텐츠 정보를 데이터베이스에서 얻어와서 scroll view에 설정
 //        LinearLayout categoryContentsLayout = findViewById(R.id.main_category_layout);
-//        CategoryContentsListener categoryContentsListener = new CategoryContentsListener(categoryContentsLayout, this);
         ContentsDBRequest contentsDBRequest = new ContentsDBRequest(CategoryContentsListener, categoryContentsURL);
         requestQueue.add(contentsDBRequest);
 
@@ -189,6 +209,7 @@ public class MainActivity extends AppCompatActivity {
 
                             ImageView contentsImg = new ImageView(MainActivity.this);
                             contentsImg.setImageBitmap(bitmap);
+//                            contentsImg.setOnClickListener(MainActivity.this); // onClick 리스너 달기
 
                             contentsImg.setLayoutParams(lp);
                             contentsLayout.addView(contentsImg);
@@ -237,5 +258,48 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "ID = " + info.getUser_id(), Toast.LENGTH_SHORT).show();
         Toast.makeText(this, "Name = " + info.getUser_name(), Toast.LENGTH_SHORT).show();
         Toast.makeText(this, "Email = " + info.getUserEmail(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onClick(View view) {
+
+        //--------------------------------------------- 카테고리 텍스트 선택시 색상 변경 -------------------------------------------------- //
+        pop.setTextColor(Color.parseColor("#000000"));
+        love.setTextColor(Color.parseColor("#000000"));
+        edu.setTextColor(Color.parseColor("#000000"));
+        chivalry.setTextColor(Color.parseColor("#000000"));
+        action.setTextColor(Color.parseColor("#000000"));
+        comic.setTextColor(Color.parseColor("#000000"));
+
+        switch (view.getId())
+        {
+            case R.id.main_pop :
+                pop.setTextColor(Color.parseColor("#ff0000"));
+                break;
+
+            case R.id.main_love :
+                love.setTextColor(Color.parseColor("#ff0000"));
+                break;
+
+            case R.id.main_edu :
+                edu.setTextColor(Color.parseColor("#ff0000"));
+                break;
+
+            case R.id.main_chivalry :
+                chivalry.setTextColor(Color.parseColor("#ff0000"));
+                break;
+
+            case R.id.main_action :
+                action.setTextColor(Color.parseColor("#ff0000"));
+                break;
+
+            case R.id.main_comic :
+                comic.setTextColor(Color.parseColor("#ff0000"));
+                break;
+            // ------------------------------------------------------------------------------------------------------------- //
+            case R.id.main_open_category :
+                startActivity(new Intent(MainActivity.this, ContentsMainActivity.class));
+                break;
+        }
     }
 }

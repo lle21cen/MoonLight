@@ -1,4 +1,4 @@
-package org.techtown.ideaconcert.MainActivityDir;
+package org.techtown.ideaconcert.ContentsMainDir;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -10,17 +10,18 @@ import com.android.volley.Response;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.techtown.ideaconcert.MainActivityDir.GetBitmapImageFromURL;
 import org.techtown.ideaconcert.ShowProgressDialog;
 
 import java.net.URL;
 
 // 카테고리 콘텐츠 리스너 -> 오류 상태. 사용 불가
-public class CategoryContentsListener implements Response.Listener<String> {
-    final int CONTENTS_WIDTH = 200, CONTENTS_HEIGHT = 250; // 카테고리  컨텐츠의 가로, 세로 길이
+public class WorksListener implements Response.Listener<String> {
+    final int CONTENTS_WIDTH = 120, CONTENTS_HEIGHT = 120; // 가로, 세로 길이
     LinearLayout contentsLayout;
     Context context;
 
-    public CategoryContentsListener(LinearLayout layout, Context context) {
+    public WorksListener(LinearLayout layout, Context context) {
         contentsLayout = layout;
         this.context = context;
     }

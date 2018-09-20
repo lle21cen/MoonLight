@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="sort_method">
+        <item>최신편부터</item>
+        <item>첫편부터</item>
+    </string-array>
+</resources>

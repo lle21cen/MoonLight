@@ -7,14 +7,14 @@ import android.content.Context;
 public class ShowProgressDialog {
     static ProgressDialog dialog;
 
-    static void showProgressDialog(Context context) {
+    public static void showProgressDialog(Context context) {
         dialog = new ProgressDialog(context);
         dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         dialog.setMessage("Checking...");
         dialog.show();
     }
 
-    static void dismissProgressDialog() {
+    public static void dismissProgressDialog() {
         if (dialog.isShowing())
             dialog.dismiss();
     }

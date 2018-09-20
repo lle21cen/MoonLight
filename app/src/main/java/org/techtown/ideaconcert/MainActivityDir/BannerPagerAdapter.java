@@ -1,4 +1,4 @@
-package org.techtown.ideaconcert;
+package org.techtown.ideaconcert.MainActivityDir;
 
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.techtown.ideaconcert.MainActivityDir.GetBitmapImageFromURL;
+import org.techtown.ideaconcert.R;
 
 import java.net.URL;
 import java.util.ArrayList;
