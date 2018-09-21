@@ -7,11 +7,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import org.techtown.ideaconcert.MainActivityDir.ArrivalContentsListener;
+import org.techtown.ideaconcert.MainActivityDir.ContentsDBRequest;
 import org.techtown.ideaconcert.R;
+import org.techtown.ideaconcert.ShowProgressDialog;
 
 public class ContentsMainActivity extends AppCompatActivity {
 
@@ -25,11 +29,12 @@ public class ContentsMainActivity extends AppCompatActivity {
 
         Spinner sortSpinner = findViewById(R.id.contents_main_list_sort);
 
-        adapter.addItem(getResources().getDrawable(R.drawable.ic_brush_black_24dp), "dummy", "13125");
-        adapter.addItem(getResources().getDrawable(R.drawable.ic_toon_icon), "dummy2", "12334");
-        adapter.addItem(getResources().getDrawable(R.drawable.ic_movie_icon), "dummy3", "1312523");
-
-        listView.setAdapter(adapter);
+//        LinearLayout contentsLayout = findViewById(R.id.main_arrival_layout);
+//        ArrivalContentsListener arrivalContentsListener = new ArrivalContentsListener(contentsLayout, this);
+//        WorksDBRequest worksDBRequest = new ContentsDBRequest(arrivalContentsListener);
+//        requestQueue.add(contentsDBRequest);
+//        ShowProgressDialog.showProgressDialog(this);
+//        listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -38,15 +43,16 @@ public class ContentsMainActivity extends AppCompatActivity {
                 WorksListViewItem item = (WorksListViewItem) parent.getItemAtPosition(position);
 
                 String titleStr = item.getWorksTitle();
-                String descStr = item.getTempStr();
-                Drawable iconDrawable = item.getWorksDrawable();
+                String watchNumStr = item.getWatchNum();
+                Drawable worksDrawable = item.getWorksDrawable();
+
+
             }
         });
 
         sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-                Toast.makeText(ContentsMainActivity.this, "id= "+id + " position = " + position, Toast.LENGTH_SHORT).show();
             }
 
             @Override

@@ -8,10 +8,10 @@ import java.util.Map;
 
 public class WorksDBRequest extends StringRequest {
     private Map<String, String> parameters;
-    static final String getBannerInfoURL = "http://lle21cen.cafe24.com/GetBannerInfo.php";
+    static final String getWorksInfoURL = "http://lle21cen.cafe24.com/GetCategoryContents.php";
 
     public WorksDBRequest(Response.Listener<String> listener) {
-        super(Method.POST, getBannerInfoURL, listener, null);
+        super(Method.POST, getWorksInfoURL, listener, null);
         parameters = new HashMap<>();
     }
 

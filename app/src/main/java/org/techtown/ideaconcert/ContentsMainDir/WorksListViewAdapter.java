@@ -46,24 +46,30 @@ public class WorksListViewAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.contents_main_works_list_items, parent, false);
         }
 
-        ImageView worksImageView = convertView.findViewById(R.id.imageView1);
-        TextView titleView = convertView.findViewById(R.id.textView1);
-        TextView tempView = convertView.findViewById(R.id.textView2);
+        ImageView worksImageView = convertView.findViewById(R.id.contents_main_item_image);
+        TextView titleView = convertView.findViewById(R.id.contents_main_item_title);
+        TextView watchView = convertView.findViewById(R.id.contents_main_item_watch);
+        TextView ratingView = convertView.findViewById(R.id.contents_main_item_rating);
+        TextView commentsNumView = convertView.findViewById(R.id.contents_main_item_comments_num);
 
         WorksListViewItem listViewItem = worksListViewItems.get(position);
 
         worksImageView.setImageDrawable(listViewItem.getWorksDrawable());
         titleView.setText(listViewItem.getWorksTitle());
-        tempView.setText(listViewItem.getTempStr());
+        watchView.setText(listViewItem.getWatchNum());
+        ratingView.setText(listViewItem.getRating());
+        commentsNumView.setText(listViewItem.getComments());
 
         return convertView;
     }
 
-    public void addItem(Drawable icon, String title, String desc) {
+    public void addItem(Drawable icon, String title, String watch, String rating, String comments) {
         WorksListViewItem item = new WorksListViewItem();
         item.setWorksDrawable(icon);
         item.setWorksTitle(title);
-        item.setTempStr(desc);
+        item.setWatchNum(watch);
+        item.setRating(rating);
+        item.setComments(comments);
 
         worksListViewItems.add(item);
     }

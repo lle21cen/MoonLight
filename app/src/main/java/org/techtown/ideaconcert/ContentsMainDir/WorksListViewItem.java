@@ -5,7 +5,9 @@ import android.graphics.drawable.Drawable;
 public class WorksListViewItem {
     private Drawable worksDrawable;
     private String worksTitle;
-    private String tempStr;
+    private String watchNum;
+    private String rating;
+    private String comments;
 
     public Drawable getWorksDrawable() {
         return worksDrawable;
@@ -23,11 +25,27 @@ public class WorksListViewItem {
         this.worksTitle = worksTitle;
     }
 
-    public String getTempStr() {
-        return tempStr;
+    public String getWatchNum() {
+        return watchNum;
     }
 
-    public void setTempStr(String tempStr) {
-        this.tempStr = tempStr;
+    public void setWatchNum(String watchNum) {
+        this.watchNum = watchNum;
+    }
+
+    public String getRating() {
+        return rating;
+    }
+
+    public void setRating(String rating) {
+        this.rating = rating;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 }
