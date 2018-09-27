@@ -1,20 +1,20 @@
 package org.techtown.ideaconcert.ContentsMainDir;
 
-import android.graphics.drawable.Drawable;
+import android.graphics.Bitmap;
 
 public class WorksListViewItem {
-    private Drawable worksDrawable;
+    private Bitmap worksBitmap;
     private String worksTitle;
     private String watchNum;
     private String rating;
     private String comments;
 
-    public Drawable getWorksDrawable() {
-        return worksDrawable;
+    public Bitmap getWorksBitmap() {
+        return worksBitmap;
     }
 
-    public void setWorksDrawable(Drawable worksDrawable) {
-        this.worksDrawable = worksDrawable;
+    public void setWorksBitmap(Bitmap worksBitmap) {
+        this.worksBitmap = worksBitmap;
     }
 
     public String getWorksTitle() {

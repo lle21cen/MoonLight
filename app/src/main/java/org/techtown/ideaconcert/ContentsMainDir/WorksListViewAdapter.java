@@ -1,11 +1,13 @@
 package org.techtown.ideaconcert.ContentsMainDir;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
+import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,11 +18,7 @@ import java.util.ArrayList;
 
 public class WorksListViewAdapter extends BaseAdapter {
 
-    private ArrayList<WorksListViewItem> worksListViewItems;
-
-    public WorksListViewAdapter() {
-        worksListViewItems = new ArrayList<>();
-    }
+    private ArrayList<WorksListViewItem> worksListViewItems = new ArrayList<>();
 
     @Override
     public int getCount() {
@@ -37,8 +35,9 @@ public class WorksListViewAdapter extends BaseAdapter {
         return i;
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         final Context context = parent.getContext();
 
         if (convertView == null) {
@@ -54,19 +53,20 @@ public class WorksListViewAdapter extends BaseAdapter {
 
         WorksListViewItem listViewItem = worksListViewItems.get(position);
 
-        worksImageView.setImageDrawable(listViewItem.getWorksDrawable());
+        worksImageView.setImageBitmap(listViewItem.getWorksBitmap());
         titleView.setText(listViewItem.getWorksTitle());
         watchView.setText(listViewItem.getWatchNum());
         ratingView.setText(listViewItem.getRating());
         commentsNumView.setText(listViewItem.getComments());
 
+        // 위젯에 대한 이벤트 리스너 작성
         return convertView;
     }
 
-    public void addItem(Drawable icon, String title, String watch, String rating, String comments) {
+    public void addItem(String title, Bitmap icon, String watch, String rating, String comments) {
         WorksListViewItem item = new WorksListViewItem();
-        item.setWorksDrawable(icon);
         item.setWorksTitle(title);
+        item.setWorksBitmap(icon);
         item.setWatchNum(watch);
         item.setRating(rating);
         item.setComments(comments);

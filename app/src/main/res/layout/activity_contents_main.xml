@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,40 +9,41 @@
     <include
         android:id="@+id/contents_main_title_bar"
         layout="@layout/contents_main_custom_title_bar"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true" />
 
     <include
         android:id="@+id/contents_main_info"
         layout="@layout/contents_main_contents_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/contents_main_title_bar" />
+        android:layout_below="@id/contents_main_title_bar" />
 
     <TextView
         android:id="@+id/contents_main_summary"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:layout_below="@id/contents_main_info"
         android:ellipsize="end"
         android:maxLines="3"
         android:text="사파무림의 최강자로 군림하고 있는 천잔왕 구휘가 어느 날, 새파랗게 젊은 현상금 사냥꾼 용비라는 자에게 체포되어 관청에 넘겨지는 믿지 못한 사건이 일어난다. 용비는 무림인 들에겐 전혀 상대가 되지 못하는데 다음 쓸말이 없다."
-        android:textSize="14.74dp"
-        app:layout_constraintTop_toBottomOf="@id/contents_main_info" />
+        android:textSize="14.74dp" />
 
     <Button
         android:id="@+id/contents_main_open_summary_btn"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:background="@drawable/ic_keyboard_arrow_down_black_24dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/contents_main_summary" />
+        android:layout_below="@id/contents_main_summary"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/ic_keyboard_arrow_down_black_24dp" />
 
     <LinearLayout
         android:id="@+id/contents_main_2btn_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/contents_main_open_summary_btn">
+        android:layout_below="@id/contents_main_open_summary_btn"
+        android:orientation="horizontal">
 
         <Button
             android:layout_width="wrap_content"
@@ -63,12 +63,13 @@
         layout="@layout/contents_main_usage_status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/contents_main_2btn_layout"/>
+        android:layout_below="@+id/contents_main_2btn_layout" />
 
     <include
         android:id="@+id/contents_main_works_list"
         layout="@layout/contents_main_works_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/contents_main_usage"/>
-</android.support.constraint.ConstraintLayout>
+        android:layout_below="@+id/contents_main_usage" />
+
+</RelativeLayout>
