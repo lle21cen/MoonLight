@@ -15,19 +15,18 @@ public class GetBitmapImageFromURL extends Thread {
     public GetBitmapImageFromURL(URL url) {
         this.url = url;
     }
+
     @Override
     public void run() {
-        {
-            try {
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setDoInput(true);
-                conn.connect();
+        try {
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setDoInput(true);
+            conn.connect();
 
-                InputStream is = conn.getInputStream();
-                bitmap = BitmapFactory.decodeStream(is);
-            } catch (Exception e) {
-                Log.e("bannerThread", e.getMessage());
-            }
+            InputStream is = conn.getInputStream();
+            bitmap = BitmapFactory.decodeStream(is);
+        } catch (Exception e) {
+            Log.e("bannerThread", e.getMessage());
         }
         super.run();
     }

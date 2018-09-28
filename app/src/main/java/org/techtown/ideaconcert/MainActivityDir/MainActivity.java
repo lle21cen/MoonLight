@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 광고 배너에 넣을 이미지가 몇개인지 개수를 알아와서 그 개수로 초기화
         BannerDBRequest bannerDBRequest = new BannerDBRequest(bannerListener);
         RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
-        requestQueue.add(bannerDBRequest);
+//        requestQueue.add(bannerDBRequest);
 
         // 광고 배너 핸들러 => 자동으로 넘기는 기능을 담당
         bannerHandler = new Handler() {

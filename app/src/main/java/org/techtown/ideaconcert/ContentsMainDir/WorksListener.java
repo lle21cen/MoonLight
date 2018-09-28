@@ -1,13 +1,9 @@
 package org.techtown.ideaconcert.ContentsMainDir;
 
-import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.os.Message;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -16,8 +12,6 @@ import com.android.volley.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.techtown.ideaconcert.MainActivityDir.GetBitmapImageFromURL;
-import org.techtown.ideaconcert.ShowProgressDialog;
-import org.w3c.dom.Text;
 
 import java.net.URL;
 
@@ -97,15 +91,20 @@ public class WorksListener implements Response.Listener<String> {
                             GetBitmapImageFromURL getBitmapImageFromURL = new GetBitmapImageFromURL(url);
                             getBitmapImageFromURL.start();
                             getBitmapImageFromURL.join();
+
                             Bitmap bitmap = getBitmapImageFromURL.getBitmap();
 
                             adapter.addItem(title, bitmap, watch_num, rating, comments_num);
-                            Log.e("workslistener", "count="+adapter.getCount());
                         } catch (Exception e) {
                             Log.e("set item error", e.getMessage());
                         }
                     }
                     listView.setAdapter(adapter);
+
+                    // 전체 작품 수와 열람 작품 수, 캐시 보유량 textview를 설정.
+                    Message m = new Message();
+                    m.setData(new Bundle());
+                    ContentsMainActivity.totalText.setText(""+num_category_contents_data);
                 } else {
                     Log.e("No Data", "데이터가 없습니다.");
                 }

@@ -55,7 +55,8 @@
             android:stopWithTask="false" />
 
         <activity android:name=".FindIDPasswordActivity" />
-        <activity android:name=".ContentsMainDir.ContentsMainActivity"></activity>
+        <activity android:name=".ContentsMainDir.ContentsMainActivity" />
+        <activity android:name=".WebtoonDir.WebtoonActivity"></activity>
     </application>
 
 </manifest>
