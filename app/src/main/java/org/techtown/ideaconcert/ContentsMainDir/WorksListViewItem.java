@@ -3,11 +3,20 @@ package org.techtown.ideaconcert.ContentsMainDir;
 import android.graphics.Bitmap;
 
 public class WorksListViewItem {
+    private int contentsNum;
     private Bitmap worksBitmap;
     private String worksTitle;
     private String watchNum;
     private String rating;
     private String comments;
+
+    public int getContentsNum() {
+        return contentsNum;
+    }
+
+    public void setContentsNum(int contentsNum) {
+        this.contentsNum = contentsNum;
+    }
 
     public Bitmap getWorksBitmap() {
         return worksBitmap;

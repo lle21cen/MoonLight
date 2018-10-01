@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.techtown.ideaconcert.R;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -63,8 +62,9 @@ public class WorksListViewAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void addItem(String title, Bitmap icon, String watch, String rating, String comments) {
+    public void addItem(int contents_num, String title, Bitmap icon, String watch, String rating, String comments) {
         WorksListViewItem item = new WorksListViewItem();
+        item.setContentsNum(contents_num);
         item.setWorksTitle(title);
         item.setWorksBitmap(icon);
         item.setWatchNum(watch);

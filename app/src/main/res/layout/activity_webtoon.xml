@@ -1,15 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/webtoon_parent_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".WebtoonDir.WebtoonActivity">
+
+    <ScrollView
+        android:id="@+id/webtoon_scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/main_webtoon_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+        </LinearLayout>
+
+    </ScrollView>
 
     <LinearLayout
         android:id="@+id/webtoon_header_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="top"
+        android:layout_alignParentTop="true"
         android:background="#a0000000"
         android:gravity="center"
         android:orientation="horizontal"
@@ -60,7 +75,7 @@
         android:id="@+id/webtoon_footer_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
+        android:layout_alignParentBottom="true"
         android:background="#a0000000"
         android:orientation="horizontal"
         android:visibility="visible">
@@ -161,17 +176,4 @@
         </LinearLayout>
     </LinearLayout>
 
-    <ScrollView
-        android:id="@+id/webtoon_scrollview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:id="@+id/webtoon_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
-
-    </ScrollView>
-
-</FrameLayout>
+</RelativeLayout>
