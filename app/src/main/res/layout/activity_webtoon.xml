@@ -37,6 +37,7 @@
             android:background="@drawable/ic_navigate_before_white_24dp" />
 
         <TextView
+            android:id="@+id/webtoon_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="용비불패 13화"
@@ -48,13 +49,15 @@
             android:layout_weight="1" />
 
         <ImageView
+            android:id="@+id/webtoon_star"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="end|center_vertical"
             android:layout_margin="5dp"
-            android:src="@drawable/ic_star_yellow_24dp" />
+            android:background="@drawable/ic_star_yellow_24dp" />
 
         <TextView
+            android:id="@+id/webtoon_star_rating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
@@ -95,7 +98,7 @@
                 android:background="@drawable/ic_favorite_red_24dp" />
 
             <TextView
-                android:id="@+id/webtoon_like_num"
+                android:id="@+id/webtoon_like_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -118,7 +121,7 @@
                 android:background="@drawable/ic_comment_white_24dp" />
 
             <TextView
-                android:id="@+id/webtoon_comments_num"
+                android:id="@+id/webtoon_comments_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

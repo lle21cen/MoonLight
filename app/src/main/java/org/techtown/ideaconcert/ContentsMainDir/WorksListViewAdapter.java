@@ -44,32 +44,33 @@ public class WorksListViewAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.contents_main_works_list_items, parent, false);
         }
 
-        ImageView worksImageView = convertView.findViewById(R.id.contents_main_item_image);
+        final ImageView worksImageView = convertView.findViewById(R.id.contents_main_item_image);
         TextView titleView = convertView.findViewById(R.id.contents_main_item_title);
         TextView watchView = convertView.findViewById(R.id.contents_main_item_watch);
         TextView ratingView = convertView.findViewById(R.id.contents_main_item_rating);
         TextView commentsNumView = convertView.findViewById(R.id.contents_main_item_comments_num);
 
-        WorksListViewItem listViewItem = worksListViewItems.get(position);
+        final WorksListViewItem listViewItem = worksListViewItems.get(position);
 
-        worksImageView.setImageBitmap(listViewItem.getWorksBitmap());
-        titleView.setText(listViewItem.getWorksTitle());
+        worksImageView.setImageBitmap(listViewItem.getBitmp());
+        titleView.setText(listViewItem.getWorksTitle() + " " + listViewItem.getContentsNum() + "화");
         watchView.setText(listViewItem.getWatchNum());
         ratingView.setText(listViewItem.getRating());
-        commentsNumView.setText(listViewItem.getComments());
+        commentsNumView.setText("" + listViewItem.getCommentCount());
 
         // 위젯에 대한 이벤트 리스너 작성
         return convertView;
     }
 
-    public void addItem(int contents_num, String title, Bitmap icon, String watch, String rating, String comments) {
+    public void addItem(int contents_pk, int contents_num, String title, Bitmap bitmap, String watch, String rating, int comments) {
         WorksListViewItem item = new WorksListViewItem();
+        item.setContentsItemPk(contents_pk);
         item.setContentsNum(contents_num);
         item.setWorksTitle(title);
-        item.setWorksBitmap(icon);
+        item.setBitmp(bitmap);
         item.setWatchNum(watch);
         item.setRating(rating);
-        item.setComments(comments);
+        item.setCommentCount(comments);
 
         worksListViewItems.add(item);
     }
