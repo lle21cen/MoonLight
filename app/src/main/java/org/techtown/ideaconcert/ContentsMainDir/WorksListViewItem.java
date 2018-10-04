@@ -2,15 +2,13 @@ package org.techtown.ideaconcert.ContentsMainDir;
 
 import android.graphics.Bitmap;
 
-import java.io.Serializable;
-
-public class WorksListViewItem implements Serializable {
+public class WorksListViewItem {
     private int contentsItemPk, contentsNum, commentCount;
-//    private URL imageURL;
     private Bitmap bitmp; // 오타 - 수정귀찮
     private String worksTitle;
     private String watchNum;
-    private String rating;
+    private double star_rating;
+
 
     public Bitmap getBitmp() {
         return bitmp;
@@ -44,12 +42,12 @@ public class WorksListViewItem implements Serializable {
         this.watchNum = watchNum;
     }
 
-    public String getRating() {
-        return rating;
+    public double getStar_rating() {
+        return star_rating;
     }
 
-    public void setRating(String rating) {
-        this.rating = rating;
+    public void setStar_rating(double star_rating) {
+        this.star_rating = star_rating;
     }
 
     public int getCommentCount() {

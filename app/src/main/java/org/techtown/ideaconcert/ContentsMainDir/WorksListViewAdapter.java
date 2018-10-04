@@ -55,21 +55,21 @@ public class WorksListViewAdapter extends BaseAdapter {
         worksImageView.setImageBitmap(listViewItem.getBitmp());
         titleView.setText(listViewItem.getWorksTitle() + " " + listViewItem.getContentsNum() + "화");
         watchView.setText(listViewItem.getWatchNum());
-        ratingView.setText(listViewItem.getRating());
+        ratingView.setText(""+listViewItem.getStar_rating());
         commentsNumView.setText("" + listViewItem.getCommentCount());
 
         // 위젯에 대한 이벤트 리스너 작성
         return convertView;
     }
 
-    public void addItem(int contents_pk, int contents_num, String title, Bitmap bitmap, String watch, String rating, int comments) {
+    public void addItem(int contents_pk, int contents_num, String title, Bitmap bitmap, String watch, double star_rating, int comments) {
         WorksListViewItem item = new WorksListViewItem();
         item.setContentsItemPk(contents_pk);
         item.setContentsNum(contents_num);
         item.setWorksTitle(title);
         item.setBitmp(bitmap);
         item.setWatchNum(watch);
-        item.setRating(rating);
+        item.setStar_rating(star_rating);
         item.setCommentCount(comments);
 
         worksListViewItems.add(item);

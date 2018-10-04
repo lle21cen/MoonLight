@@ -15,15 +15,24 @@
             android:id="@+id/main_webtoon_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-        </LinearLayout>
+            android:orientation="vertical" />
 
     </ScrollView>
+
+    <include
+        android:id="@+id/webtoon_option_layout"
+        layout="@layout/webtoon_option_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/webtoon_header_layout"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="10dp"
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/webtoon_header_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_alignParentTop="true"
         android:background="#a0000000"
         android:gravity="center"
@@ -73,11 +82,10 @@
             android:background="@drawable/ic_open_white_icon" />
     </LinearLayout>
 
-
     <LinearLayout
         android:id="@+id/webtoon_footer_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:background="#a0000000"
         android:orientation="horizontal"
@@ -161,6 +169,7 @@
                 android:gravity="center"
                 android:text="12"
                 android:textColor="#ffffff" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -178,5 +187,13 @@
                 android:background="@drawable/ic_keyboard_arrow_right_white_24dp" />
         </LinearLayout>
     </LinearLayout>
+
+    <include
+        android:id="@+id/webtoon_contents_num_list_layout"
+        layout="@layout/webtoon_contents_num_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -40,6 +39,8 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
     private TextView totalText, readingText, cashText;
     private WorksListViewAdapter adapter;
     private Spinner sortSpinner;
+
+    public static ArrayList<WorksListViewItem> itemList; // WebtonActivity에서도 사용하기 위해 public static으로 선언
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,14 +87,15 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
                 ArrayList<WorksListViewItem> items = adapter.getWorksListViewItems();
                 Toast.makeText(ContentsMainActivity.this, "PK=:" + items.get(position).getContentsItemPk(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(ContentsMainActivity.this, WebtoonActivity.class);
-                putExtraDate(intent, position);
+                putExtraData(intent, position);
                 startActivityForResult(intent, ActivityCodes.WEBTTON_REQUEST);
             }
         });
     }
 
     Response.Listener<String> worksListener = new Response.Listener<String>() {
-        private String title, watch_num, star_rating;
+        private String title, watch_num;
+        private double star_rating;
         private int contents_item_pk, contents_num, comments_count;
         private URL url;
 
@@ -113,10 +115,10 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
                             JSONObject temp = result.getJSONObject(i);
                             contents_item_pk = temp.getInt("contents_item_pk");
                             contents_num = temp.getInt("contents_num");
-                            title = temp.getString("name");
+                            title = temp.getString("contents_name");
                             url = new URL(temp.getString("url"));
-                            watch_num = temp.getString("watch");
-                            star_rating = temp.getString("star_rating");
+                            watch_num = temp.getString("view_count");
+                            star_rating = temp.getDouble("star_rating");
                             comments_count = temp.getInt("comments_count");
 
                             GetBitmapImageFromURL getBitmapImageFromURL = new GetBitmapImageFromURL(url);
@@ -160,15 +162,15 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
                 else
                     position = 0;
                 Intent intent = new Intent(ContentsMainActivity.this, WebtoonActivity.class);
-                putExtraDate(intent, position);
+                putExtraData(intent, position);
                 startActivityForResult(intent, ActivityCodes.WEBTTON_REQUEST);
                 break;
         }
     }
 
-    public void putExtraDate(Intent intent, int position)
+    public void putExtraData(Intent intent, int position)
     {
+        itemList = adapter.getWorksListViewItems();
         intent.putExtra("position", position);
-        intent.putExtra("items", adapter.getWorksListViewItems());
     }
 }

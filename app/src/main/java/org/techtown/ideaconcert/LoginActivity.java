@@ -77,14 +77,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        final Button toRegistActivity = findViewById(R.id.btn_regist);
+        final TextView toRegistActivity = findViewById(R.id.login_regist_btn);
         toRegistActivity.setOnClickListener(this);
 
         // 인터넷 연결 상태 확인하는 코드 추가하기.
 
         // --------------------------------------------------------------------------
         //                               find id or password
-        btn_find = findViewById(R.id.find);
+        btn_find = findViewById(R.id.login_find_btn);
         btn_find.setOnClickListener(this);
 
         // --------------------------------------------------------------------------
@@ -96,7 +96,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         //                               DATABASE LOGIN
         edit_userID = findViewById(R.id.login_user_id);
         edit_userPass = findViewById(R.id.login_user_pass);
-        btn_login = findViewById(R.id.btn_login);
+        btn_login = findViewById(R.id.login_btn);
 
         // --------------------------------------------------------------------------
         //                               FACEBOOK LOGIN
@@ -113,7 +113,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             finish();
         }
         // Button management
-        Button btn_login = (Button) findViewById(R.id.btn_login);
+        Button btn_login = (Button) findViewById(R.id.login_btn);
         btn_login.setOnClickListener(this);
 
         callbackManager = CallbackManager.Factory.create();
@@ -246,7 +246,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_login:
+            case R.id.login_btn:
                 Response.Listener<String> responseListener = new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -285,11 +285,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
                 startActivityForResult(signInIntent, GOOGLE_SIGN_IN);
                 break;
-            case R.id.btn_regist:
+            case R.id.login_regist_btn:
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivityForResult(intent, ActivityCodes.REGISTER_REQUEST);
                 break;
-            case R.id.find:
+            case R.id.login_find_btn:
                 // id/Password찾기 버튼 리스너
                 intent = new Intent(LoginActivity.this, FindIDPasswordActivity.class);
                 startActivityForResult(intent, ActivityCodes.FIND_REQUEST);
