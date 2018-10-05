@@ -1,7 +1,6 @@
 package org.techtown.ideaconcert;
 
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,6 +20,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
+import org.techtown.ideaconcert.RegisterActivityDir.EmailCheckAndRegister;
+import org.techtown.ideaconcert.RegisterActivityDir.ValidatePwdEmail;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -206,12 +207,12 @@ public class FindIDPasswordActivity extends AppCompatActivity implements View.On
                     }
                 };
                 try {
-                    IdCheckAndRegister idCheckAndRegister = new IdCheckAndRegister(Request.Method.POST, verificationCodeCheckURL, responseListener, null);
+                    EmailCheckAndRegister emailCheckAndRegister = new EmailCheckAndRegister(Request.Method.POST, verificationCodeCheckURL, responseListener, null);
                     String userCode = code_txt.getText().toString();
                     String userEmail = email_txt.getText().toString();
-                    idCheckAndRegister.sendUserCode(userEmail, userCode);
+                    emailCheckAndRegister.sendUserCode(userEmail, userCode);
                     RequestQueue requestQueue = Volley.newRequestQueue(FindIDPasswordActivity.this);
-                    requestQueue.add(idCheckAndRegister);
+                    requestQueue.add(emailCheckAndRegister);
                     ShowProgressDialog.showProgressDialog(this);
 
                 } catch (Exception e) {

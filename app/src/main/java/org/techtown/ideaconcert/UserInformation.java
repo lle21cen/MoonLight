@@ -8,9 +8,10 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class UserInformation extends Application {
     private String login_method; /* Normal, Facebook, Google */
-    private String user_id;
     private String user_name;
     private String userEmail;
+    private int cash;
+
 //    private String user_first_name; // Only Facebook
 //    private String user_middle_name; // Only Facebook
 //    private String user_last_name; // Only Facebook
@@ -21,14 +22,6 @@ public class UserInformation extends Application {
 
     public void setLogin_method(String login_method) {
         this.login_method = login_method;
-    }
-
-    public String getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(String user_id) {
-        this.user_id = user_id;
     }
 
     public String getUser_name() {
@@ -57,9 +50,7 @@ public class UserInformation extends Application {
         if (login_method.equals("Google")) {
             FirebaseAuth.getInstance().signOut();
         }
-
         login_method = null;
-        user_id = null;
         user_name = null;
         userEmail = null;
         SharedPreferences loginData = getSharedPreferences("loginData", MODE_PRIVATE);
@@ -67,16 +58,14 @@ public class UserInformation extends Application {
         editor.clear();
         editor.apply();
     }
-    public void setUserInformation(String method, String id, String name, String email, boolean autoLogin) {
+    public void setUserInformation(String method, String name, String email, boolean autoLogin) {
         login_method = method;
-        user_id = id;
         user_name = name;
         userEmail = email;
         if (autoLogin) {
             SharedPreferences loginData = getSharedPreferences("loginData", MODE_PRIVATE);
             SharedPreferences.Editor editor = loginData.edit();
             editor.putString("loginMethod", method);
-            editor.putString("userID", id);
             editor.putString("userName", name);
             editor.putString("userEmail", email);
             editor.apply();

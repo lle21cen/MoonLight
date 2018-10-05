@@ -14,25 +14,30 @@
 
         <LinearLayout
             android:id="@+id/btn_layout"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_marginTop="20dp"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
             <com.facebook.login.widget.LoginButton
                 android:id="@+id/btn_facebook"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginRight="10dp" />
 
             <com.google.android.gms.common.SignInButton
                 android:id="@+id/btn_google"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginLeft="10dp" />
+
+            <Button
+                android:background="@drawable/moonlight_01_04"
+                android:layout_width="match_parent"
+                android:layout_height="50dp" />
         </LinearLayout>
 
     </RelativeLayout>

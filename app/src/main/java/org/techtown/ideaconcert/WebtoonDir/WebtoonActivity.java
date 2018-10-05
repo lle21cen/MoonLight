@@ -172,11 +172,7 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.webtoon_back:
-                setResult(ActivityCodes.WEBTOON_SUCCESS);
-                finish();
-                break;
-            case R.id.webtoon_title:
+            case R.id.webtoon_back: case R.id.webtoon_title:
                 setResult(ActivityCodes.WEBTOON_SUCCESS);
                 finish();
                 break;

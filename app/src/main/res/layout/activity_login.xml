@@ -47,20 +47,20 @@
         android:orientation="vertical">
 
         <EditText
-            android:id="@+id/login_user_id"
+            android:id="@+id/login_user_email"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="40dp"
             android:hint="이메일을 입력해 주세요"
-            android:inputType="textVisiblePassword"
+            android:inputType="textEmailAddress"
             android:background="@drawable/round_border"
             android:textAlignment="center"
             android:textSize="12dp" />
 
         <EditText
             android:layout_marginTop="10dp"
-            android:id="@+id/login_user_pass"
+            android:id="@+id/login_user_pw"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="40dp"
             android:hint="비밀번호를 입력해 주세요"
             android:inputType="textPassword"
             android:background="@drawable/round_border"
@@ -68,12 +68,14 @@
             android:textSize="12dp" />
 
         <TextView
+            android:id="@+id/login_result_text"
             android:textSize="10dp"
             android:textAlignment="center"
             android:layout_margin="20dp"
             android:textColor="#ff0000"
             android:text="가입정보가 없거나 로그인 정보가 잘못 되었습니다."
             android:layout_width="match_parent"
+            android:visibility="gone"
             android:layout_height="wrap_content" />
 
         <Button

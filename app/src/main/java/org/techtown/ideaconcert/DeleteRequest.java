@@ -10,10 +10,10 @@ public class DeleteRequest extends StringRequest {
     private Map<String, String> parameters;
     static final String deleteUserURL = "http://lle21cen.cafe24.com/DeleteUser.php";
 
-    public DeleteRequest(Response.Listener<String> listener, String userID) {
+    public DeleteRequest(Response.Listener<String> listener, String email) {
         super(Method.POST, deleteUserURL, listener, null);
         parameters = new HashMap<>();
-        parameters.put("userID", userID);
+        parameters.put("email", email);
     }
 
     public Map<String, String> getParams() {

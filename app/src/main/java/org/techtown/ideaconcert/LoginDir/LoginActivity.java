@@ -1,11 +1,9 @@
-package org.techtown.ideaconcert;
+package org.techtown.ideaconcert.LoginDir;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.constraint.solver.widgets.ConstraintAnchor;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -38,16 +36,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthProvider;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.techtown.ideaconcert.ActivityCodes;
+import org.techtown.ideaconcert.FindIDPasswordActivity;
+import org.techtown.ideaconcert.R;
+import org.techtown.ideaconcert.RegisterActivityDir.RegisterActivity;
+import org.techtown.ideaconcert.UserInformation;
 
 import java.util.Arrays;
 
@@ -67,25 +65,28 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     final int GOOGLE_SIGN_IN = 1001;
 
     // For Database login
-    EditText edit_userID, edit_userPass;
+    EditText userEmail, userPw;
     //private SharedPreferences loginData;
     private CheckBox auto_login;
-    Button btn_login;
-    TextView btn_find;
+    Button login_btn, backBtn;
+    TextView find_btn, login_result_text;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         final TextView toRegistActivity = findViewById(R.id.login_regist_btn);
+        final Button backBtn = findViewById(R.id.login_back_btn);
+
         toRegistActivity.setOnClickListener(this);
+        backBtn.setOnClickListener(this);
 
         // 인터넷 연결 상태 확인하는 코드 추가하기.
 
         // --------------------------------------------------------------------------
         //                               find id or password
-        btn_find = findViewById(R.id.login_find_btn);
-        btn_find.setOnClickListener(this);
+        find_btn = findViewById(R.id.login_find_btn);
+        find_btn.setOnClickListener(this);
 
         // --------------------------------------------------------------------------
         //                               For save login data
@@ -94,10 +95,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         // --------------------------------------------------------------------------
         //                               DATABASE LOGIN
-        edit_userID = findViewById(R.id.login_user_id);
-        edit_userPass = findViewById(R.id.login_user_pass);
-        btn_login = findViewById(R.id.login_btn);
+        userEmail = findViewById(R.id.login_user_email);
+        userPw = findViewById(R.id.login_user_pw);
+        login_btn = findViewById(R.id.login_btn);
+        login_btn.setOnClickListener(this);
 
+        login_result_text = findViewById(R.id.login_result_text);
         // --------------------------------------------------------------------------
         //                               FACEBOOK LOGIN
         userInformation = (UserInformation) getApplication();
@@ -112,9 +115,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             setResult(ActivityCodes.LOGIN_SUCCESS);
             finish();
         }
-        // Button management
-        Button btn_login = (Button) findViewById(R.id.login_btn);
-        btn_login.setOnClickListener(this);
 
         callbackManager = CallbackManager.Factory.create();
         facebook_login = findViewById(R.id.btn_facebook);
@@ -188,7 +188,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             String id = response.getJSONObject().getString("id");
                             String email = response.getJSONObject().getString("email");
                             String name = response.getJSONObject().getString("name");
-                            userInformation.setUserInformation("Facebook", id, name, email, auto_login.isChecked());
+                            userInformation.setUserInformation("Facebook", name, email, auto_login.isChecked());
                             setResult(ActivityCodes.LOGIN_SUCCESS);
                             finish();
                         } catch (JSONException e) {
@@ -218,12 +218,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
                 Log.e(TAG, "이름 = " + account.getDisplayName());
                 Log.e(TAG, "이메일 = " + account.getEmail());
-                Log.e(TAG, "getId() = " + account.getId());
                 Log.e(TAG, "getAccount() = " + account.getAccount());
                 Log.e(TAG, "getIdToken() = " + account.getIdToken());
 
                 // 사용자 정보 입력하고 액티비티 종료, 이름 형식 정리 필요
-                userInformation.setUserInformation("Google", account.getId(), account.getDisplayName(), account.getEmail(), auto_login.isChecked());
+                userInformation.setUserInformation("Google", account.getDisplayName(), account.getEmail(), auto_login.isChecked());
                 setResult(ActivityCodes.LOGIN_SUCCESS);
                 finish();
             } else {
@@ -237,7 +236,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onStart();
         FirebaseUser currentUser = auth.getCurrentUser();
         if (currentUser != null) {
-            userInformation.setUserInformation("Google", currentUser.getUid(), currentUser.getDisplayName(), currentUser.getEmail(), auto_login.isChecked());
+            userInformation.setUserInformation("Google", currentUser.getDisplayName(), currentUser.getEmail(), auto_login.isChecked());
             setResult(ActivityCodes.LOGIN_SUCCESS);
             finish();
         }
@@ -254,11 +253,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             JSONObject jsonResponse = new JSONObject(response);
                             boolean success = jsonResponse.getBoolean("success");
                             if (success) {
-
-                                String id = jsonResponse.getString("userID");
-                                String name = jsonResponse.getString("userName");
-                                String email = jsonResponse.getString("userEmail");
-                                userInformation.setUserInformation("Normal", id, name, email, auto_login.isChecked());
+                                String email = jsonResponse.getString("email");
+                                String name = jsonResponse.getString("name");
+                                userInformation.setUserInformation("Normal", email, name, auto_login.isChecked());
 
                                 AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                                 builder.setMessage("로그인에 성공했습니다 ").setCancelable(false)
@@ -270,14 +267,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                             }
                                         }).create().show();
                             } else {
-                                Toast.makeText(LoginActivity.this, "로그인에 실패했습니다.", Toast.LENGTH_LONG).show();
+                                login_result_text.setText("가입정보가 없거나 로그인 정보가 잘못 되었습니다.");
                             }
                         } catch (Exception e) {
                             Log.e("dberror", e.getMessage());
                         }
                     }
                 };
-                LoginRequest loginRequest = new LoginRequest(edit_userID.getText().toString(), edit_userPass.getText().toString(), responseListener);
+                LoginRequest loginRequest = new LoginRequest(userEmail.getText().toString(), userPw.getText().toString(), responseListener);
                 RequestQueue requestQueue = Volley.newRequestQueue(LoginActivity.this);
                 requestQueue.add(loginRequest);
                 break;
@@ -294,6 +291,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 intent = new Intent(LoginActivity.this, FindIDPasswordActivity.class);
                 startActivityForResult(intent, ActivityCodes.FIND_REQUEST);
                 break;
+            case R.id.login_back_btn : case R.id.login_login_txt :
+                setResult(ActivityCodes.LOGIN_FAIL);
+                finish();
         }
     }
 }

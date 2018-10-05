@@ -1,4 +1,4 @@
-package org.techtown.ideaconcert;
+package org.techtown.ideaconcert.RegisterActivityDir;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
