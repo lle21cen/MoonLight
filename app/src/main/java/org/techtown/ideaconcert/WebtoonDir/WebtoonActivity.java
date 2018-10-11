@@ -1,6 +1,7 @@
 package org.techtown.ideaconcert.WebtoonDir;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +23,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.techtown.ideaconcert.ActivityCodes;
+import org.techtown.ideaconcert.CommentDir.CommentActivity;
 import org.techtown.ideaconcert.ContentsMainDir.ContentsMainActivity;
 import org.techtown.ideaconcert.ContentsMainDir.WorksListViewItem;
 import org.techtown.ideaconcert.MainActivityDir.GetBitmapImageFromURL;
@@ -34,8 +36,9 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
 
     LinearLayout headerLayout, footerLayout, webtoonLayout, contents_option_menu;
     TextView title_text, star_rating_text, like_count_text, comments_count_text, order_text;
-    Button option_btn, comments_btn, prev_btn, next_btn;
+    Button option_btn, comments_btn, prev_btn, next_btn, like_btn;
     private final String getContentsItemImageURL = "http://lle21cen.cafe24.com/GetContentsItemImage.php";
+    private final String getContentsItemLikeURL = "http://lle21cen.cafe24.com/GetContentsItemLIke.php";
 
     int item_pk, item_comments_count, contents_num;
     String item_title;
@@ -64,6 +67,7 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
         comments_btn = findViewById(R.id.webtoon_comments_btn); // 하단, 댓글 버튼
         prev_btn = findViewById(R.id.webtoon_prev_btn); // 하단, 이전 화 보기 버튼
         next_btn = findViewById(R.id.webtoon_next_btn); // 하단, 다음 화 보기 버튼
+        like_btn = findViewById(R.id.webtoon_like_btn); // 하단, 좋아요 버튼
 
         items = ContentsMainActivity.itemList;
         Intent intent = getIntent();
@@ -80,11 +84,10 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
 
         contents_listView = findViewById(R.id.webtoon_contents_num_listview);
         final ContentsNumListViewAdapter adapter = new ContentsNumListViewAdapter();
-        for (int i=0; i<items.size(); i++)
-        {
+        for (int i = 0; i < items.size(); i++) {
             adapter.addItem(items.get(i).getContentsNum());
         }
-        contents_listView.setAdapter(adapter);
+        contents_listView.setAdapter(adapter); // 숫자를 누르면 작품 회차 목록이 나오도록 하는 listview와 adapter
 
         ContentsItemImageRequest contentsItemImageRequest
                 = new ContentsItemImageRequest(getContentsItemImageURL, getItemImageListener, item_pk);
@@ -100,6 +103,9 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
         option_btn.setOnClickListener(this);
         comments_btn.setOnClickListener(this);
         order_text.setOnClickListener(this);
+        comments_count_text.setOnClickListener(this);
+        like_btn.setOnClickListener(this);
+        like_count_text.setOnClickListener(this);
 
         contents_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -108,22 +114,72 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
                 ArrayList<ContentsNumListViewItem> contentsItems = adapter.getContentsNumListViewItems();
                 int select_num = contentsItems.get(position).getContents_num();
                 int next_position = 1;
-                for (int i=0; i<items.size(); i++)
-                {
+                for (int i = 0; i < items.size(); i++) {
                     WorksListViewItem tempItem = items.get(i);
                     if (tempItem.getContentsNum() == select_num) {
                         next_position = i;
                         break;
                     }
                 }
-                Toast.makeText(WebtoonActivity.this, "next_position = " + next_position, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(WebtoonActivity.this, WebtoonActivity.class);
                 intent.putExtra("position", next_position);
                 startActivity(intent);
                 finish();
             }
         });
+
+        // 컨텐츠 아이템의 좋아요 개수를 DB에서 불러와 설정
+//        SharedPreferences sharedPreferences = getSharedPreferences("loginData", MODE_PRIVATE);
+//        int user_pk = sharedPreferences.getInt("user_pk", 0);
+        int user_pk = 1;
+        ContentsItemLikeDBRequest contentsItemLikeDBRequest = new ContentsItemLikeDBRequest(getContentsItemLikeURL, getContentsItemLikeListener, item_pk, user_pk);
+        requestQueue.add(contentsItemLikeDBRequest);
     }
+
+    private Response.Listener<String> getContentsItemLikeListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+//                JSONObject jsonResponse = new JSONObject(response);
+//                // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
+//                JSONArray result = jsonResponse.getJSONArray("result");
+//                boolean exist = jsonResponse.getBoolean("exist");
+//
+//                if (exist) {
+//                    int num_category_contents_data = jsonResponse.getInt("num_result");
+//                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//                    lp.setMargins(10, 10, 10, 10);
+//                    for (int i = 0; i < num_category_contents_data; i++) {
+//                        // 데이터베이스에 들어있는 컨텐츠의 수만큼 for문을 돌려 layout에 image추가
+//                        try {
+//                            JSONObject temp = result.getJSONObject(i);
+//
+//                            URL url = new URL(temp.getString("image_url"));
+//                            GetBitmapImageFromURL getBitmapImageFromURL = new GetBitmapImageFromURL(url);
+//                            getBitmapImageFromURL.start();
+//                            getBitmapImageFromURL.join();
+//                            Bitmap bitmap = getBitmapImageFromURL.getBitmap();
+//
+//                            ImageView webtoon = new ImageView(WebtoonActivity.this);
+//                            webtoon.setImageBitmap(bitmap);
+//                            webtoon.setAdjustViewBounds(true); // 이미지의 가로를 화면 전체 크기에 맞춤
+//                            webtoon.setLayoutParams(lp);
+//
+//                            webtoonLayout.addView(webtoon);
+//                        } catch (Exception e) {
+//                            Log.e("Except in webtoon", e.getMessage());
+//                        }
+//                    }
+//
+//                } else {
+//                    Log.e("No Data", "데이터가 없습니다.");
+//                }
+            } catch (Exception e) {
+                Log.e("like listener err", e.getMessage());
+            }
+        }
+    };
+
 
     private Response.Listener<String> getItemImageListener = new Response.Listener<String>() {
         @Override
@@ -151,7 +207,7 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
 
                             ImageView webtoon = new ImageView(WebtoonActivity.this);
                             webtoon.setImageBitmap(bitmap);
-                            webtoon.setAdjustViewBounds(true); // 이미지의 가로를 화면 전체 크기에 맞춤.
+                            webtoon.setAdjustViewBounds(true); // 이미지의 가로를 화면 전체 크기에 맞춤
                             webtoon.setLayoutParams(lp);
 
                             webtoonLayout.addView(webtoon);
@@ -172,7 +228,8 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.webtoon_back: case R.id.webtoon_title:
+            case R.id.webtoon_back:
+            case R.id.webtoon_title:
                 setResult(ActivityCodes.WEBTOON_SUCCESS);
                 finish();
                 break;
@@ -183,8 +240,16 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
                     contents_option_menu.setVisibility(View.GONE);
                 break;
             case R.id.webtoon_like_btn:
+            case R.id.webtoon_like_count:
+
                 break;
             case R.id.webtoon_comments_btn:
+            case R.id.webtoon_comments_count:
+                Intent intent = new Intent(WebtoonActivity.this, CommentActivity.class);
+                intent.putExtra("item_pk", item_pk);
+                intent.putExtra("item_title", item_title);
+                intent.putExtra("contents_num", contents_num);
+                startActivityForResult(intent, ActivityCodes.COMMENT_REQUEST);
                 break;
             case R.id.webtoon_prev_btn:
                 if (contents_num > 1) {
@@ -211,12 +276,13 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
                 contents_option_menu.setVisibility(View.GONE);
                 contents_listView.setVisibility(View.GONE);
                 break;
-            case R.id.webtoon_order :
-                if(contents_listView.getVisibility() == View.GONE)
+            case R.id.webtoon_order:
+                if (contents_listView.getVisibility() == View.GONE)
                     contents_listView.setVisibility(View.VISIBLE);
                 else
                     contents_listView.setVisibility(View.GONE);
                 break;
+
         }
     }
 

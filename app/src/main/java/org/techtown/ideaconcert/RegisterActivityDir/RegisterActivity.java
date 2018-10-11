@@ -84,7 +84,6 @@ public class RegisterActivity extends AppCompatActivity {
                 boolean isPasswordAvailable = ValidatePwdEmail.validatePwd(pw); // 비밀번호 형식검사
 
                 if (isTwoPasswordaAccord && isPasswordAvailable && isEmailAvailable) {
-                    Toast.makeText(RegisterActivity.this, "1", Toast.LENGTH_SHORT).show();
 
                     EmailCheckAndRegister emailCheckAndRegister = new EmailCheckAndRegister(Request.Method.POST, emailVerifyAndRegisterURL, registerListener, null);
                     emailCheckAndRegister.doRegister(email, pw, name);

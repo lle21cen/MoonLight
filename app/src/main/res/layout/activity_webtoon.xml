@@ -103,7 +103,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_margin="5dp"
-                android:background="@drawable/ic_favorite_red_24dp" />
+                android:background="@drawable/ic_favorite_border_white_24dp" />
 
             <TextView
                 android:id="@+id/webtoon_like_count"

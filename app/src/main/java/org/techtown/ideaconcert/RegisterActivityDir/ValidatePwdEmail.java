@@ -12,7 +12,8 @@ public class ValidatePwdEmail {
          * (?=.*[0-9@#$%])  하나 이상의 숫자나 특수문자를 포함한다.
          * {8,}             최소 8글자 이상이어야 한다.
          */
-        String passwordPolicy = "((?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*()]).{8,})";
+//        String passwordPolicy = "((?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*()]).{8,})";
+        String passwordPolicy = "(^[a-zA-Z0-9]{8,16}$)";
         Pattern pattern = Pattern.compile(passwordPolicy);
         Matcher matcher = pattern.matcher(password);
         return matcher.matches();

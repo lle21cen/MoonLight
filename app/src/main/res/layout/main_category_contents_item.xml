@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="100dp"
+    android:layout_height="120dp">
+
+    <ImageView
+        android:id="@+id/main_category_item_img"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/dummy_cate_cont" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="#a0000000">
+
+        <TextView
+            android:id="@+id/main_category_item_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="작품명"
+            android:textColor="#ffffff"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/main_category_author_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/main_category_item_name"
+            android:layout_margin="5dp"
+            android:text="작가이름"
+            android:textColor="#ffffff"
+            android:textSize="10sp" />
+
+        <ImageView
+            android:id="@+id/main_category_view_img"
+            android:layout_width="15dp"
+            android:layout_toLeftOf="@+id/main_category_view_count"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/main_category_item_name"
+            android:src="@drawable/ic_eye_white_24dp" />
+
+        <TextView
+            android:id="@+id/main_category_view_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/main_category_item_name"
+            android:layout_margin="5dp"
+            android:layout_alignParentRight="true"
+            android:text="0.0"
+            android:textColor="#ffffff"
+            android:textSize="10sp" />
+
+    </RelativeLayout>
+</RelativeLayout>

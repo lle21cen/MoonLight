@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="2"
         android:gravity="center_vertical"
-        android:text="New Text"
+        android:text="작품명"
         android:textColor="#000000"
         android:textSize="24dp" />
 
@@ -51,7 +51,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="5dp"
-                    android:text="New Text"
+                    android:text="View Cnt"
                     android:textColor="#666666" />
 
             </LinearLayout>

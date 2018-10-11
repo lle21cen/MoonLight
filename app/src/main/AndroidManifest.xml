@@ -57,7 +57,8 @@
         <activity android:name=".FindIDPasswordActivity" />
         <activity android:name=".ContentsMainDir.ContentsMainActivity" />
         <activity android:name=".WebtoonDir.WebtoonActivity" />
-        <activity android:name=".LoginDir.LoginMethodActivity"></activity>
+        <activity android:name=".LoginDir.LoginMethodActivity" />
+        <activity android:name=".CommentDir.CommentActivity"></activity>
     </application>
 
 </manifest>

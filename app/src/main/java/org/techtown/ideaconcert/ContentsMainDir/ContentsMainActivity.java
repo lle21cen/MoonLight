@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -34,6 +33,8 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
     // 이미지만 따로 동적으로 설정하도록 바꾸어서 컨텐츠 로딩에 걸리는 시간을 단축할 필요가 있음
 
     static final String getContentsItemsImgURL = "http://lle21cen.cafe24.com/GetContentsItem.php";
+    private int selected_contents_pk;
+
     private Button firstEpiBtn;
     private ListView listView;
     private TextView totalText, readingText, cashText;
@@ -46,6 +47,9 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contents_main);
 
+        Intent intent = getIntent();
+        selected_contents_pk = intent.getIntExtra("contents_pk", 0);
+
         totalText = findViewById(R.id.contents_main_status_total); // 전체 몇 편
         readingText = findViewById(R.id.contents_main_status_reading); // 그 중 몇 편을 열람
         cashText = findViewById(R.id.contents_main_status_cash); // 보유 캐시
@@ -56,7 +60,7 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
         listView = findViewById(R.id.contents_main_list_works_list);
         adapter = new WorksListViewAdapter();
 
-        WorksDBRequest worksDBRequest = new WorksDBRequest(getContentsItemsImgURL, worksListener);
+        WorksDBRequest worksDBRequest = new WorksDBRequest(getContentsItemsImgURL, worksListener, selected_contents_pk);
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(worksDBRequest);
 
@@ -85,7 +89,6 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 ArrayList<WorksListViewItem> items = adapter.getWorksListViewItems();
-                Toast.makeText(ContentsMainActivity.this, "PK=:" + items.get(position).getContentsItemPk(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(ContentsMainActivity.this, WebtoonActivity.class);
                 putExtraData(intent, position);
                 startActivityForResult(intent, ActivityCodes.WEBTTON_REQUEST);
