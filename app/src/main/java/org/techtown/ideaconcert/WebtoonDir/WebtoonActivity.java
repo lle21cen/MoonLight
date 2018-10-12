@@ -1,9 +1,14 @@
 package org.techtown.ideaconcert.WebtoonDir;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -26,6 +31,7 @@ import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.CommentDir.CommentActivity;
 import org.techtown.ideaconcert.ContentsMainDir.ContentsMainActivity;
 import org.techtown.ideaconcert.ContentsMainDir.WorksListViewItem;
+import org.techtown.ideaconcert.LoginDir.LoginActivity;
 import org.techtown.ideaconcert.MainActivityDir.GetBitmapImageFromURL;
 import org.techtown.ideaconcert.R;
 
@@ -39,11 +45,14 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
     Button option_btn, comments_btn, prev_btn, next_btn, like_btn;
     private final String getContentsItemImageURL = "http://lle21cen.cafe24.com/GetContentsItemImage.php";
     private final String getContentsItemLikeURL = "http://lle21cen.cafe24.com/GetContentsItemLIke.php";
+    private final String insertDeleteContentsLikeDataURL = "http://lle21cen.cafe24.com/InsertDeleteContentsLikeData.php";
+
 
     int item_pk, item_comments_count, contents_num;
     String item_title;
     int item_position;
 
+    private boolean isLikeClicked;
     ListView contents_listView;
     ArrayList<WorksListViewItem> items;
 
@@ -140,46 +149,19 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
         @Override
         public void onResponse(String response) {
             try {
-//                JSONObject jsonResponse = new JSONObject(response);
-//                // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
-//                JSONArray result = jsonResponse.getJSONArray("result");
-//                boolean exist = jsonResponse.getBoolean("exist");
-//
-//                if (exist) {
-//                    int num_category_contents_data = jsonResponse.getInt("num_result");
-//                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-//                    lp.setMargins(10, 10, 10, 10);
-//                    for (int i = 0; i < num_category_contents_data; i++) {
-//                        // 데이터베이스에 들어있는 컨텐츠의 수만큼 for문을 돌려 layout에 image추가
-//                        try {
-//                            JSONObject temp = result.getJSONObject(i);
-//
-//                            URL url = new URL(temp.getString("image_url"));
-//                            GetBitmapImageFromURL getBitmapImageFromURL = new GetBitmapImageFromURL(url);
-//                            getBitmapImageFromURL.start();
-//                            getBitmapImageFromURL.join();
-//                            Bitmap bitmap = getBitmapImageFromURL.getBitmap();
-//
-//                            ImageView webtoon = new ImageView(WebtoonActivity.this);
-//                            webtoon.setImageBitmap(bitmap);
-//                            webtoon.setAdjustViewBounds(true); // 이미지의 가로를 화면 전체 크기에 맞춤
-//                            webtoon.setLayoutParams(lp);
-//
-//                            webtoonLayout.addView(webtoon);
-//                        } catch (Exception e) {
-//                            Log.e("Except in webtoon", e.getMessage());
-//                        }
-//                    }
-//
-//                } else {
-//                    Log.e("No Data", "데이터가 없습니다.");
-//                }
+                JSONObject jsonResponse = new JSONObject(response);
+                boolean exist = jsonResponse.getBoolean("exist");
+                if (exist) {
+                    int count = jsonResponse.getInt("count");
+                    like_count_text.setText("" + count);
+                    like_btn.setBackgroundDrawable(ContextCompat.getDrawable(WebtoonActivity.this, R.drawable.ic_favorite_red_24dp));
+                    isLikeClicked = true;
+                }
             } catch (Exception e) {
-                Log.e("like listener err", e.getMessage());
+                Log.e("dberror", e.getMessage());
             }
         }
     };
-
 
     private Response.Listener<String> getItemImageListener = new Response.Listener<String>() {
         @Override
@@ -241,7 +223,21 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.webtoon_like_btn:
             case R.id.webtoon_like_count:
-
+                Toast.makeText(this, "Like Clicked", Toast.LENGTH_SHORT).show();
+                InsertDeleteContentsLikeRequest insertDeleteContentsLikeRequest;
+                RequestQueue requestQueue = Volley.newRequestQueue(this);
+                if (isLikeClicked) {
+                    isLikeClicked = false;
+                    like_btn.setBackgroundDrawable(ContextCompat.getDrawable(WebtoonActivity.this, R.drawable.ic_favorite_border_white_24dp));
+                    insertDeleteContentsLikeRequest
+                            = new InsertDeleteContentsLikeRequest(insertDeleteContentsLikeDataURL, getItemImageListener, item_pk, 1, 0);
+                } else {
+                    isLikeClicked = true;
+                    like_btn.setBackgroundDrawable(ContextCompat.getDrawable(WebtoonActivity.this, R.drawable.ic_favorite_red_24dp));
+                    insertDeleteContentsLikeRequest
+                            = new InsertDeleteContentsLikeRequest(insertDeleteContentsLikeDataURL, getItemImageListener, item_pk, 1, 1);
+                }
+                requestQueue.add(insertDeleteContentsLikeRequest);
                 break;
             case R.id.webtoon_comments_btn:
             case R.id.webtoon_comments_count:

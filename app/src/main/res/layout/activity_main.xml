@@ -1,154 +1,158 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".MainActivityDir.MainActivity">
 
-    <include
-        android:id="@+id/main_titlebar"
-        layout="@layout/mainpage_custom_title_bar"
-        app:layout_constraintBottom_toTopOf="parent" />
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/main_pager"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="142dp"
-        android:background="#ece6e6"
-        app:layout_constraintTop_toBottomOf="@+id/main_titlebar" />
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/main_titlebar"
+            layout="@layout/mainpage_custom_title_bar"
+            app:layout_constraintBottom_toTopOf="parent" />
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/main_pager"
+            android:layout_width="match_parent"
+            android:layout_height="142dp"
+            android:background="#ece6e6"
+            app:layout_constraintTop_toBottomOf="@+id/main_titlebar" />
 
 
-    <LinearLayout
-        android:id="@+id/main_category_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/main_pager">
-
-        <TextView
-            android:id="@+id/main_pop"
+        <LinearLayout
+            android:id="@+id/main_category_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="인기"
-            android:textSize="15dp" />
+            android:orientation="horizontal"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/main_pager">
+
+            <TextView
+                android:id="@+id/main_pop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="인기"
+                android:textSize="15dp" />
+
+            <TextView
+                android:id="@+id/main_love"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="연애"
+                android:textSize="15dp" />
+
+            <TextView
+                android:id="@+id/main_edu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="학원"
+                android:textSize="15dp" />
+
+            <TextView
+                android:id="@+id/main_chivalry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="무협"
+                android:textSize="15dp" />
+
+            <TextView
+                android:id="@+id/main_action"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="액션"
+                android:textSize="15dp" />
+
+            <TextView
+                android:id="@+id/main_comic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="코믹"
+                android:textSize="15dp" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/main_open_category"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="2dp"
+            android:background="@drawable/ic_open_icon"
+            android:baselineAlignBottom="true"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/main_pager" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/main_category_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/main_category_layout" />
 
         <TextView
-            android:id="@+id/main_love"
+            android:id="@+id/main_txt_viewall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="연애"
-            android:textSize="15dp" />
+            android:layout_margin="5dp"
+            android:text="전체보기"
+            app:layout_constraintRight_toLeftOf="@+id/main_category_open_btn"
+            app:layout_constraintTop_toBottomOf="@+id/main_category_recycler" />
+
+        <ImageButton
+            android:id="@+id/main_category_open_btn"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_margin="5dp"
+            android:src="@drawable/ic_next_icon"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/main_category_recycler" />
 
         <TextView
-            android:id="@+id/main_edu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="학원"
-            android:textSize="15dp" />
+            android:id="@+id/main_sub_add_banner"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="#b393da"
+            android:paddingTop="10dp"
+            android:text="서브 광고 배너"
+            android:textAlignment="center"
+            android:textSize="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/main_category_open_btn" />
+
+        <ImageButton
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/ic_cancel_icon"
+            app:layout_constraintRight_toRightOf="@+id/main_sub_add_banner"
+            app:layout_constraintTop_toBottomOf="@+id/main_category_open_btn" />
 
         <TextView
-            android:id="@+id/main_chivalry"
+            android:id="@+id/main_newarrival_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="무협"
-            android:textSize="15dp" />
+            android:text="NEW ARRIVAL"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/main_sub_add_banner" />
 
-        <TextView
-            android:id="@+id/main_action"
-            android:layout_width="wrap_content"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/main_arrival_recycler"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="액션"
-            android:textSize="15dp" />
-
-        <TextView
-            android:id="@+id/main_comic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="코믹"
-            android:textSize="15dp" />
-
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/main_open_category"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginRight="2dp"
-        android:background="@drawable/ic_open_icon"
-        android:baselineAlignBottom="true"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/main_pager" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/main_category_recycler"
-        android:layout_width="match_parent"
-        android:layout_margin="5dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/main_category_layout" />
-
-    <TextView
-        android:id="@+id/main_txt_viewall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:text="VIEW ALL"
-        app:layout_constraintRight_toLeftOf="@+id/main_category_open_btn"
-        app:layout_constraintTop_toBottomOf="@+id/main_category_recycler" />
-
-    <ImageButton
-        android:id="@+id/main_category_open_btn"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_margin="5dp"
-        android:src="@drawable/ic_next_icon"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/main_category_recycler" />
-
-    <TextView
-        android:id="@+id/main_sub_add_banner"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="#b393da"
-        android:paddingTop="10dp"
-        android:text="서브 광고 배너"
-        android:textAlignment="center"
-        android:textSize="16dp"
-        app:layout_constraintTop_toBottomOf="@+id/main_category_open_btn" />
-
-    <ImageButton
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginTop="8dp"
-        android:src="@drawable/ic_cancel_icon"
-        app:layout_constraintRight_toRightOf="@+id/main_sub_add_banner"
-        app:layout_constraintTop_toBottomOf="@+id/main_category_open_btn" />
-
-    <TextView
-        android:id="@+id/main_newarrival_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="NEW ARRIVAL"
-        android:textSize="20dp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/main_sub_add_banner" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/main_arrival_recycler"
-        android:layout_width="match_parent"
-        android:layout_margin="5dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/main_newarrival_text" />
-
-</android.support.constraint.ConstraintLayout>
+            android:layout_margin="5dp"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/main_newarrival_text" />
+    </android.support.constraint.ConstraintLayout>
+</ScrollView>

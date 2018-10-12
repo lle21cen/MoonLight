@@ -188,7 +188,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             String id = response.getJSONObject().getString("id");
                             String email = response.getJSONObject().getString("email");
                             String name = response.getJSONObject().getString("name");
-                            userInformation.setUserInformation("Facebook", name, email, auto_login.isChecked());
+                            userInformation.setUserInformation("Facebook", 1, name, email, auto_login.isChecked()); // 유저 pk 변경할 필요 있음
                             setResult(ActivityCodes.LOGIN_SUCCESS);
                             finish();
                         } catch (JSONException e) {
@@ -222,7 +222,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 Log.e(TAG, "getIdToken() = " + account.getIdToken());
 
                 // 사용자 정보 입력하고 액티비티 종료, 이름 형식 정리 필요
-                userInformation.setUserInformation("Google", account.getDisplayName(), account.getEmail(), auto_login.isChecked());
+                userInformation.setUserInformation("Google", 1, account.getDisplayName(), account.getEmail(), auto_login.isChecked()); // 유저 pk 변경할 필요 있음
                 setResult(ActivityCodes.LOGIN_SUCCESS);
                 finish();
             } else {
@@ -236,7 +236,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onStart();
         FirebaseUser currentUser = auth.getCurrentUser();
         if (currentUser != null) {
-            userInformation.setUserInformation("Google", currentUser.getDisplayName(), currentUser.getEmail(), auto_login.isChecked());
+            userInformation.setUserInformation("Google", 1, currentUser.getDisplayName(), currentUser.getEmail(), auto_login.isChecked()); // 유저 pk 변경할 필요 있음
             setResult(ActivityCodes.LOGIN_SUCCESS);
             finish();
         }
@@ -246,6 +246,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.login_btn:
+                Toast.makeText(LoginActivity.this, "Login clicked!", Toast.LENGTH_SHORT).show();
+
                 Response.Listener<String> responseListener = new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -253,9 +255,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             JSONObject jsonResponse = new JSONObject(response);
                             boolean success = jsonResponse.getBoolean("success");
                             if (success) {
+                                int user_pk = jsonResponse.getInt("user_pk");
                                 String email = jsonResponse.getString("email");
                                 String name = jsonResponse.getString("name");
-                                userInformation.setUserInformation("Normal", email, name, auto_login.isChecked());
+                                userInformation.setUserInformation("Normal", user_pk, email, name, auto_login.isChecked());
 
                                 AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                                 builder.setMessage("로그인에 성공했습니다 ").setCancelable(false)
@@ -265,9 +268,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                 setResult(ActivityCodes.LOGIN_SUCCESS);
                                                 finish();
                                             }
-                                        }).create().show();
+                                        }).show();
                             } else {
+                                login_result_text.setVisibility(View.VISIBLE);
                                 login_result_text.setText("가입정보가 없거나 로그인 정보가 잘못 되었습니다.");
+                                String pw = jsonResponse.getString("pw");
+                                String hashed_pw= jsonResponse.getString("hashed_password");
+                                String name = jsonResponse.getString("name");
+                                String email = jsonResponse.getString("email");
+                                Toast.makeText(LoginActivity.this, "pw = " + pw + " hashed_pw = " + hashed_pw + " name = " + name + " email = " + email, Toast.LENGTH_SHORT).show();
                             }
                         } catch (Exception e) {
                             Log.e("dberror", e.getMessage());

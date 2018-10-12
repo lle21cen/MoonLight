@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DeleteRequest extends StringRequest {
+    // 삭제 대기 - 우선 필요없음
     private Map<String, String> parameters;
     static final String deleteUserURL = "http://lle21cen.cafe24.com/DeleteUser.php";
 

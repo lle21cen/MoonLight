@@ -301,10 +301,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void loadPrevInfo() {
         // 이전에 로그인 했던 사용자의 정보를 가져와 저장.
         String method = loginData.getString("loginMethod", null);
+        int user_pk = loginData.getInt("userPk", 0);
         String name = loginData.getString("userName", null);
         String email = loginData.getString("userEmail", null);
         if (method != null) {
-            info.setUserInformation(method, name, email, false);
+            info.setUserInformation(method, user_pk, name, email, false);
             testInfo();
             isLoginTurn = false;
         }
@@ -312,6 +313,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void testInfo() {
         Toast.makeText(this, "Method = " + info.getLogin_method(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "User PK = " + info.getUser_pk(), Toast.LENGTH_SHORT).show();
         Toast.makeText(this, "Name = " + info.getUser_name(), Toast.LENGTH_SHORT).show();
         Toast.makeText(this, "Email = " + info.getUserEmail(), Toast.LENGTH_SHORT).show();
     }

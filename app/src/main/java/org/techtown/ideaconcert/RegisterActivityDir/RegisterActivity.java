@@ -33,7 +33,7 @@ public class RegisterActivity extends AppCompatActivity {
     /*
     사용자 회원가입 화면.
     구현 사항
-
+    아 쓰기 귀찮아...
     */
 
     final static private String emailVerifyAndRegisterURL = "http://lle21cen.cafe24.com/EmailVerifyAndRegister.php"; // 이메일 중복체크와 디비에 회원 등록하는 URL
@@ -84,7 +84,6 @@ public class RegisterActivity extends AppCompatActivity {
                 boolean isPasswordAvailable = ValidatePwdEmail.validatePwd(pw); // 비밀번호 형식검사
 
                 if (isTwoPasswordaAccord && isPasswordAvailable && isEmailAvailable) {
-
                     EmailCheckAndRegister emailCheckAndRegister = new EmailCheckAndRegister(Request.Method.POST, emailVerifyAndRegisterURL, registerListener, null);
                     emailCheckAndRegister.doRegister(email, pw, name);
                     RequestQueue requestQueue = Volley.newRequestQueue(RegisterActivity.this);
@@ -136,7 +135,7 @@ public class RegisterActivity extends AppCompatActivity {
                             setResult(ActivityCodes.REGISTER_SUCCESS);
                             finish();
                         }
-                    });
+                    }).show();
                 }
             } catch (Exception e) {
                 Log.e("Email check error", e.getMessage());
@@ -213,34 +212,4 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (!isJoinBtnClicked) {
-            // 회원가입 버튼을 누르지 않고 Activity가 종료되면 임시저장하였던 사용자 정보를 삭제
-            DeleteRequest deleteRequest = new DeleteRequest(deleteResponseListener, emailText.getText().toString());
-            RequestQueue requestQueue = Volley.newRequestQueue(RegisterActivity.this);
-            requestQueue.add(deleteRequest);
-        }
-    }
-
-    Response.Listener<String> deleteResponseListener = new Response.Listener<String>() {
-        // DB에서 임시저장된 사용자 정보를 삭제하는 리스너
-        @Override
-        public void onResponse(String response) {
-            try {
-                JSONObject jsonResponse = new JSONObject(response);
-                boolean success = jsonResponse.getBoolean("success");
-                String errmsg = jsonResponse.getString("errmsg");
-                if (success) {
-
-                } else {
-                    Log.e("delete data", errmsg);
-                }
-            } catch (Exception e) {
-                Log.e("db error for delete", e.getMessage());
-            }
-        }
-    };
 }
