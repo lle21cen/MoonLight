@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 
 public class CategoryContentsItem {
     Bitmap bitmap;
-    String work_name, author_name;
+    String work_name, painter_name;
     int view_count, contents_pk;
 
     public Bitmap getBitmap() {
@@ -23,12 +23,12 @@ public class CategoryContentsItem {
         this.work_name = work_name;
     }
 
-    public String getAuthor_name() {
-        return author_name;
+    public String getPainter_name() {
+        return painter_name;
     }
 
-    public void setAuthor_name(String author_name) {
-        this.author_name = author_name;
+    public void setPainter_name(String painter_name) {
+        this.painter_name = painter_name;
     }
 
     public int getView_count() {

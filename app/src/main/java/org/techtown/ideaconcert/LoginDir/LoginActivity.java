@@ -246,8 +246,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.login_btn:
-                Toast.makeText(LoginActivity.this, "Login clicked!", Toast.LENGTH_SHORT).show();
-
                 Response.Listener<String> responseListener = new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -255,28 +253,31 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             JSONObject jsonResponse = new JSONObject(response);
                             boolean success = jsonResponse.getBoolean("success");
                             if (success) {
-                                int user_pk = jsonResponse.getInt("user_pk");
-                                String email = jsonResponse.getString("email");
-                                String name = jsonResponse.getString("name");
-                                userInformation.setUserInformation("Normal", user_pk, email, name, auto_login.isChecked());
-
-                                AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
-                                builder.setMessage("로그인에 성공했습니다 ").setCancelable(false)
-                                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                setResult(ActivityCodes.LOGIN_SUCCESS);
-                                                finish();
-                                            }
-                                        }).show();
+                                boolean pw_correct = jsonResponse.getBoolean("pw_correct");
+                                if (!pw_correct)
+                                {
+                                    String hash = jsonResponse.getString("hash");
+                                    String user_pw = jsonResponse.getString("user_pw");
+                                    Toast.makeText(LoginActivity.this, hash + " " + user_pw, Toast.LENGTH_SHORT).show();
+                                }
+                                else {
+                                    int user_pk = jsonResponse.getInt("user_pk");
+                                    String email = jsonResponse.getString("email");
+                                    String name = jsonResponse.getString("name");
+                                    userInformation.setUserInformation("Normal", user_pk, email, name, auto_login.isChecked());
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                                    builder.setMessage("로그인에 성공했습니다 ").setCancelable(false)
+                                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    setResult(ActivityCodes.LOGIN_SUCCESS);
+                                                    finish();
+                                                }
+                                            }).show();
+                                }
                             } else {
                                 login_result_text.setVisibility(View.VISIBLE);
                                 login_result_text.setText("가입정보가 없거나 로그인 정보가 잘못 되었습니다.");
-                                String pw = jsonResponse.getString("pw");
-                                String hashed_pw= jsonResponse.getString("hashed_password");
-                                String name = jsonResponse.getString("name");
-                                String email = jsonResponse.getString("email");
-                                Toast.makeText(LoginActivity.this, "pw = " + pw + " hashed_pw = " + hashed_pw + " name = " + name + " email = " + email, Toast.LENGTH_SHORT).show();
                             }
                         } catch (Exception e) {
                             Log.e("dberror", e.getMessage());

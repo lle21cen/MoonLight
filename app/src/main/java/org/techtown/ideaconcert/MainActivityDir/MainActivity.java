@@ -8,9 +8,11 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -38,6 +40,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     final private String categoryContentsURL = "http://lle21cen.cafe24.com/GetCategoryContents.php";
     final private String arrivalContentsURL = "http://lle21cen.cafe24.com/GetArrivalContents.php";
+    final private String discountContentsURL = "http://lle21cen.cafe24.com/GetDiscountContents.php";
 
     UserInformation info; // 로그인 한 사용자의 정보를 저장. Application 수준에서 관리됨.
     Button mypage_btn, open_category_btn; // 타이틀바의 사람 모양 버튼
@@ -45,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private SharedPreferences loginData; // 사용자의 로그인 정보를 파일로 저장하여 로그인 상태를 유지함
 
-    ViewPager pager; // 배너
+    private ViewPager bannerPager; // 배너
     private final int BANNER_FLIP_TIME = 5000; // 배너가 자동으로 넘어가는 시간 (1000 = 1초)
     private ArrayList<URL> bannerUrlArray; // 배너 데이터베이스에 있는 URL을 저장하여 BannerPagerAdapter 클래스에서 사용
     private int num_banner_data; // 배너 데이터베이스에 들어있는 데이터의 개수를 저장
@@ -56,11 +59,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // 카테고리 메뉴에 필요한 변수들
     private CategoryContentsRecyclerAdapter categoryContentsRecyclerAdapter;
     private RecyclerView categoryRecycler;
-    private RecyclerView.LayoutManager CategoryRecyclerLayoutManager, NewArrivalLayoutManger;
+    private RecyclerView.LayoutManager CategoryRecyclerLayoutManager, NewArrivalLayoutManger,DiscountRecyclerManager;
 
     // 신작 메뉴에 필요한 변수들
     private NewArrivalRecyclerAdapter newArrivalRecyclerAdapter;
     private RecyclerView arrivalRecycler;
+
+    // 할인 메뉴에 필요한 변수들
+    private ViewPager discountPager;
+
+//    private DiscountContentsRecyclerAdatper discountContentsRecyclerAdatper;
+//    private RecyclerView discountRecycler;
 
     @SuppressLint("HandlerLeak")
     @Override
@@ -95,6 +104,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         newArrivalRecyclerAdapter = new NewArrivalRecyclerAdapter();
         arrivalRecycler.addItemDecoration(new RecyclerViewDecoration(10));
 
+        // 할인 메뉴에 필요한 변수들
+        discountPager = findViewById(R.id.main_discount_pager);
+
+//        discountRecycler = findViewById(R.id.main_discount_recycler);
+//        DiscountRecyclerManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+//        discountRecycler.setLayoutManager(DiscountRecyclerManager);
+//        discountContentsRecyclerAdatper = new DiscountContentsRecyclerAdatper();
+
         pop.setOnClickListener(this);
         love.setOnClickListener(this);
         edu.setOnClickListener(this);
@@ -121,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         loadPrevInfo();
 
         // 광고 배너 페이저 초기화
-        pager = findViewById(R.id.main_pager);
+        bannerPager = findViewById(R.id.main_pager);
 
         // 광고 배너에 넣을 이미지가 몇개인지 개수를 알아와서 그 개수로 초기화
         BannerDBRequest bannerDBRequest = new BannerDBRequest(bannerListener);
@@ -132,23 +149,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bannerHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                int cur = pager.getCurrentItem();
+                int cur = bannerPager.getCurrentItem();
                 if (cur == num_banner_data - 1) {
-                    pager.setCurrentItem(0);
+                    bannerPager.setCurrentItem(0);
                 } else {
-                    pager.setCurrentItem(cur + 1);
+                    bannerPager.setCurrentItem(cur + 1);
                 }
                 super.handleMessage(msg);
             }
         };
 
-        // 카테고리별 콘텐츠 정보를 데이터베이스에서 얻어와서 scroll view에 설정
+        // 카테고리별 콘텐츠 정보를 데이터베이스에서 얻어와서 recycler view에 설정
         ContentsDBRequest contentsDBRequest = new ContentsDBRequest(CategoryContentsListener, categoryContentsURL);
         requestQueue.add(contentsDBRequest);
 
-        // 신작 콘텐츠 정보를 데이터베이스에서 얻어와서 scroll view에 설정
+        // 신작 콘텐츠 정보를 데이터베이스에서 얻어와서 recycler view에 설정
         contentsDBRequest = new ContentsDBRequest(newArrivalListener, arrivalContentsURL);
         requestQueue.add(contentsDBRequest);
+
+        // 할인 작품 정보를 데이터베이스에서 얻어와서 recycler view에 설정
+        contentsDBRequest = new ContentsDBRequest(disCountContentsListener, discountContentsURL);
+        requestQueue.add(contentsDBRequest);
+
         ShowProgressDialog.showProgressDialog(this);
     }
 
@@ -189,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     // 광고 배너 ViewPager 관련 변수 선언, 초기화
                     BannerPagerAdapter adapter = new BannerPagerAdapter(getLayoutInflater(), num_banner_data, bannerUrlArray);
-                    pager.setAdapter(adapter);
+                    bannerPager.setAdapter(adapter);
                     bannerThread.start();
                 } else {
                     Log.e("No Banner", "표시 할 배너가 없습니다.");
@@ -242,7 +264,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     };
 
     // 카테고리 콘텐츠 데이터베이스에서 url과 정보를 가져와 처리하는 리스너
-    Response.Listener<String> CategoryContentsListener = new Response.Listener<String>() {
+    private Response.Listener<String> CategoryContentsListener = new Response.Listener<String>() {
         @Override
         public void onResponse(String response) {
             try {
@@ -267,10 +289,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             Bitmap bitmap = getBitmapImageFromURL.getBitmap();
 
                             String contents_name = temp.getString("contents_name");
-                            String author_name = temp.getString("author_name");
+                            String painter_name = temp.getString("painter_name");
+//                            String writer_name = temp.getString("writer_name"); // 글 작가 이름 추가?
                             int view_count = temp.getInt("view_count");
 
-                            categoryContentsRecyclerAdapter.addItem(bitmap, contents_name, author_name, view_count, contents_pk);
+                            categoryContentsRecyclerAdapter.addItem(bitmap, contents_name, painter_name, view_count, contents_pk);
                         } catch (Exception e) {
                             Log.e("setBitmap error", e.getMessage());
                         }
@@ -281,6 +304,64 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             } catch (Exception e) {
                 Log.e("contentsListener", e.getMessage());
+            }
+        }
+    };
+
+    // 할인메뉴 리스너
+    private Response.Listener<String> disCountContentsListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonResponse = new JSONObject(response);
+                // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
+                JSONArray result = jsonResponse.getJSONArray("result");
+                boolean exist = jsonResponse.getBoolean("exist");
+                if (exist) {
+                    int num_category_contents_data = jsonResponse.getInt("num_result");
+                    ArrayList<DiscountContentsItem> items = new ArrayList<>();
+                    for (int i = 0; i < num_category_contents_data; i++) {
+                        // 데이터베이스에 들어있는 콘텐츠의 수만큼 for문을 돌려 layout에 image추가
+                        try {
+                            JSONObject temp = result.getJSONObject(i);
+                            URL url = new URL(temp.getString("url"));
+                            GetBitmapImageFromURL getBitmapImageFromURL = new GetBitmapImageFromURL(url);
+                            getBitmapImageFromURL.start();
+                            getBitmapImageFromURL.join();
+                            Bitmap thumbnail = getBitmapImageFromURL.getBitmap();
+
+                            int contents_pk = temp.getInt("contents_pk");
+                            String contents_name = temp.getString("contents_name");
+                            String writer_name = temp.getString("writer_name");
+                            String painter_name = temp.getString("painter_name");
+                            String summary = temp.getString("summary");
+                            int view_count = temp.getInt("view_count");
+                            double star_rating = temp.getDouble("star_rating");
+
+                            DiscountContentsItem item = new DiscountContentsItem();
+                            item.setBitmap(thumbnail);
+                            item.setContents_pk(contents_pk);
+                            item.setTitle(contents_name);
+                            item.setWriter(writer_name);
+                            item.setPainter(painter_name);
+                            item.setSummary(summary);
+                            item.setView_count(view_count);
+                            item.setStar_rating(star_rating);
+                            items.add(item);
+//                            discountContentsRecyclerAdatper.addItem(contents_pk, thumbnail, contents_name, writer_name, painter_name, summary, view_count, star_rating);
+
+                        } catch (Exception e) {
+                            Log.e("setBitmap error", e.getMessage());
+                        }
+                    }
+                    DiscountPagerAdapter adapter = new DiscountPagerAdapter(getLayoutInflater(), items);
+                    discountPager.setAdapter(adapter);
+//                    discountRecycler.setAdapter(discountContentsRecyclerAdatper);
+                } else {
+                    Log.e("No Arrival", "할인 목록이 없습니다..");
+                }
+            } catch (Exception e) {
+                Log.e("arrivalContentsListener", e.getMessage());
             }
         }
     };

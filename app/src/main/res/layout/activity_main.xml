@@ -110,7 +110,7 @@
             app:layout_constraintRight_toLeftOf="@+id/main_category_open_btn"
             app:layout_constraintTop_toBottomOf="@+id/main_category_recycler" />
 
-        <ImageButton
+        <ImageView
             android:id="@+id/main_category_open_btn"
             android:layout_width="20dp"
             android:layout_height="20dp"
@@ -154,5 +154,12 @@
             android:layout_margin="5dp"
             android:orientation="horizontal"
             app:layout_constraintTop_toBottomOf="@id/main_newarrival_text" />
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/main_discount_include"
+            layout="@layout/main_discount_contents"
+            app:layout_constraintTop_toBottomOf="@id/main_arrival_recycler" />
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

@@ -21,7 +21,6 @@
         android:textSize="20dp" />
 
     <TextView
-
         android:id="@+id/main_discount_first_third_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -50,5 +49,12 @@
             android:layout_toRightOf="@id/main_discount_view_all"
             android:src="@drawable/ic_keyboard_arrow_right_black_24dp" />
     </LinearLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/main_discount_pager"
+        android:layout_margin="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_below="@+id/main_discount_first_third_text"/>
 
 </RelativeLayout>

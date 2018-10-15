@@ -47,7 +47,7 @@ public class CategoryContentsRecyclerAdapter extends RecyclerView.Adapter<Recycl
         final CategoryContentsItem item = items.get(position);
 
         categoryViewHolder.worksImageView.setImageBitmap(item.getBitmap());
-        categoryViewHolder.author_name_view.setText(item.getAuthor_name());
+        categoryViewHolder.author_name_view.setText(item.getPainter_name());
         categoryViewHolder.contents_name_view.setText(item.getWork_name());
 
         String viewCountText;
@@ -78,11 +78,11 @@ public class CategoryContentsRecyclerAdapter extends RecyclerView.Adapter<Recycl
         return items.size();
     }
 
-    void addItem(Bitmap bitmap, String item_name, String author_name, int view_count, int contents_pk) {
+    void addItem(Bitmap bitmap, String item_name, String painter_name, int view_count, int contents_pk) {
         CategoryContentsItem item = new CategoryContentsItem();
         item.setBitmap(bitmap);
         item.setWork_name(item_name);
-        item.setAuthor_name(author_name);
+        item.setPainter_name(painter_name);
         item.setView_count(view_count);
         item.setContents_pk(contents_pk);
         items.add(item);
