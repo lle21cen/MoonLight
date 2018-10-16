@@ -8,16 +8,15 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,22 +27,25 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.techtown.ideaconcert.ActivityCodes;
-import org.techtown.ideaconcert.ContentsMainDir.ContentsMainActivity;
 import org.techtown.ideaconcert.LoginDir.LoginActivity;
 import org.techtown.ideaconcert.R;
 import org.techtown.ideaconcert.ShowProgressDialog;
 import org.techtown.ideaconcert.UserInformation;
 
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     final private String categoryContentsURL = "http://lle21cen.cafe24.com/GetCategoryContents.php";
-    final private String arrivalContentsURL = "http://lle21cen.cafe24.com/GetArrivalContents.php";
+    final private String arrivalContentsURL = "http://lle21cen.cafe24.com/GetArrivalContents.php"; // 이름 싹~ 바꿔야 함, 신작, 베스트, 추천 에 똑같이 사용
     final private String discountContentsURL = "http://lle21cen.cafe24.com/GetDiscountContents.php";
 
+    ScrollView mainScrollView; // 메인 액태비티 최상위 레이아웃 ScrollView
+
     UserInformation info; // 로그인 한 사용자의 정보를 저장. Application 수준에서 관리됨.
-    Button mypage_btn, open_category_btn; // 타이틀바의 사람 모양 버튼
+    Button mypage_btn, open_category_btn, footer_up_btn;
     boolean isLoginTurn = true; // 로그인이 된 상태인지 안된 상태인지 판단. true일 경우 로그인이 안 된 상태
 
     private SharedPreferences loginData; // 사용자의 로그인 정보를 파일로 저장하여 로그인 상태를 유지함
@@ -59,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // 카테고리 메뉴에 필요한 변수들
     private CategoryContentsRecyclerAdapter categoryContentsRecyclerAdapter;
     private RecyclerView categoryRecycler;
-    private RecyclerView.LayoutManager CategoryRecyclerLayoutManager, NewArrivalLayoutManger,DiscountRecyclerManager;
+    private RecyclerView.LayoutManager categoryRecyclerLayoutManager, newArrivalLayoutManger, bestRecyclerManager, recommendRecyclerManager;
 
     // 신작 메뉴에 필요한 변수들
     private NewArrivalRecyclerAdapter newArrivalRecyclerAdapter;
@@ -67,9 +69,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     // 할인 메뉴에 필요한 변수들
     private ViewPager discountPager;
+    private CircleAnimIndicator circleAnimIndicator;
 
-//    private DiscountContentsRecyclerAdatper discountContentsRecyclerAdatper;
-//    private RecyclerView discountRecycler;
+    // 베스트 메뉴에 필요한 변수들
+    private NewArrivalRecyclerAdapter bestRecyclerAdapter;
+    private RecyclerView bestRecycler;
+
+    // 추천 메뉴에 필요한 변수들
+    private NewArrivalRecyclerAdapter recommendRecyclerAdapter;
+    private RecyclerView recommendRecycler;
 
     @SuppressLint("HandlerLeak")
     @Override
@@ -77,7 +85,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        info = (UserInformation) getApplication();
+        mainScrollView = findViewById(R.id.main_scroll_view);
+
+        info = (UserInformation) getApplication(); // 유저 정보를 저장하기 위한 Application 변수
+
+        TextView bestContentsDateTextView = findViewById(R.id.main_best_date);
+        Date today = new Date();
+        SimpleDateFormat date = new SimpleDateFormat("yyyy.MM");
+        bestContentsDateTextView.setText("["+date.format(today)+"]");
+
         bannerUrlArray = new ArrayList<>();
 
         open_category_btn = findViewById(R.id.main_open_category);
@@ -89,28 +105,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         chivalry = findViewById(R.id.main_chivalry);
         action = findViewById(R.id.main_action);
         comic = findViewById(R.id.main_comic);
-
-        // 카테고리 메뉴에 필요한 변수들
-        categoryRecycler = findViewById(R.id.main_category_recycler);
-        CategoryRecyclerLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        categoryRecycler.setLayoutManager(CategoryRecyclerLayoutManager);
-        categoryContentsRecyclerAdapter = new CategoryContentsRecyclerAdapter();
-        categoryRecycler.addItemDecoration(new RecyclerViewDecoration(10));
-
-        // 신작 메뉴에 필요한 변수들
-        arrivalRecycler = findViewById(R.id.main_arrival_recycler);
-        NewArrivalLayoutManger = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        arrivalRecycler.setLayoutManager(NewArrivalLayoutManger);
-        newArrivalRecyclerAdapter = new NewArrivalRecyclerAdapter();
-        arrivalRecycler.addItemDecoration(new RecyclerViewDecoration(10));
-
-        // 할인 메뉴에 필요한 변수들
-        discountPager = findViewById(R.id.main_discount_pager);
-
-//        discountRecycler = findViewById(R.id.main_discount_recycler);
-//        DiscountRecyclerManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-//        discountRecycler.setLayoutManager(DiscountRecyclerManager);
-//        discountContentsRecyclerAdatper = new DiscountContentsRecyclerAdatper();
+        footer_up_btn = findViewById(R.id.main_footer_up_btn);
 
         pop.setOnClickListener(this);
         love.setOnClickListener(this);
@@ -118,7 +113,44 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         chivalry.setOnClickListener(this);
         action.setOnClickListener(this);
         comic.setOnClickListener(this);
+        footer_up_btn.setOnClickListener(this);
 
+        // 카테고리 메뉴에 필요한 변수들
+        categoryRecycler = findViewById(R.id.main_category_recycler);
+        categoryRecyclerLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        categoryRecycler.setLayoutManager(categoryRecyclerLayoutManager);
+        categoryContentsRecyclerAdapter = new CategoryContentsRecyclerAdapter();
+        categoryRecycler.addItemDecoration(new RecyclerViewDecoration(10));
+
+        // 신작 메뉴에 필요한 변수들
+        arrivalRecycler = findViewById(R.id.main_arrival_recycler);
+        newArrivalLayoutManger = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        arrivalRecycler.setLayoutManager(newArrivalLayoutManger);
+        newArrivalRecyclerAdapter = new NewArrivalRecyclerAdapter();
+        arrivalRecycler.addItemDecoration(new RecyclerViewDecoration(10));
+
+        // 할인 메뉴에 필요한 변수들
+        discountPager = findViewById(R.id.main_discount_pager);
+        circleAnimIndicator = (CircleAnimIndicator) findViewById(R.id.circleAnimIndicator);
+        discountPager.addOnPageChangeListener(onPageChangeListener);
+
+
+        // 베스트 메뉴에 필요한 변수들
+        bestRecycler = findViewById(R.id.main_best_recycler);
+        bestRecyclerManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        bestRecycler.setLayoutManager(bestRecyclerManager);
+        bestRecyclerAdapter = new NewArrivalRecyclerAdapter();
+        bestRecycler.addItemDecoration(new RecyclerViewDecoration(10));
+
+
+        // 추천 메뉴에 필요한 변수들
+        recommendRecycler = findViewById(R.id.main_recommend_recycler);
+        recommendRecyclerManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        recommendRecycler.setLayoutManager(recommendRecyclerManager);
+        recommendRecyclerAdapter = new NewArrivalRecyclerAdapter();
+        recommendRecycler.addItemDecoration(new RecyclerViewDecoration(10));
+
+        // 이건 왜 여기???
         mypage_btn = findViewById(R.id.title_mypage_btn);
         mypage_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,19 +192,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         };
 
         // 카테고리별 콘텐츠 정보를 데이터베이스에서 얻어와서 recycler view에 설정
-        ContentsDBRequest contentsDBRequest = new ContentsDBRequest(CategoryContentsListener, categoryContentsURL);
+        ContentsDBRequest contentsDBRequest = new ContentsDBRequest(CategoryContentsListener, categoryContentsURL, 0); // tag 필요 없음
         requestQueue.add(contentsDBRequest);
 
         // 신작 콘텐츠 정보를 데이터베이스에서 얻어와서 recycler view에 설정
-        contentsDBRequest = new ContentsDBRequest(newArrivalListener, arrivalContentsURL);
+        contentsDBRequest = new ContentsDBRequest(newArrivalListener, arrivalContentsURL, 1); // 1 : 할인 작품
         requestQueue.add(contentsDBRequest);
 
         // 할인 작품 정보를 데이터베이스에서 얻어와서 recycler view에 설정
-        contentsDBRequest = new ContentsDBRequest(disCountContentsListener, discountContentsURL);
+        contentsDBRequest = new ContentsDBRequest(disCountContentsListener, discountContentsURL, 0); // tag 필요 없음 -> 나중에 데이터베이스부터 바꿀 필요 있음
+        requestQueue.add(contentsDBRequest);
+
+        // 베스트 작품 정보를 데이터베이스에서 얻어와서 recycler view에 설정
+        contentsDBRequest = new ContentsDBRequest(newArrivalListener, arrivalContentsURL, 2); // 2 : 베스트 작품
+        requestQueue.add(contentsDBRequest);
+
+        //  작품 정보를 데이터베이스에서 얻어와서 recycler view에 설정
+        contentsDBRequest = new ContentsDBRequest(newArrivalListener, arrivalContentsURL, 3); // 3 : 추천 작품
         requestQueue.add(contentsDBRequest);
 
         ShowProgressDialog.showProgressDialog(this);
     }
+
+    // Indicator 초기화
+    private void initIndicator(int count) {
+        circleAnimIndicator.setItemMargin(10);
+        circleAnimIndicator.setAnimDuration(300);
+        circleAnimIndicator.createDotPanel(count, R.drawable.ic_circle_black_10dp, R.drawable.ic_circle_blue_10dp);
+    }
+
+    private ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            circleAnimIndicator.selectDot(position);
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
+    };
 
     // 광고 배너가 일정 주기로 자동으로 넘어가도록 하는 Thread
     Thread bannerThread = new Thread() {
@@ -231,6 +295,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
                 JSONArray result = jsonResponse.getJSONArray("result");
                 boolean exist = jsonResponse.getBoolean("exist");
+                int tag = jsonResponse.getInt("tag");
+
+                NewArrivalRecyclerAdapter adapter;
+                RecyclerView recyclerView;
+
+                if (tag == 1) {
+                    adapter = newArrivalRecyclerAdapter;
+                    recyclerView = arrivalRecycler;
+                }
+                else if (tag == 2) {
+                    adapter = bestRecyclerAdapter;
+                    recyclerView = bestRecycler;
+                }
+                else {
+                    adapter = recommendRecyclerAdapter;
+                    recyclerView = recommendRecycler;
+                }
+
                 if (exist) {
                     int num_category_contents_data = jsonResponse.getInt("num_result");
                     for (int i = 0; i < num_category_contents_data; i++) {
@@ -244,16 +326,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             getBitmapImageFromURL.join();
                             Bitmap bitmap = getBitmapImageFromURL.getBitmap();
 
+                            int contents_pk = temp.getInt("contents_pk");
                             String contents_name = temp.getString("contents_name");
+                            String writer_anme = temp.getString("writer_name");
+                            String painter_name = temp.getString("painter_name");
                             double star_rating = temp.getDouble("star_rating");
-                            String author_name = temp.getString("author_name");
 
-                            newArrivalRecyclerAdapter.addItem(bitmap, contents_name, star_rating, author_name);
+                            adapter.addItem(contents_pk, bitmap, contents_name, star_rating, painter_name);
                         } catch (Exception e) {
                             Log.e("setBitmap error", e.getMessage());
                         }
                     }
-                    arrivalRecycler.setAdapter(newArrivalRecyclerAdapter);
+                    recyclerView.setAdapter(adapter);
                 } else {
                     Log.e("No Arrival", "표시 할 신작이 없습니다.");
                 }
@@ -319,10 +403,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 boolean exist = jsonResponse.getBoolean("exist");
                 if (exist) {
                     int num_category_contents_data = jsonResponse.getInt("num_result");
-                    ArrayList<DiscountContentsItem> items = new ArrayList<>();
+                    ArrayList<DiscountContentsItem> items1 = new ArrayList<>();
+                    ArrayList<DiscountContentsItem> items2 = new ArrayList<>();
+                    ArrayList<DiscountContentsItem> items3 = new ArrayList<>();
+                    ArrayList<DiscountContentsItem> items;
                     for (int i = 0; i < num_category_contents_data; i++) {
                         // 데이터베이스에 들어있는 콘텐츠의 수만큼 for문을 돌려 layout에 image추가
                         try {
+                            if (i % 3 == 0) items = items1;
+                            else if (i % 3 == 1) items = items2;
+                            else items = items3;
+
                             JSONObject temp = result.getJSONObject(i);
                             URL url = new URL(temp.getString("url"));
                             GetBitmapImageFromURL getBitmapImageFromURL = new GetBitmapImageFromURL(url);
@@ -354,8 +445,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             Log.e("setBitmap error", e.getMessage());
                         }
                     }
-                    DiscountPagerAdapter adapter = new DiscountPagerAdapter(getLayoutInflater(), items);
+                    DiscountPagerAdapter adapter = new DiscountPagerAdapter(getLayoutInflater(), items1, items2, items3);
                     discountPager.setAdapter(adapter);
+                    initIndicator(items1.size());
 //                    discountRecycler.setAdapter(discountContentsRecyclerAdatper);
                 } else {
                     Log.e("No Arrival", "할인 목록이 없습니다..");
@@ -437,6 +529,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // ------------------------------------------------------------------------------------------------------------- //
             case R.id.main_open_category:
 
+                break;
+            case R.id.main_footer_up_btn :
+                mainScrollView.fullScroll(ScrollView.FOCUS_UP);
                 break;
         }
     }

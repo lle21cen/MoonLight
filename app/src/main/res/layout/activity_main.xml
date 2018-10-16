@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_scroll_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context=".MainActivityDir.MainActivity">
@@ -18,7 +19,7 @@
         <android.support.v4.view.ViewPager
             android:id="@+id/main_pager"
             android:layout_width="match_parent"
-            android:layout_height="142dp"
+            android:layout_height="200dp"
             android:background="#ece6e6"
             app:layout_constraintTop_toBottomOf="@+id/main_titlebar" />
 
@@ -142,7 +143,7 @@
             android:id="@+id/main_newarrival_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="NEW ARRIVAL"
+            android:text="이달의 신작보기"
             android:textSize="20dp"
             android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@id/main_sub_add_banner" />
@@ -156,10 +157,52 @@
             app:layout_constraintTop_toBottomOf="@id/main_newarrival_text" />
 
         <include
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:id="@+id/main_discount_include"
             layout="@layout/main_discount_contents"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/main_arrival_recycler" />
+
+        <include
+            android:id="@+id/main_best_include"
+            layout="@layout/main_best_contents"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/main_discount_include" />
+
+        <include
+            android:layout_marginTop="20dp"
+            android:id="@+id/main_recommend_include"
+            layout="@layout/main_recommend_contents"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/main_best_include" />
+
+        <TextView
+            android:id="@+id/main_event_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="오늘의 이벤트"
+            android:textSize="20dp"
+            app:layout_constraintTop_toBottomOf="@id/main_recommend_include" />
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/main_event_pager"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:background="#ffe0e0"
+            app:layout_constraintTop_toBottomOf="@id/main_event_text" />
+
+        <include
+            android:id="@+id/main_footer_include"
+            layout="@layout/main_footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:layout_marginBottom="80dp"
+            app:layout_constraintTop_toBottomOf="@id/main_event_pager" />
+
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

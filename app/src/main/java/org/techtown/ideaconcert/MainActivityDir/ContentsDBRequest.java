@@ -9,9 +9,10 @@ import java.util.Map;
 public class ContentsDBRequest extends StringRequest{
     private Map<String, String> parameters;
 
-    public ContentsDBRequest(Response.Listener<String> listener, String URL) {
+    public ContentsDBRequest(Response.Listener<String> listener, String URL, int tag) {
         super(Method.POST, URL, listener, null);
         parameters = new HashMap<>();
+        parameters.put("tag", String.valueOf(tag));
     }
 
     public Map<String, String> getParams() {

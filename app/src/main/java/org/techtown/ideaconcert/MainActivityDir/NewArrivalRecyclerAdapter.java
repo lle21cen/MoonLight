@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 public class NewArrivalRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    // 신작보기와 베트스9과 추천작품에서 사용
     private ArrayList<NewArrivalItem> items = new ArrayList<>();
 
     public static class NewArrivalViewHolder extends RecyclerView.ViewHolder {
@@ -44,7 +45,7 @@ public class NewArrivalRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
         NewArrivalViewHolder newArrivalViewHolder = (NewArrivalViewHolder) holder;
         NewArrivalItem item = items.get(position);
         newArrivalViewHolder.worksImageView.setImageBitmap(item.getBitmap());
-        newArrivalViewHolder.author_name_view.setText(item.getAuthor_name());
+        newArrivalViewHolder.author_name_view.setText(item.getPainter_name());
         newArrivalViewHolder.contents_name_view.setText(item.getWork_name());
         newArrivalViewHolder.star_rating_view.setText(""+item.getStar_rating());
 
@@ -62,12 +63,13 @@ public class NewArrivalRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
         return items.size();
     }
 
-    void addItem(Bitmap bitmap, String item_name, double star_rating, String author_name) {
+    void addItem(int contents_pk, Bitmap bitmap, String item_name, double star_rating, String painter_name) {
         NewArrivalItem item = new NewArrivalItem();
+        item.setContents_pk(contents_pk);
         item.setBitmap(bitmap);
         item.setWork_name(item_name);
+        item.setPainter_name(painter_name);
         item.setStar_rating(star_rating);
-        item.setAuthor_name(author_name);
         items.add(item);
     }
 }
