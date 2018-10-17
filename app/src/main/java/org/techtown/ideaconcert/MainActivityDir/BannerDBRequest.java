@@ -8,11 +8,11 @@ import java.util.Map;
 
 public class BannerDBRequest extends StringRequest {
     private Map<String, String> parameters;
-    static final String getBannerInfoURL = "http://lle21cen.cafe24.com/GetBannerInfo.php";
 
-    public BannerDBRequest(Response.Listener<String> listener) {
-        super(Method.POST, getBannerInfoURL, listener, null);
+    public BannerDBRequest(Response.Listener<String> listener, String url, int tag) {
+        super(Method.POST, url, listener, null);
         parameters = new HashMap<>();
+        parameters.put("tag", String.valueOf(tag));
     }
 
     public Map<String, String> getParams() {

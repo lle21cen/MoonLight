@@ -46,10 +46,11 @@ public class BannerPagerAdapter extends PagerAdapter {
             bannerThread.join();
             Bitmap bitmap = bannerThread.getBitmap();
             bannerImg.setImageBitmap(bitmap);
+            bannerImg.setAdjustViewBounds(true);
 //            Log.e("size", ""+bitmap.getHeight()+", " +bitmap.getWidth());
-            indicator_red_txt.setText(""+(position+1));
-            indicator_white_txt.setText("/"+count);
-        }catch (Exception e) {
+            indicator_red_txt.setText("" + (position + 1));
+            indicator_white_txt.setText("/" + count);
+        } catch (Exception e) {
             Log.e("setBitmap error", e.getMessage());
         }
         container.addView(view);

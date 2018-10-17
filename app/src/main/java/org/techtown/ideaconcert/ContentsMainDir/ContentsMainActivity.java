@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -31,15 +32,17 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
 
     // 미완성 구현 사항 :
     // 이미지만 따로 동적으로 설정하도록 바꾸어서 컨텐츠 로딩에 걸리는 시간을 단축할 필요가 있음
+    // 변수명 통일 시키기 ... 귀찮
 
     static final String getContentsItemsImgURL = "http://lle21cen.cafe24.com/GetContentsItem.php";
     private int selected_contents_pk;
 
     private Button firstEpiBtn;
     private ListView listView;
-    private TextView totalText, readingText, cashText;
+    private TextView totalText, readingText, cashText, titlebar_title, info_title, info_writer, info_painter, info_view_count, contents_summary;
     private WorksListViewAdapter adapter;
     private Spinner sortSpinner;
+    private ImageView thumbnail, back_btn;
 
     public static ArrayList<WorksListViewItem> itemList; // WebtonActivity에서도 사용하기 위해 public static으로 선언
     @Override
@@ -53,6 +56,16 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
         totalText = findViewById(R.id.contents_main_status_total); // 전체 몇 편
         readingText = findViewById(R.id.contents_main_status_reading); // 그 중 몇 편을 열람
         cashText = findViewById(R.id.contents_main_status_cash); // 보유 캐시
+        info_title = findViewById(R.id.contents_main_info_title);
+        info_writer = findViewById(R.id.contents_main_info_writer);
+        info_painter = findViewById(R.id.contents_main_info_painter);
+        contents_summary = findViewById(R.id.contents_main_summary);
+        info_view_count = findViewById(R.id.contents_main_info_view_count);
+        titlebar_title = findViewById(R.id.contents_main_title_bar_title);
+        titlebar_title.setOnClickListener(this);
+
+        back_btn = findViewById(R.id.contents_main_back);
+        back_btn.setOnClickListener(this);
 
         firstEpiBtn = findViewById(R.id.contents_main_first_episode); // 첫화보기 버튼
         firstEpiBtn.setOnClickListener(this);
@@ -112,6 +125,21 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
 
                 if (exist) {
                     int num_category_contents_data = jsonResponse.getInt("num_result");
+                    URL thumbnailURL = new URL(jsonResponse.getString("thumbnail"));
+                    String main_contents_name = jsonResponse.getString("contents_name");
+                    String writer_name = jsonResponse.getString("writer_name");
+                    String painter_name = jsonResponse.getString("painter_name");
+                    int view_count = jsonResponse.getInt("view_count");
+                    String summary = jsonResponse.getString("summary");
+
+                    // thumbnail.setImageBitmap(); 효율성을 위해 나중에 쓰래드로 구현.
+                    titlebar_title.setText(main_contents_name);
+                    info_title.setText(main_contents_name);
+                    info_writer.setText(writer_name);
+                    info_painter.setText(painter_name);
+                    info_view_count.setText(""+view_count);
+                    contents_summary.setText(summary);
+
                     for (int i = 0; i < num_category_contents_data; i++) {
                         // 데이터베이스에 들어있는 콘텐츠의 수만큼 for문을 돌려 layout에 image추가
                         try {
@@ -168,6 +196,8 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
                 putExtraData(intent, position);
                 startActivityForResult(intent, ActivityCodes.WEBTTON_REQUEST);
                 break;
+            case R.id.contents_main_back : case R.id.contents_main_title_bar_title :
+                finish();
         }
     }
 

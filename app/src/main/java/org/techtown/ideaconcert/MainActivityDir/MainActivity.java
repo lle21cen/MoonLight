@@ -14,7 +14,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -38,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    final private String getBannerInfoURL = "http://lle21cen.cafe24.com/GetBannerInfo.php";
     final private String categoryContentsURL = "http://lle21cen.cafe24.com/GetCategoryContents.php";
     final private String arrivalContentsURL = "http://lle21cen.cafe24.com/GetArrivalContents.php"; // 이름 싹~ 바꿔야 함, 신작, 베스트, 추천 에 똑같이 사용
     final private String discountContentsURL = "http://lle21cen.cafe24.com/GetDiscountContents.php";
@@ -50,10 +50,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private SharedPreferences loginData; // 사용자의 로그인 정보를 파일로 저장하여 로그인 상태를 유지함
 
-    private ViewPager bannerPager; // 배너
+    private ViewPager bannerPager; // (???) 배너
     private final int BANNER_FLIP_TIME = 5000; // 배너가 자동으로 넘어가는 시간 (1000 = 1초)
     private ArrayList<URL> bannerUrlArray; // 배너 데이터베이스에 있는 URL을 저장하여 BannerPagerAdapter 클래스에서 사용
-    private int num_banner_data; // 배너 데이터베이스에 들어있는 데이터의 개수를 저장
+    private int banner_data_num; // 배너 데이터베이스에 들어있는 데이터의 개수를 저장
     private Handler bannerHandler; // 배너가 일정 시간 경과 시 자동으로 넘어가도록 만드는 핸들러
 
     private TextView pop, love, edu, chivalry, action, comic;
@@ -61,7 +61,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // 카테고리 메뉴에 필요한 변수들
     private CategoryContentsRecyclerAdapter categoryContentsRecyclerAdapter;
     private RecyclerView categoryRecycler;
-    private RecyclerView.LayoutManager categoryRecyclerLayoutManager, newArrivalLayoutManger, bestRecyclerManager, recommendRecyclerManager;
+    private RecyclerView.LayoutManager categoryRecyclerLayoutManager, newArrivalLayoutManger,
+            bestRecyclerManager, recommendRecyclerManager, eventRecyclerManager;
 
     // 신작 메뉴에 필요한 변수들
     private NewArrivalRecyclerAdapter newArrivalRecyclerAdapter;
@@ -79,6 +80,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private NewArrivalRecyclerAdapter recommendRecyclerAdapter;
     private RecyclerView recommendRecycler;
 
+    // 추천 메뉴에 필요한 변수들
+    private EventRecyclerAdapter eventRecyclerAdapter;
+    private RecyclerView eventBannerRecycler;
+
     @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         TextView bestContentsDateTextView = findViewById(R.id.main_best_date);
         Date today = new Date();
         SimpleDateFormat date = new SimpleDateFormat("yyyy.MM");
-        bestContentsDateTextView.setText("["+date.format(today)+"]");
+        bestContentsDateTextView.setText("[" + date.format(today) + "]");
 
         bannerUrlArray = new ArrayList<>();
 
@@ -150,6 +155,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recommendRecyclerAdapter = new NewArrivalRecyclerAdapter();
         recommendRecycler.addItemDecoration(new RecyclerViewDecoration(10));
 
+        // 오늘의 이벤트에 필요한 변수들
+        eventBannerRecycler = findViewById(R.id.main_event_recycler);
+        eventRecyclerManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        eventBannerRecycler.setLayoutManager(eventRecyclerManager);
+        eventRecyclerAdapter = new EventRecyclerAdapter();
+        eventBannerRecycler.addItemDecoration(new RecyclerViewDecoration(10));
+
         // 이건 왜 여기???
         mypage_btn = findViewById(R.id.title_mypage_btn);
         mypage_btn.setOnClickListener(new View.OnClickListener() {
@@ -172,17 +184,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 광고 배너 페이저 초기화
         bannerPager = findViewById(R.id.main_pager);
 
-        // 광고 배너에 넣을 이미지가 몇개인지 개수를 알아와서 그 개수로 초기화
-        BannerDBRequest bannerDBRequest = new BannerDBRequest(bannerListener);
+        // 상단 광고 배너(ViewPager)에 넣을 이미지가 몇개인지 개수를 알아와서 그 개수로 초기화
+        BannerDBRequest bannerDBRequest = new BannerDBRequest(bannerListener, getBannerInfoURL, 1); // 최상단 배너 정보
         RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
-//        requestQueue.add(bannerDBRequest);
+        requestQueue.add(bannerDBRequest);
+
+        // 이벤트 광고 배너(RecyclerView)에 넣을 이미지가 몇개인지 개수를 알아와서 그 개수로 초기화
+        bannerDBRequest = new BannerDBRequest(eventBannerListener, getBannerInfoURL, 2); // 오늘의 이벤트 광고 배너 정보
+        requestQueue.add(bannerDBRequest);
 
         // 광고 배너 핸들러 => 자동으로 넘기는 기능을 담당
         bannerHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 int cur = bannerPager.getCurrentItem();
-                if (cur == num_banner_data - 1) {
+                if (cur == banner_data_num - 1) {
                     bannerPager.setCurrentItem(0);
                 } else {
                     bannerPager.setCurrentItem(cur + 1);
@@ -239,7 +255,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     };
 
     // 광고 배너가 일정 주기로 자동으로 넘어가도록 하는 Thread
-    Thread bannerThread = new Thread() {
+    private Thread bannerThread = new Thread() {
         @Override
         public void run() {
             super.run();
@@ -256,7 +272,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     };
 
     // 광고 배너 데이터베이스에서 배너의 개수와 정보를 알아 와 처리하기 위한 listener
-    Response.Listener<String> bannerListener = new Response.Listener<String>() {
+    private Response.Listener<String> bannerListener = new Response.Listener<String>() {
         @Override
         public void onResponse(String response) {
             try {
@@ -264,19 +280,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
                 JSONArray result = jsonResponse.getJSONArray("result");
                 boolean exist = jsonResponse.getBoolean("exist");
-
                 if (exist) {
-                    num_banner_data = jsonResponse.getInt("num_result");
-                    for (int i = 0; i < num_banner_data; i++) {
+                    int num_result = jsonResponse.getInt("num_result");
+                    for (int i = 0; i < num_result; i++) {
                         // 데이터베이스에 들어있는 배너의 수만큼 for문을 돌려 url을 배열에 저장
                         JSONObject temp = result.getJSONObject(i);
                         bannerUrlArray.add(new URL(temp.getString("url")));
                     }
 
                     // 광고 배너 ViewPager 관련 변수 선언, 초기화
-                    BannerPagerAdapter adapter = new BannerPagerAdapter(getLayoutInflater(), num_banner_data, bannerUrlArray);
+
+                    banner_data_num = num_result;
+                    BannerPagerAdapter adapter = new BannerPagerAdapter(getLayoutInflater(), num_result, bannerUrlArray);
                     bannerPager.setAdapter(adapter);
-                    bannerThread.start();
+                    bannerThread.start(); // 최상단 배너에 대한 adater가 설정되면 자동으로 넘어가는 Thread가 실행되도록 설정
+
                 } else {
                     Log.e("No Banner", "표시 할 배너가 없습니다.");
                 }
@@ -285,6 +303,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     };
+
+    private Response.Listener<String> eventBannerListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonResponse = new JSONObject(response);
+                // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
+                JSONArray result = jsonResponse.getJSONArray("result");
+                boolean exist = jsonResponse.getBoolean("exist");
+                if (exist) {
+                    int num_result = jsonResponse.getInt("num_result");
+                    for (int i = 0; i < num_result; i++) {
+                        // 데이터베이스에 들어있는 배너의 수만큼 for문을 돌려 url을 배열에 저장
+                        JSONObject temp = result.getJSONObject(i);
+                        String url = temp.getString("url");
+                        GetBitmapImageFromURL getBitmapImageFromURL = new GetBitmapImageFromURL(new URL((url)));
+                        getBitmapImageFromURL.start();
+                        getBitmapImageFromURL.join();
+                        Bitmap bitmap = getBitmapImageFromURL.getBitmap();
+                        int contents_pk = temp.getInt("contents_pk");
+
+                        eventRecyclerAdapter.addItem(contents_pk, bitmap);
+                    }
+                    eventBannerRecycler.setAdapter(eventRecyclerAdapter);
+                } else {
+                    Log.e("No Banner", "표시 할 배너가 없습니다.");
+                }
+            } catch (Exception e) {
+                Log.e("bannerListener", e.getMessage());
+            }
+        }
+    };
+
 
     // 신작메뉴 리스너
     private Response.Listener<String> newArrivalListener = new Response.Listener<String>() {
@@ -296,21 +347,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 JSONArray result = jsonResponse.getJSONArray("result");
                 boolean exist = jsonResponse.getBoolean("exist");
                 int tag = jsonResponse.getInt("tag");
-
                 NewArrivalRecyclerAdapter adapter;
                 RecyclerView recyclerView;
-
                 if (tag == 1) {
                     adapter = newArrivalRecyclerAdapter;
                     recyclerView = arrivalRecycler;
-                }
-                else if (tag == 2) {
+                } else if (tag == 2) {
                     adapter = bestRecyclerAdapter;
                     recyclerView = bestRecycler;
-                }
-                else {
+                } else if (tag ==3){
                     adapter = recommendRecyclerAdapter;
                     recyclerView = recommendRecycler;
+                }
+                else {
+                    Log.e("tag error", "tag"+tag);
+                    return;
                 }
 
                 if (exist) {
@@ -439,7 +490,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             item.setView_count(view_count);
                             item.setStar_rating(star_rating);
                             items.add(item);
-//                            discountContentsRecyclerAdatper.addItem(contents_pk, thumbnail, contents_name, writer_name, painter_name, summary, view_count, star_rating);
 
                         } catch (Exception e) {
                             Log.e("setBitmap error", e.getMessage());
@@ -448,7 +498,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     DiscountPagerAdapter adapter = new DiscountPagerAdapter(getLayoutInflater(), items1, items2, items3);
                     discountPager.setAdapter(adapter);
                     initIndicator(items1.size());
-//                    discountRecycler.setAdapter(discountContentsRecyclerAdatper);
                 } else {
                     Log.e("No Arrival", "할인 목록이 없습니다..");
                 }
@@ -530,7 +579,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.main_open_category:
 
                 break;
-            case R.id.main_footer_up_btn :
+            case R.id.main_footer_up_btn:
                 mainScrollView.fullScroll(ScrollView.FOCUS_UP);
                 break;
         }
