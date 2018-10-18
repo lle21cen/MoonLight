@@ -44,7 +44,7 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
     TextView title_text, star_rating_text, like_count_text, comments_count_text, order_text;
     Button option_btn, comments_btn, prev_btn, next_btn, like_btn;
     private final String getContentsItemImageURL = "http://lle21cen.cafe24.com/GetContentsItemImage.php";
-    private final String getContentsItemLikeURL = "http://lle21cen.cafe24.com/GetContentsItemLIke.php";
+    private final String getContentsLIkeCountURL = "http://lle21cen.cafe24.com/GetContentsLIkeCount.php";
     private final String insertDeleteContentsLikeDataURL = "http://lle21cen.cafe24.com/InsertDeleteContentsLikeData.php";
 
 
@@ -52,7 +52,7 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
     String item_title;
     int item_position;
 
-    private boolean isLikeClicked;
+    private boolean is_like_clicked;
     ListView contents_listView;
     ArrayList<WorksListViewItem> items;
 
@@ -138,24 +138,25 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
         });
 
         // 컨텐츠 아이템의 좋아요 개수를 DB에서 불러와 설정
-//        SharedPreferences sharedPreferences = getSharedPreferences("loginData", MODE_PRIVATE);
-//        int user_pk = sharedPreferences.getInt("user_pk", 0);
-        int user_pk = 1;
-        ContentsItemLikeDBRequest contentsItemLikeDBRequest = new ContentsItemLikeDBRequest(getContentsItemLikeURL, getContentsItemLikeListener, item_pk, user_pk);
+        SharedPreferences sharedPreferences = getSharedPreferences("loginData", MODE_PRIVATE);
+        int user_pk = sharedPreferences.getInt("user_pk", 0);
+        if (user_pk == 0)
+            user_pk = 1;
+        ContentsItemLikeDBRequest contentsItemLikeDBRequest = new ContentsItemLikeDBRequest(getContentsLIkeCountURL, getContentsItemLikeCountListener, item_pk, user_pk, 1);
         requestQueue.add(contentsItemLikeDBRequest);
     }
 
-    private Response.Listener<String> getContentsItemLikeListener = new Response.Listener<String>() {
+    private Response.Listener<String> getContentsItemLikeCountListener = new Response.Listener<String>() {
         @Override
         public void onResponse(String response) {
             try {
                 JSONObject jsonResponse = new JSONObject(response);
                 boolean exist = jsonResponse.getBoolean("exist");
+                int count = jsonResponse.getInt("count");
+                like_count_text.setText("" + count);
                 if (exist) {
-                    int count = jsonResponse.getInt("count");
-                    like_count_text.setText("" + count);
                     like_btn.setBackgroundDrawable(ContextCompat.getDrawable(WebtoonActivity.this, R.drawable.ic_favorite_red_24dp));
-                    isLikeClicked = true;
+                    is_like_clicked = true;
                 }
             } catch (Exception e) {
                 Log.e("dberror", e.getMessage());
@@ -207,6 +208,33 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
         }
     };
 
+    private Response.Listener<String> successCheckListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                boolean success = jsonObject.getBoolean("success");
+                if (success) {
+                    if (is_like_clicked) {
+                        is_like_clicked = false;
+                        like_btn.setBackgroundDrawable(ContextCompat.getDrawable(WebtoonActivity.this, R.drawable.ic_favorite_red_24dp));
+                    }else {
+                        Toast.makeText(WebtoonActivity.this, "취소되었습니다.", Toast.LENGTH_SHORT).show();
+                        is_like_clicked = true;
+                        like_btn.setBackgroundDrawable(ContextCompat.getDrawable(WebtoonActivity.this, R.drawable.ic_favorite_border_black_24dp));
+                    }
+                }
+                else {
+                    Log.e("success check errmsg", jsonObject.getString("errmsg"));
+                }
+            }
+            catch (Exception e)
+            {
+                Log.e("success check error", e.getMessage());
+            }
+        }
+    };
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -223,19 +251,15 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.webtoon_like_btn:
             case R.id.webtoon_like_count:
-                Toast.makeText(this, "Like Clicked", Toast.LENGTH_SHORT).show();
                 InsertDeleteContentsLikeRequest insertDeleteContentsLikeRequest;
                 RequestQueue requestQueue = Volley.newRequestQueue(this);
-                if (isLikeClicked) {
-                    isLikeClicked = false;
-                    like_btn.setBackgroundDrawable(ContextCompat.getDrawable(WebtoonActivity.this, R.drawable.ic_favorite_border_white_24dp));
+                if (is_like_clicked) {
+                    Toast.makeText(this, "취소했습니다.", Toast.LENGTH_SHORT).show();
                     insertDeleteContentsLikeRequest
-                            = new InsertDeleteContentsLikeRequest(insertDeleteContentsLikeDataURL, getItemImageListener, item_pk, 1, 0);
+                            = new InsertDeleteContentsLikeRequest(insertDeleteContentsLikeDataURL, successCheckListener, item_pk, 1, 0);
                 } else {
-                    isLikeClicked = true;
-                    like_btn.setBackgroundDrawable(ContextCompat.getDrawable(WebtoonActivity.this, R.drawable.ic_favorite_red_24dp));
                     insertDeleteContentsLikeRequest
-                            = new InsertDeleteContentsLikeRequest(insertDeleteContentsLikeDataURL, getItemImageListener, item_pk, 1, 1);
+                            = new InsertDeleteContentsLikeRequest(insertDeleteContentsLikeDataURL, successCheckListener, item_pk, 1, 1);
                 }
                 requestQueue.add(insertDeleteContentsLikeRequest);
                 break;

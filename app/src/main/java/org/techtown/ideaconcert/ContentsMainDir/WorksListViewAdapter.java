@@ -47,7 +47,7 @@ public class WorksListViewAdapter extends BaseAdapter {
         final ImageView worksImageView = convertView.findViewById(R.id.contents_main_item_image);
         TextView titleView = convertView.findViewById(R.id.contents_main_item_title);
         TextView watchView = convertView.findViewById(R.id.contents_main_item_watch);
-        TextView ratingView = convertView.findViewById(R.id.contents_main_item_rating);
+        TextView ratingView = convertView.findViewById(R.id.contents_main_star_rating);
         TextView commentsNumView = convertView.findViewById(R.id.contents_main_item_comments_num);
 
         final WorksListViewItem listViewItem = worksListViewItems.get(position);
