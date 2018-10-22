@@ -4,4 +4,16 @@
         <item>최신편부터</item>
         <item>첫편부터</item>
     </string-array>
+
+    <string-array name="when_auto_movie_play">
+        <item>사용안함</item>
+        <item>Wi-Fi 에서만 보기</item>
+        <item>항상사용</item>
+    </string-array>
+
+    <string-array name="when_auto_movie_play_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
 </resources>

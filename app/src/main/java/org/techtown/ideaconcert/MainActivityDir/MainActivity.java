@@ -28,6 +28,7 @@ import org.json.JSONObject;
 import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.LoginDir.LoginActivity;
 import org.techtown.ideaconcert.R;
+import org.techtown.ideaconcert.SettingsDir.SettingsActivity;
 import org.techtown.ideaconcert.ShowProgressDialog;
 import org.techtown.ideaconcert.UserInformation;
 
@@ -167,12 +168,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mypage_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent;
                 if (isLoginTurn) {
-                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                    intent = new Intent(getApplicationContext(), LoginActivity.class);
                     startActivityForResult(intent, ActivityCodes.LOGIN_REQUEST);
                 } else {
-                    isLoginTurn = true;
-                    info.logoutSession();
+//                    isLoginTurn = true;
+//                    info.logoutSession();
+                    intent = new Intent(getApplicationContext(), SettingsActivity.class);
+                    startActivity(intent);
                 }
             }
         });

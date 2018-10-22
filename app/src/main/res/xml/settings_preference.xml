@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference
+        android:key="settings_title_bar_pref"
+        android:layout="@layout/settings_title_bar" />
+
+    <Preference
+        android:key="settings_login_pref"
+        android:layout="@layout/settings_login_info_layout" />
+
+    <PreferenceCategory
+        android:layout="@layout/settings_category_layout"
+        android:title="부가기능">
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="auto_rotate"
+            android:title="자동회전" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="double_tab"
+            android:title="더블탭 확대/축소" />
+
+        <ListPreference
+            android:entries="@array/when_auto_movie_play"
+            android:entryValues="@array/when_auto_movie_play"
+            android:key="auto_movie_play"
+            android:layout="@layout/settings_preference_layout"
+            android:title="동영상 자동 재생" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:layout="@layout/settings_category_layout"
+        android:title="알림">
+
+        <CheckBoxPreference
+            android:key="use_mobile_network_notice"
+            android:title="이동통신망 사용 알림" />
+        <CheckBoxPreference
+            android:key="push_notice"
+            android:title="푸시 알림" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:layout="@layout/settings_category_layout"
+        android:title="고객 센터">
+
+        <Preference
+            android:key="settings_consult_pref"
+            android:icon="@drawable/ic_keyboard_arrow_right_black_24dp"
+            android:layout="@layout/settings_preference_layout"
+            android:title="1:1 문의" />
+        <Preference
+            android:key="settings_notice_pref"
+            android:icon="@drawable/ic_keyboard_arrow_right_black_24dp"
+            android:layout="@layout/settings_preference_layout"
+            android:title="공지사항" />
+        <Preference
+            android:key="settings_faq_pref"
+            android:icon="@drawable/ic_keyboard_arrow_right_black_24dp"
+            android:layout="@layout/settings_preference_layout"
+            android:title="자주묻는 질문" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:layout="@layout/settings_category_layout"
+        android:title="정보">
+
+        <Preference
+            android:key="settings_version_pref"
+            android:layout="@layout/settings_preference_layout"
+            android:title="버전정보" />
+
+        <Preference
+            android:key="settings_clause_pref"
+            android:layout="@layout/settings_preference_layout"
+            android:title="약관 및 이용안내" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
