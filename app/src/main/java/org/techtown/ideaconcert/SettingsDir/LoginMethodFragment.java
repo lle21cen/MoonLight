@@ -1,6 +1,7 @@
 package org.techtown.ideaconcert.SettingsDir;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -54,12 +55,12 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
     private FirebaseAuth auth;
     final int GOOGLE_SIGN_IN = 1001;
 
-
     // For Facebook
     CallbackManager callbackManager;
     LoginButton facebook_login;
     String TAG = "myTag";
     ProfileTracker mProfileTracker;
+
     UserInformation userInformation;
 
     @Nullable
@@ -71,36 +72,43 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
         moonlight_login_btn.setOnClickListener(this);
         Button sign_out_btn = view.findViewById(R.id.login_method_sign_out);
         sign_out_btn.setOnClickListener(this);
+        userInformation = (UserInformation) getActivity().getApplication();
 
         // 페이스북과 구글 로그인 API 연동
-        // --------------------------------------------------------------------------
-        //                               FACEBOOK LOGIN
-        userInformation = (UserInformation) getActivity().getApplication();
-        FacebookSdk.sdkInitialize(FacebookSdk.getApplicationContext());
-        AppEventsLogger.activateApp(getActivity());
+        // -------------------------------------------------------------------------- //
+        //                               FACEBOOK LOGIN                               //
+        FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
+        AppEventsLogger.activateApp(getActivity().getApplication());
 
         callbackManager = CallbackManager.Factory.create();
-        facebook_login = view.findViewById(R.id.login_method_facebook);
-        facebook_login.setReadPermissions(Arrays.asList("public_profile", "email", "user_friends"));
-        facebook_login.registerCallback(callbackManager,
-                new FacebookCallback<LoginResult>() {
-                    @Override
-                    public void onSuccess(LoginResult loginResult) {
-                        // App code
-                        setUserInfomationsByFacebook(loginResult.getAccessToken());
-                    }
-                    @Override
-                    public void onCancel() {
-                        // App code
-                        Log.e(TAG, "onCancel");
-                    }
-                    @Override
-                    public void onError(FacebookException exception) {
-                        // App code
-                        Log.e(TAG, "onError");
-                    }
-                });
-        // --------------------------------------------------------------------------
+
+        facebook_login = (LoginButton) view.findViewById(R.id.login_method_facebook);
+        facebook_login.setReadPermissions("email");
+        // If using in a fragment
+        facebook_login.setFragment(this);
+
+        // Callback registration
+        facebook_login.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                // App code
+                AccessToken accessToken = loginResult.getAccessToken();
+                setUserInfomationByFacebook(accessToken);
+            }
+
+            @Override
+            public void onCancel() {
+                // App code
+                Toast.makeText(getActivity(), "취소했습니다.", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+                // App code
+                Toast.makeText(getActivity(), "에러가 발생했습니다.\n" + exception.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
         // -------------------------------------------------------------------------- //
         //                               GOOGLE LOGIN                               //
@@ -129,22 +137,23 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.login_method_moonlight:
+                userInformation.logoutSession();
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);
                 break;
             case R.id.login_method_google:
+                userInformation.logoutSession();
                 Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
                 startActivityForResult(signInIntent, GOOGLE_SIGN_IN);
                 break;
             case R.id.login_method_sign_out :
                 userInformation.logoutSession();
-                getActivity().setResult(ActivityCodes.LOGIN_SUCCESS);
-                getActivity().finish();
+                replaceFragment(new SettingsPreferenceFragment());
         }
     }
-    
+
     // Facebook login
-    public void setUserInfomationsByFacebook(AccessToken accessToken) {
+    public void setUserInfomationByFacebook(AccessToken accessToken) {
         Profile profile = Profile.getCurrentProfile();
         if (profile == null) {
             mProfileTracker = new ProfileTracker() {
@@ -159,7 +168,6 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
     }
 
     public void requestUserProfile(AccessToken accessToken) {
-        Toast.makeText(getActivity(), "user id = " +accessToken.getUserId(), Toast.LENGTH_SHORT).show();
         GraphRequest request = GraphRequest.newMeRequest(
                 accessToken, new GraphRequest.GraphJSONObjectCallback() {
                     @Override
@@ -168,8 +176,7 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
                             String email = response.getJSONObject().getString("email");
                             String name = response.getJSONObject().getString("name");
                             userInformation.setUserInformation("Facebook", 1, name, email, true); // 유저 pk 변경할 필요 있음
-                            getActivity().setResult(ActivityCodes.LOGIN_SUCCESS);
-                            getActivity().finish();
+                            replaceFragment(new SettingsPreferenceFragment());
                         } catch (JSONException e) {
                             Log.e("facebook error", e.getMessage());
                         }
@@ -191,8 +198,8 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
                 GoogleSignInAccount account = result.getSignInAccount();
 
                 if (account == null) {
-                    getActivity().setResult(ActivityCodes.LOGIN_FAIL);
-                    getActivity().finish();
+                    Toast.makeText(getActivity(), "로그인에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                    replaceFragment(new SettingsPreferenceFragment());
                 }
                 Log.e(TAG, "이름 = " + account.getDisplayName());
                 Log.e(TAG, "이메일 = " + account.getEmail());
@@ -201,10 +208,13 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
 
                 // 사용자 정보 입력하고 액티비티 종료, 이름 형식 정리 필요
                 userInformation.setUserInformation("Google", 1, account.getDisplayName(), account.getEmail(), true); // 유저 pk 변경할 필요 있음, 자동로그인도
-                getFragmentManager().beginTransaction().replace(R.id.settings_layout, new SettingsPreferenceFragment()).commit();
+                replaceFragment(new SettingsPreferenceFragment());
             } else {
                 Log.e("google fail", ""+result.getStatus().getStatusMessage());
             }
+        }
+        else if (resultCode == ActivityCodes.LOGIN_SUCCESS) {
+            replaceFragment(new SettingsPreferenceFragment());
         }
     }
 
@@ -214,8 +224,12 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
         FirebaseUser currentUser = auth.getCurrentUser();
         if (currentUser != null) {
             userInformation.setUserInformation("Google", 1, currentUser.getDisplayName(), currentUser.getEmail(), true); // 유저 pk 변경할 필요 있음
-            getActivity().setResult(ActivityCodes.LOGIN_SUCCESS);
-            getActivity().finish();
+            replaceFragment(new SettingsPreferenceFragment());
         }
+    }
+
+    protected void replaceFragment(Fragment fragment) {
+        FragmentManager fm = getFragmentManager();
+        fm.beginTransaction().replace(R.id.settings_layout, fragment).commit();
     }
 }

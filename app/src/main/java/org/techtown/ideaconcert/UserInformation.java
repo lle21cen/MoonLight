@@ -2,6 +2,7 @@ package org.techtown.ideaconcert;
 
 import android.app.Application;
 import android.content.SharedPreferences;
+import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
@@ -60,7 +61,6 @@ public class UserInformation extends Application {
 
     public void logoutSession() {
         if (login_method == null) return;
-
         if (login_method.equals("Facebook")) {
             LoginManager loginManager = LoginManager.getInstance();
             loginManager.logOut();
