@@ -1,7 +1,5 @@
 package org.techtown.ideaconcert.SettingsDir;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -9,6 +7,7 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -20,6 +19,7 @@ public class SettingsPreferenceFragment extends PreferenceFragment implements Pr
 
     ListPreference auto_movie_play;
 
+    public SettingsPreferenceFragment() {}
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,12 +29,29 @@ public class SettingsPreferenceFragment extends PreferenceFragment implements Pr
         prefs.registerOnSharedPreferenceChangeListener(prefListener);
 
         Preference title_pref = findPreference("settings_title_bar_pref");
-        Preference login_pref = findPreference("settings_login_pref");
+        Preference login_pref = findPreference("settings_login_info_pref");
         Preference consult_pref = findPreference("settings_consult_pref");
         Preference notice_pref = findPreference("settings_notice_pref");
         Preference faq_pref = findPreference("settings_faq_pref");
         Preference version_pref = findPreference("settings_version_pref");
         Preference clause_pref = findPreference("settings_clause_pref");
+
+        SharedPreferences login_data = getActivity().getSharedPreferences("loginData", getActivity().MODE_PRIVATE);
+        String user_email = login_data.getString("userEmail", null);
+        String login_method = login_data.getString("loginMethod", null);
+        if (login_method != null) {
+            login_pref.setSummary(user_email);
+            if (login_method.equals("Facebook")) {
+                login_pref.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.facebook_small_icon));
+            } else if (login_method.equals("Google")) {
+                login_pref.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.google_small_icon));
+            } else if (login_method.equals("Normal")) {
+                login_pref.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.moonlight_small_icon));
+            }
+        }
+        else {
+            login_pref.setSummary("로그인이 필요합니다.");
+        }
 
         title_pref.setOnPreferenceClickListener(this);
         login_pref.setOnPreferenceClickListener(this);
@@ -46,7 +63,6 @@ public class SettingsPreferenceFragment extends PreferenceFragment implements Pr
 
         // 프래그먼트 초기화
         loginMethodFragment = new LoginMethodFragment();
-
 
         auto_movie_play = (ListPreference) findPreference("auto_movie_play");
         auto_movie_play.setSummary(auto_movie_play.getValue());
@@ -88,22 +104,18 @@ public class SettingsPreferenceFragment extends PreferenceFragment implements Pr
                 Log.i("prefs", "동영상 자동 재생 설정이 변경되었습니다..");
                 auto_movie_play.setSummary(prefs.getString("auto_movie_play", "사용안함"));
             }
-
         }
     };
 
     @Override
     public boolean onPreferenceClick(Preference preference) {
 
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction transaction;
         switch (preference.getKey()) {
             case "settings_title_bar_pref":
                 getActivity().finish();
                 break;
-            case "settings_login_pref":
-                transaction = fm.beginTransaction();
-
+            case "settings_login_info_pref":
+                getActivity().getFragmentManager().beginTransaction().replace(R.id.settings_layout, new LoginMethodFragment()).addToBackStack(null).commit();
                 break;
             case "settings_consult_pref":
                 Toast.makeText(getActivity(), preference.getTitle(), Toast.LENGTH_SHORT).show();

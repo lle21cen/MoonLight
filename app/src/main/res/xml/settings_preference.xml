@@ -6,7 +6,8 @@
         android:layout="@layout/settings_title_bar" />
 
     <Preference
-        android:key="settings_login_pref"
+        android:key="settings_login_info_pref"
+        android:title="로그인 정보"
         android:layout="@layout/settings_login_info_layout" />
 
     <PreferenceCategory

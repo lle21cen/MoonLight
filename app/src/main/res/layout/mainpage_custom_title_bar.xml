@@ -14,7 +14,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:src="@drawable/moonlight_02_03" />
+        android:src="@drawable/moonlight_small_icon" />
 
     <LinearLayout
         android:id="@+id/title_search_layout"

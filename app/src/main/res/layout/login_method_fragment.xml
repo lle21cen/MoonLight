@@ -1,44 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".SettingsDir.SettingsActivity">
 
-    <RelativeLayout
-        android:id="@+id/btn_relative_layout"
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/login_method_facebook"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/login_title_layout">
+        android:layout_marginTop="10dp"
+        android:layout_height="50dp"/>
 
-        <LinearLayout
-            android:id="@+id/btn_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="20dp"
-            android:orientation="vertical">
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/login_method_google"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"/>
 
-            <com.facebook.login.widget.LoginButton
-                android:id="@+id/btn_facebook"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginRight="10dp" />
+    <Button
+        android:id="@+id/login_method_moonlight"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#7f66a7"
+        android:textColor="#ffffff"
+        android:layout_marginTop="10dp"
+        android:text="Moonlight Login" />
 
-            <com.google.android.gms.common.SignInButton
-                android:id="@+id/btn_google"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="10dp" />
+    <Button
+        android:id="@+id/login_method_sign_out"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:background="#7f66a7"
+        android:text="Sign Out"
+        android:textColor="#ffffff"/>
 
-            <Button
-                android:text="Moonlight Login"
-                android:layout_width="match_parent"
-                android:layout_height="50dp" />
-        </LinearLayout>
-
-    </RelativeLayout>
-
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

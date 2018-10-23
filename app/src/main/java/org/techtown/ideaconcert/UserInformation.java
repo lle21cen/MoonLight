@@ -59,6 +59,8 @@ public class UserInformation extends Application {
     }
 
     public void logoutSession() {
+        if (login_method == null) return;
+
         if (login_method.equals("Facebook")) {
             LoginManager loginManager = LoginManager.getInstance();
             loginManager.logOut();

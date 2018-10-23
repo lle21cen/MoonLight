@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     UserInformation info; // 로그인 한 사용자의 정보를 저장. Application 수준에서 관리됨.
     Button mypage_btn, open_category_btn, footer_up_btn;
-    boolean isLoginTurn = true; // 로그인이 된 상태인지 안된 상태인지 판단. true일 경우 로그인이 안 된 상태
+    boolean isLoginTurn = true; // 로그인이 된 상태인지 안된 상태인지 판단. true일 경우 로그인이 안 된 상태 -----------> 지울지 판단할 필요 생김 나중에 귀찮
 
     private SharedPreferences loginData; // 사용자의 로그인 정보를 파일로 저장하여 로그인 상태를 유지함
 
@@ -169,15 +169,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onClick(View view) {
                 Intent intent;
-                if (isLoginTurn) {
-                    intent = new Intent(getApplicationContext(), LoginActivity.class);
-                    startActivityForResult(intent, ActivityCodes.LOGIN_REQUEST);
-                } else {
-//                    isLoginTurn = true;
-//                    info.logoutSession();
-                    intent = new Intent(getApplicationContext(), SettingsActivity.class);
-                    startActivity(intent);
-                }
+                intent = new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -359,12 +352,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 } else if (tag == 2) {
                     adapter = bestRecyclerAdapter;
                     recyclerView = bestRecycler;
-                } else if (tag ==3){
+                } else if (tag == 3) {
                     adapter = recommendRecyclerAdapter;
                     recyclerView = recommendRecycler;
-                }
-                else {
-                    Log.e("tag error", "tag"+tag);
+                } else {
+                    Log.e("tag error", "tag" + tag);
                     return;
                 }
 

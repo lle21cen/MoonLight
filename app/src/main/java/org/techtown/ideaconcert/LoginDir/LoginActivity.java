@@ -108,6 +108,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         AppEventsLogger.activateApp(this);
 
         // 페이스북 아이디로 이미 로그인이 되어 있는지 판단.
+        /*
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
         if (isLoggedIn) {
@@ -115,6 +116,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             setResult(ActivityCodes.LOGIN_SUCCESS);
             finish();
         }
+        */
 
         callbackManager = CallbackManager.Factory.create();
         facebook_login = findViewById(R.id.btn_facebook);
@@ -180,12 +182,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void requestUserProfile(AccessToken accessToken) {
+        Toast.makeText(this, "token = " +accessToken.getUserId(), Toast.LENGTH_SHORT).show();
+        Log.i("facebook token ", ""+accessToken.getToken());
         GraphRequest request = GraphRequest.newMeRequest(
                 accessToken, new GraphRequest.GraphJSONObjectCallback() {
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         try {
-                            String id = response.getJSONObject().getString("id");
                             String email = response.getJSONObject().getString("email");
                             String name = response.getJSONObject().getString("name");
                             userInformation.setUserInformation("Facebook", 1, name, email, auto_login.isChecked()); // 유저 pk 변경할 필요 있음
@@ -256,15 +259,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 boolean pw_correct = jsonResponse.getBoolean("pw_correct");
                                 if (!pw_correct)
                                 {
-                                    String hash = jsonResponse.getString("hash");
-                                    String user_pw = jsonResponse.getString("user_pw");
-                                    Toast.makeText(LoginActivity.this, hash + " " + user_pw, Toast.LENGTH_SHORT).show();
+//                                    String hash = jsonResponse.getString("hash");
+//                                    String user_pw = jsonResponse.getString("user_pw");
+//                                    Toast.makeText(LoginActivity.this, hash + " " + user_pw, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(LoginActivity.this, "비밀번호가 올바르지 않습니다.", Toast.LENGTH_SHORT).show();
                                 }
                                 else {
                                     int user_pk = jsonResponse.getInt("user_pk");
                                     String email = jsonResponse.getString("email");
                                     String name = jsonResponse.getString("name");
-                                    userInformation.setUserInformation("Normal", user_pk, email, name, auto_login.isChecked());
+                                    userInformation.setUserInformation("Normal", user_pk, name, email, auto_login.isChecked());
                                     AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                                     builder.setMessage("로그인에 성공했습니다 ").setCancelable(false)
                                             .setPositiveButton("확인", new DialogInterface.OnClickListener() {

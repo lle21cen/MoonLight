@@ -35,7 +35,7 @@
         android:layout_height="80dp"
         android:layout_below="@+id/login_title_layout"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/moonlight_02_03" />
+        android:src="@drawable/moonlight_small_icon" />
 
     <LinearLayout
         android:id="@+id/id_layout"

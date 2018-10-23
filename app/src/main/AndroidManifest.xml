@@ -12,7 +12,7 @@
     <application
         android:name=".UserInformation"
         android:allowBackup="true"
-        android:icon="@drawable/moonlight_02_03"
+        android:icon="@drawable/moonlight_small_icon"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -24,8 +24,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginDir.LoginActivity" />
-
+        <activity android:name=".SettingsDir.SettingsActivity" />
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
@@ -57,8 +56,9 @@
         <activity android:name=".FindIDPasswordActivity" />
         <activity android:name=".ContentsMainDir.ContentsMainActivity" />
         <activity android:name=".WebtoonDir.WebtoonActivity" />
-        <activity android:name=".CommentDir.CommentActivity"></activity>
-        <activity android:name=".SettingsDir.SettingsActivity"/>
+        <activity android:name=".CommentDir.CommentActivity" />
+        <activity android:name=".LoginDir.LoginActivity" />
+        <activity android:name=".TestActivity"/>
     </application>
 
 </manifest>
