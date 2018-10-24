@@ -14,6 +14,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -39,6 +43,7 @@ import com.google.firebase.auth.FirebaseUser;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.techtown.ideaconcert.ActivityCodes;
+import org.techtown.ideaconcert.DatabaseRequest;
 import org.techtown.ideaconcert.LoginDir.LoginActivity;
 import org.techtown.ideaconcert.R;
 import org.techtown.ideaconcert.UserInformation;
@@ -47,7 +52,13 @@ import java.util.Arrays;
 
 public class LoginMethodFragment extends Fragment implements View.OnClickListener {
 
+    private final String EmailDupCheckURL = "http://lle21cen.cafe24.com/EmailDupCheck.php";
+    private final String SignInBySnsURL = "http://lle21cen.cafe24.com/SignInBySns.php";
+    private final String SignUpBySnsURL = "http://lle21cen.cafe24.com/SignUpBySns.php";
+
     View view;
+    private int user_pk;
+    private String email, name, login_method; // user's email and name
 
     // For google
     private SignInButton google_login_btn;
@@ -93,7 +104,7 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
             public void onSuccess(LoginResult loginResult) {
                 // App code
                 AccessToken accessToken = loginResult.getAccessToken();
-                setUserInfomationByFacebook(accessToken);
+                setUserInformationByFacebook(accessToken);
             }
 
             @Override
@@ -146,14 +157,14 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
                 Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
                 startActivityForResult(signInIntent, GOOGLE_SIGN_IN);
                 break;
-            case R.id.login_method_sign_out :
+            case R.id.login_method_sign_out:
                 userInformation.logoutSession();
                 replaceFragment(new SettingsPreferenceFragment());
         }
     }
 
     // Facebook login
-    public void setUserInfomationByFacebook(AccessToken accessToken) {
+    public void setUserInformationByFacebook(AccessToken accessToken) {
         Profile profile = Profile.getCurrentProfile();
         if (profile == null) {
             mProfileTracker = new ProfileTracker() {
@@ -173,9 +184,12 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         try {
-                            String email = response.getJSONObject().getString("email");
-                            String name = response.getJSONObject().getString("name");
-                            userInformation.setUserInformation("Facebook", 1, name, email, true); // 유저 pk 변경할 필요 있음
+                            email = response.getJSONObject().getString("email");
+                            name = response.getJSONObject().getString("name");
+                            login_method = "Facebook";
+
+                            snsLoginProcess();
+                            userInformation.setUserInformation(login_method, user_pk, name, email, true);
                             replaceFragment(new SettingsPreferenceFragment());
                         } catch (JSONException e) {
                             Log.e("facebook error", e.getMessage());
@@ -187,6 +201,63 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
         request.setParameters(parameters);
         request.executeAsync();
     }
+
+    private Response.Listener<String> emailDupCheckListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                boolean exist = jsonObject.getBoolean("exist");
+                if (exist) {
+                    // 일치하는 이메일이 존재하는 경우 SignInListener에서 user_pk 값 설정
+                    DatabaseRequest databaseRequest = new DatabaseRequest(signInBySnsListener, SignInBySnsURL, email);
+                    RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+                    requestQueue.add(databaseRequest);
+                } else {
+                    // 일치하는 이메일이 존재하지 않는 경우 데이터베이스에 이메일, 이름, 로그인 방법 저장
+                    DatabaseRequest databaseRequest = new DatabaseRequest(null, SignUpBySnsURL, email, name, login_method);
+                    RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+                    requestQueue.add(databaseRequest);
+                }
+            } catch (Exception e) {
+                Log.e("dup check error", "" + e.getMessage());
+            }
+        }
+    };
+
+    private Response.Listener<String> signUpBySnsListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                boolean success = jsonObject.getBoolean("success");
+                if (!success) {
+                    Toast.makeText(getActivity(), ""+jsonObject.getString("errmsg"), Toast.LENGTH_SHORT).show();
+                }
+
+            } catch (Exception e) {
+                Log.e("sns sign in error", e.getMessage());
+            }
+        }
+    };
+
+    private Response.Listener<String> signInBySnsListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                boolean exist = jsonObject.getBoolean("exist");
+                if (exist) {
+                    user_pk = jsonObject.getInt("user_pk");
+                } else {
+                    Log.e("sign in sns error", "" + jsonObject.getString("errmsg"));
+                }
+
+            } catch (Exception e) {
+                Log.e("sns sign in error", e.getMessage());
+            }
+        }
+    };
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -206,14 +277,19 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
                 Log.e(TAG, "getAccount() = " + account.getAccount());
                 Log.e(TAG, "getIdToken() = " + account.getIdToken());
 
+                email = account.getEmail();
+                name = account.getDisplayName();
+                login_method = "Google";
+
+                snsLoginProcess();
+
                 // 사용자 정보 입력하고 액티비티 종료, 이름 형식 정리 필요
-                userInformation.setUserInformation("Google", 1, account.getDisplayName(), account.getEmail(), true); // 유저 pk 변경할 필요 있음, 자동로그인도
+                userInformation.setUserInformation(login_method, user_pk, account.getDisplayName(), account.getEmail(), true);
                 replaceFragment(new SettingsPreferenceFragment());
             } else {
-                Log.e("google fail", ""+result.getStatus().getStatusMessage());
+                Log.e("google fail", "" + result.getStatus().getStatusMessage());
             }
-        }
-        else if (resultCode == ActivityCodes.LOGIN_SUCCESS) {
+        } else if (resultCode == ActivityCodes.LOGIN_SUCCESS) {
             replaceFragment(new SettingsPreferenceFragment());
         }
     }
@@ -226,10 +302,28 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
             userInformation.setUserInformation("Google", 1, currentUser.getDisplayName(), currentUser.getEmail(), true); // 유저 pk 변경할 필요 있음
             replaceFragment(new SettingsPreferenceFragment());
         }
+        testInfo();
     }
 
     protected void replaceFragment(Fragment fragment) {
         FragmentManager fm = getFragmentManager();
         fm.beginTransaction().replace(R.id.settings_layout, fragment).commit();
     }
+
+    protected void snsLoginProcess() {
+        // 1. SNS 로그인으로 얻어온 email이 데이터베이스에 존재하는지 확인한다.
+        // 2. 존재한다면 user_pk를 얻어온다.
+        // 3. 존재하지 않는다면 SNS 로그인으로 얻어온 이메일, 이름 정보를 이용하여 데이터베이스에 저장한다.
+        DatabaseRequest databaseRequest = new DatabaseRequest(emailDupCheckListener, EmailDupCheckURL, email);
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        requestQueue.add(databaseRequest);
+    }
+
+    public void testInfo() {
+        Toast.makeText(getActivity(), "Method = " + userInformation.getLogin_method(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "User PK = " + userInformation.getUser_pk(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Name = " + userInformation.getUser_name(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Email = " + userInformation.getUserEmail(), Toast.LENGTH_SHORT).show();
+    }
+
 }

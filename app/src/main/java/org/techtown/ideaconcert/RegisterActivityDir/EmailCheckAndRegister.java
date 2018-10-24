@@ -13,11 +13,6 @@ public class EmailCheckAndRegister extends StringRequest {
         super(method, url, listener, errorListener);
     }
 
-    public void checkUserEmail(String email) {
-        parameters = new HashMap<>();
-        parameters.put("email", email);
-    }
-
     public void doRegister(String email, String pw, String name) {
         parameters = new HashMap<>();
         parameters.put("email", email);

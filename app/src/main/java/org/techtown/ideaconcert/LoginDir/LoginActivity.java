@@ -30,7 +30,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     // For Database login
     EditText userEmail, userPw;
     //private SharedPreferences loginData;
-    private CheckBox auto_login;
     Button login_btn, backBtn;
     TextView find_btn, login_result_text;
 
@@ -58,7 +57,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         // --------------------------------------------------------------------------
         //                               For save login data
         //loginData = getSharedPreferences("loginData", MODE_PRIVATE);
-        auto_login = findViewById(R.id.auto_login);
 
         // --------------------------------------------------------------------------
         //                               DATABASE LOGIN
@@ -91,7 +89,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     int user_pk = jsonResponse.getInt("user_pk");
                                     String email = jsonResponse.getString("email");
                                     String name = jsonResponse.getString("name");
-                                    userInformation.setUserInformation("Normal", user_pk, name, email, auto_login.isChecked());
+                                    userInformation.setUserInformation("Normal", user_pk, name, email, true);
                                     AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                                     builder.setMessage("로그인에 성공했습니다 ").setCancelable(false)
                                             .setPositiveButton("확인", new DialogInterface.OnClickListener() {

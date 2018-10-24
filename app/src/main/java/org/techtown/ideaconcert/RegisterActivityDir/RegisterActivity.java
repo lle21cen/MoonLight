@@ -31,94 +31,77 @@ import org.techtown.ideaconcert.ShowProgressDialog;
 public class RegisterActivity extends AppCompatActivity {
 
     /*
-    사용자 회원가입 화면.
-    구현 사항
-    아 쓰기 귀찮아...
+    사용자 회원가입 화면
+    플로우
+
     */
 
     final static private String emailVerifyAndRegisterURL = "http://lle21cen.cafe24.com/EmailVerifyAndRegister.php"; // 이메일 중복체크와 디비에 회원 등록하는 URL
 
-    TextView passwordCheck, passwordConfirmCheck;
-    String passwd1, passwd2;
-    private boolean isTwoPasswordaAccord = false;
-
-    // For email verification.
-
     AlertDialog.Builder builder;
-
-    boolean isJoinBtnClicked = false; // 회원가입 버튼을 눌렀을 시 true로 변하며 activity가 종료되었는데 true가 아닌경우 회원가입을 무효처리함.
-    ForceQuitManageService forceQuitManageService; // 강제종료 시 남아있는 데이터를 제거하기 위한 서비스 변수.
-    CountDownTimer countDownTimer;
-
     EditText nameText, emailText, pwdText, pwdConfirmText;
+    TextView infoText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        forceQuitManageService = new ForceQuitManageService();
-        startService(new Intent(this, forceQuitManageService.getClass()));
 
-        emailText = (EditText) findViewById(R.id.register_email);
-        pwdText = (EditText) findViewById(R.id.register_pw);
-        pwdConfirmText = (EditText) findViewById(R.id.register_pw_confirm);
-        nameText = (EditText) findViewById(R.id.register_name);
+        emailText =  findViewById(R.id.register_email);
+        pwdText = findViewById(R.id.register_pw);
+        pwdConfirmText = findViewById(R.id.register_pw_confirm);
+        nameText = findViewById(R.id.register_name);
 
-        passwordCheck = (TextView) findViewById(R.id.register_pw_check);
-        passwordConfirmCheck = (TextView) findViewById(R.id.register_pw_confirm_check);
+        infoText = findViewById(R.id.register_info_text);
 
         builder = new AlertDialog.Builder(RegisterActivity.this);
         builder.setCancelable(false).setPositiveButton("확인", null);
 
-        Button registerButton = (Button) findViewById(R.id.register_join_btn);
-        formAvailabilityTest();
+        final Button cancelBtn = findViewById(R.id.register_cancel_btn);
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(RegisterActivity.this, "회원가입이 취소 되었습니다.", Toast.LENGTH_SHORT).show();
+                setResult(ActivityCodes.LOGIN_FAIL);
+                finish();
+            }
+        });
 
-        registerButton.setOnClickListener(new View.OnClickListener() {
+        final Button registerBtn = findViewById(R.id.register_join_btn);
+        registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String email = emailText.getText().toString();
                 String pw = pwdText.getText().toString();
+                String pw_confirm = pwdConfirmText.getText().toString();
                 String name = nameText.getText().toString();
 
-                boolean isEmailAvailable = ValidatePwdEmail.validateEmail(email); // 이메일 형식검사
-                boolean isPasswordAvailable = ValidatePwdEmail.validatePwd(pw); // 비밀번호 형식검사
+                boolean isTwoPasswordAccord = pw.equals(pw_confirm); // 비밀번호와 비밀번호 확인이 일치하는지 검사
+                boolean isEmailAvailable = ValidatePwdEmail.validateEmail(email); // 이메일 형식 검사
+                boolean isPasswordAvailable = ValidatePwdEmail.validatePwd(pw); // 비밀번호 형식 검사
 
-                if (isTwoPasswordaAccord && isPasswordAvailable && isEmailAvailable) {
+                if (isTwoPasswordAccord && isPasswordAvailable && isEmailAvailable) {
                     EmailCheckAndRegister emailCheckAndRegister = new EmailCheckAndRegister(Request.Method.POST, emailVerifyAndRegisterURL, registerListener, null);
                     emailCheckAndRegister.doRegister(email, pw, name);
                     RequestQueue requestQueue = Volley.newRequestQueue(RegisterActivity.this);
                     requestQueue.add(emailCheckAndRegister);
                     ShowProgressDialog.showProgressDialog(RegisterActivity.this);
-                } else if (!isTwoPasswordaAccord) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                    builder.setMessage("비밀번호 확인과 일치하지 않습니다.").setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            pwdText.requestFocus();
-                        }
-                    }).show();
+                } else if (!isTwoPasswordAccord) {
+                    infoText.setText("비밀번호 확인과 일치하지 않습니다.");
+                    pwdText.requestFocus();
                 } else if (!isPasswordAvailable) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                    builder.setMessage("비밀번호는 8~16자리, 영문 숫자 혼용입니다.").setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            pwdText.requestFocus();
-                        }
-                    }).show();
+                    infoText.setText("비밀번호는 8~16 자리, 영문 숫자 혼용입니다.");
+                    pwdText.requestFocus();
+
                 } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                    builder.setMessage("이메일 형식이 잘못 되었습니다.").setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            emailText.requestFocus();
-                        }
-                    }).show();
+                    infoText.setText("이메일 형식이 잘못 되었습니다.");
+                    emailText.requestFocus();
                 }
             }
         });
     }
 
-    Response.Listener<String> registerListener = new Response.Listener<String>() {
+    private Response.Listener<String> registerListener = new Response.Listener<String>() {
         @Override
         public void onResponse(String response) {
             try {
@@ -142,74 +125,4 @@ public class RegisterActivity extends AppCompatActivity {
             }
         }
     };
-
-    public void formAvailabilityTest() {
-        pwdText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                passwd1 = pwdText.getText().toString();
-                passwd2 = pwdConfirmText.getText().toString();
-                if (!hasFocus) {
-                    if (passwd1.isEmpty()) {
-                        Toast.makeText(RegisterActivity.this, "비밀번호를 입력하세요.", Toast.LENGTH_SHORT).show();
-                        isTwoPasswordaAccord = false;
-                    }
-                }
-            }
-        });
-        pwdText.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                passwd1 = pwdText.getText().toString();
-                if (passwd1.equals(passwd2)) {
-                    passwordConfirmCheck.setTextColor(Color.parseColor("#32cd32"));
-                    isTwoPasswordaAccord = true;
-                    passwordConfirmCheck.setText("일치");
-                } else {
-                    passwordConfirmCheck.setTextColor(Color.RED);
-                    isTwoPasswordaAccord = false;
-                    passwordConfirmCheck.setText("불일치");
-                }
-            }
-        });
-
-        passwd1 = pwdText.getText().toString();
-        pwdConfirmText.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                passwd2 = pwdConfirmText.getText().toString();
-                if (passwd1.equals(passwd2)) {
-                    passwordConfirmCheck.setTextColor(Color.parseColor("#32cd32"));
-                    isTwoPasswordaAccord = true;
-                    passwordConfirmCheck.setText("일치");
-                } else {
-                    passwordConfirmCheck.setTextColor(Color.RED);
-                    isTwoPasswordaAccord = false;
-                    passwordConfirmCheck.setText("불일치");
-                }
-            }
-        });
-    }
 }

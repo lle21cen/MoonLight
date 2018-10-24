@@ -39,7 +39,7 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
     // 이미지만 따로 동적으로 설정하도록 바꾸어서 컨텐츠 로딩에 걸리는 시간을 단축할 필요가 있음
     // 변수명 통일 시키기 ... 귀찮
 
-    static final String getContentsItemsImgURL = "http://lle21cen.cafe24.com/GetContentsItem.php";
+    static final String getContentsItemURL = "http://lle21cen.cafe24.com/GetContentsItem.php";
     private final String getContentsLIkeCountURL = "http://lle21cen.cafe24.com/GetContentsLIkeCount.php";
     private final String insertDeleteContentsLikeDataURL = "http://lle21cen.cafe24.com/InsertDeleteContentsLikeData.php";
 
@@ -95,7 +95,7 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
         listView = findViewById(R.id.contents_main_list_works_list);
         adapter = new WorksListViewAdapter();
 
-        WorksDBRequest worksDBRequest = new WorksDBRequest(getContentsItemsImgURL, worksListener, selected_contents_pk);
+        WorksDBRequest worksDBRequest = new WorksDBRequest(getContentsItemURL, worksListener, selected_contents_pk);
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(worksDBRequest);
 
@@ -129,7 +129,7 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
                 ArrayList<WorksListViewItem> items = adapter.getWorksListViewItems();
                 Intent intent = new Intent(ContentsMainActivity.this, WebtoonActivity.class);
                 putExtraData(intent, position);
-                startActivityForResult(intent, ActivityCodes.WEBTTON_REQUEST);
+                startActivityForResult(intent, ActivityCodes.WEBTOON_REQUEST);
             }
         });
 
@@ -171,11 +171,8 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
             try {
                 JSONObject jsonResponse = new JSONObject(response);
                 // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
-                JSONArray result = jsonResponse.getJSONArray("result");
                 boolean exist = jsonResponse.getBoolean("exist");
-
                 if (exist) {
-                    int num_category_contents_data = jsonResponse.getInt("num_result");
                     URL thumbnailURL = new URL(jsonResponse.getString("thumbnail"));
                     String main_contents_name = jsonResponse.getString("contents_name");
                     String writer_name = jsonResponse.getString("writer_name");
@@ -190,6 +187,12 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
                     info_painter.setText(painter_name);
                     info_view_count.setText(""+view_count);
                     summary_text.setText(summary);
+
+                    if (!jsonResponse.getBoolean("result_exist")) return;
+
+                    JSONArray result = jsonResponse.getJSONArray("result");
+                    int num_category_contents_data = jsonResponse.getInt("num_result");
+
 
                     for (int i = 0; i < num_category_contents_data; i++) {
                         // 데이터베이스에 들어있는 콘텐츠의 수만큼 for문을 돌려 layout에 image추가
@@ -274,7 +277,7 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
                     position = 0;
                 Intent intent = new Intent(ContentsMainActivity.this, WebtoonActivity.class);
                 putExtraData(intent, position);
-                startActivityForResult(intent, ActivityCodes.WEBTTON_REQUEST);
+                startActivityForResult(intent, ActivityCodes.WEBTOON_REQUEST);
                 break;
             case R.id.contents_main_back : case R.id.contents_main_title_bar_title :
                 finish();
