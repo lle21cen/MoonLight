@@ -12,4 +12,8 @@
     <string name="verified">verified</string>
     <string name="timer_format">%02d:%02d</string>
     <string name="title_search">작가/작품명 검색</string>
+    <string name="title_activity_my_page">MyPageActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

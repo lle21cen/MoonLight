@@ -5,12 +5,17 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="MainCustomTitle" parent="android:Theme">
+    <style name="CustomWindowTitleBackground">
+        <item name="android:background">#ffffffff</item>
+    </style>
+
+    <style name="CustomTitle" parent="android:Theme">
         <item name="android:windowTitleSize">48dp</item>
         <item name="android:windowTitleBackgroundStyle">@style/CustomWindowTitleBackground</item>
     </style>
 
-    <style name="CustomWindowTitleBackground">
-        <item name="android:background">#ffffffff</item>
-    </style>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
 </resources>

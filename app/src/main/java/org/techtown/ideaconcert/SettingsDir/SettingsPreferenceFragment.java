@@ -11,15 +11,27 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONObject;
+import org.techtown.ideaconcert.DatabaseRequest;
 import org.techtown.ideaconcert.R;
+import org.techtown.ideaconcert.UserInformation;
 
 public class SettingsPreferenceFragment extends PreferenceFragment implements Preference.OnPreferenceClickListener {
+    private final String snsLoginProcessURL = "http://lle21cen.cafe24.com/SnsLoginProcess.php";
+    UserInformation userInformation;
     SharedPreferences prefs;
     LoginMethodFragment loginMethodFragment;
 
     ListPreference auto_movie_play;
 
-    public SettingsPreferenceFragment() {}
+    public SettingsPreferenceFragment() {
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,8 +60,7 @@ public class SettingsPreferenceFragment extends PreferenceFragment implements Pr
             } else if (login_method.equals("Normal")) {
                 login_pref.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.moonlight_small_icon));
             }
-        }
-        else {
+        } else {
             login_pref.setSummary("로그인이 필요합니다.");
         }
 
@@ -135,4 +146,40 @@ public class SettingsPreferenceFragment extends PreferenceFragment implements Pr
         }
         return true;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        snsLoginProcess();
+    }
+
+    protected void snsLoginProcess() {
+        // 1. SNS 로그인으로 얻어온 email이 데이터베이스에 존재하는지 확인한다.
+        // 2. 존재한다면 user_pk를 얻어온다.
+        // 3. 존재하지 않는다면 SNS 로그인으로 얻어온 이메일, 이름 정보를 이용하여 데이터베이스에 저장한다. 그 후에 user_pk를 가져온다.
+        userInformation = (UserInformation) getActivity().getApplication();
+        String email = userInformation.getUserEmail();
+        String name = userInformation.getUser_name();
+        String login_method = userInformation.getLogin_method();
+        if (login_method != null && !login_method.equals("Normal") && userInformation.getUser_pk() == 0) {
+            DatabaseRequest databaseRequest = new DatabaseRequest(snsLoginProcessListener, snsLoginProcessURL, email, name, login_method);
+            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+            requestQueue.add(databaseRequest);
+        }
+
+    }
+
+    private Response.Listener<String> snsLoginProcessListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                int user_pk = jsonObject.getInt("user_pk");
+                userInformation.setUser_pk(user_pk);
+            } catch (Exception e) {
+                Log.e("sns sign in error", "" + e.getMessage());
+            }
+        }
+    };
+
 }

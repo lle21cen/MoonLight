@@ -27,6 +27,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.techtown.ideaconcert.ActivityCodes;
+import org.techtown.ideaconcert.MyPageDir.MyPageActivity;
 import org.techtown.ideaconcert.R;
 import org.techtown.ideaconcert.SettingsDir.SettingsActivity;
 import org.techtown.ideaconcert.ShowProgressDialog;
@@ -168,9 +169,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mypage_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent;
-                intent = new Intent(getApplicationContext(), SettingsActivity.class);
-                startActivity(intent);
+                if (info.getUser_pk() == 0) {
+                    Intent intent;
+                    intent = new Intent(getApplicationContext(), SettingsActivity.class);
+                    startActivity(intent);
+                }
+                else {
+                    Intent intent;
+                    intent = new Intent(getApplicationContext(), MyPageActivity.class);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -530,10 +538,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void testInfo() {
-        Toast.makeText(this, "Method = " + info.getLogin_method(), Toast.LENGTH_SHORT).show();
-        Toast.makeText(this, "User PK = " + info.getUser_pk(), Toast.LENGTH_SHORT).show();
-        Toast.makeText(this, "Name = " + info.getUser_name(), Toast.LENGTH_SHORT).show();
-        Toast.makeText(this, "Email = " + info.getUserEmail(), Toast.LENGTH_SHORT).show();
+        Log.i("Main, Method", info.getLogin_method());
+        Log.i("Main, User PK", "" + info.getUser_pk());
+        Log.i("Main, Name", info.getUser_name());
+        Log.i("Main, Email", info.getUserEmail());
     }
 
     @Override

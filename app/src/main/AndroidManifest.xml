@@ -55,6 +55,7 @@
         <activity android:name=".WebtoonDir.WebtoonActivity" />
         <activity android:name=".CommentDir.CommentActivity" />
         <activity android:name=".LoginDir.LoginActivity" />
+        <activity android:name=".MyPageDir.MyPageActivity" />
     </application>
 
 </manifest>

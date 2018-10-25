@@ -49,6 +49,10 @@ public class UserInformation extends Application {
 
     public void setUser_pk(int user_pk) {
         this.user_pk = user_pk;
+        SharedPreferences loginData = getSharedPreferences("loginData", MODE_PRIVATE);
+        SharedPreferences.Editor editor = loginData.edit();
+        editor.putInt("userPk", user_pk);
+        editor.apply();
     }
 
     public int getCash() {
@@ -57,6 +61,10 @@ public class UserInformation extends Application {
 
     public void setCash(int cash) {
         this.cash = cash;
+        SharedPreferences loginData = getSharedPreferences("loginData", MODE_PRIVATE);
+        SharedPreferences.Editor editor = loginData.edit();
+        editor.putInt("cash", cash);
+        editor.apply();
     }
 
     public void logoutSession() {

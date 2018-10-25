@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    tools:context=".MyPageDir.MyPageActivity">
+
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_page_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize">
+
+        <RelativeLayout
+            android:id="@+id/my_page_title_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/my_page_back"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_keyboard_arrow_left_black_24dp" />
+
+            <TextView
+                android:id="@+id/my_page_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/my_page_back"
+                android:text="아이디"
+                android:textColor="#000000"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/my_page_nim"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/my_page_id"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/my_page_id"
+                android:text="님" />
+
+            <TextView
+                android:id="@+id/my_page_my_cash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_toRightOf="@id/my_page_nim"
+                android:text="내 캐시 200"
+                android:textColor="#1d68bf" />
+
+            <ImageView
+                android:id="@+id/my_page_my_cash_img"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/my_page_my_cash"
+                android:src="@drawable/ic_keyboard_arrow_right_blue_24dp" />
+
+            <Button
+                android:id="@+id/my_page_title_setting"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/setting" />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.Toolbar>
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/my_page_tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/my_page_toolbar"
+        android:minHeight="?attr/actionBarSize"
+        app:tabGravity="center"
+        app:tabSelectedTextColor="#e90005"
+        app:tabTextColor="#666666" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/my_page_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/my_page_tab_layout" />
+</RelativeLayout>
