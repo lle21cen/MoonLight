@@ -15,17 +15,17 @@ import java.util.ArrayList;
 
 public class EventRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-// 신작보기와 베트스9과 추천작품에서 사용
-private ArrayList<BannerItem> items = new ArrayList<>();
+    // 신작보기와 베트스9과 추천작품에서 사용
+    private ArrayList<BannerItem> items = new ArrayList<>();
 
-public static class TodayEventViewHolder extends RecyclerView.ViewHolder {
-    ImageView bannerImageView;
+    public static class TodayEventViewHolder extends RecyclerView.ViewHolder {
+        ImageView bannerImageView;
 
-    TodayEventViewHolder(View view) {
-        super(view);
-        bannerImageView = view.findViewById(R.id.event_banner_image);
+        TodayEventViewHolder(View view) {
+            super(view);
+            bannerImageView = view.findViewById(R.id.event_banner_image);
+        }
     }
-}
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -42,7 +42,7 @@ public static class TodayEventViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View view) {
                 Context context = view.getContext();
-                Toast.makeText(context, ""+item.getContents_pk(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "" + item.getContents_pk(), Toast.LENGTH_SHORT).show();
             }
         });
     }

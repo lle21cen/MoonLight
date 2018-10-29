@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
@@ -166,7 +165,6 @@ public class SettingsPreferenceFragment extends PreferenceFragment implements Pr
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
             requestQueue.add(databaseRequest);
         }
-
     }
 
     private Response.Listener<String> snsLoginProcessListener = new Response.Listener<String>() {
@@ -176,6 +174,13 @@ public class SettingsPreferenceFragment extends PreferenceFragment implements Pr
                 JSONObject jsonObject = new JSONObject(response);
                 int user_pk = jsonObject.getInt("user_pk");
                 userInformation.setUser_pk(user_pk);
+
+                ////////////////////////////// FOR DEBUGGING ////////////////////////////////////////
+                String email = userInformation.getUserEmail();
+                String name = userInformation.getUser_name();
+                int pk = userInformation.getUser_pk();
+                Toast.makeText(getActivity(), "email= " + email + "name= " + name + "user_pk= " + pk, Toast.LENGTH_SHORT).show();
+                /////////////////////////////////////////////////////////////////////////////////////
             } catch (Exception e) {
                 Log.e("sns sign in error", "" + e.getMessage());
             }

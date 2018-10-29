@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp">
+
+    <ImageView
+        android:id="@+id/my_page_fragment2_thumbnail"
+        android:layout_width="80dp"
+        android:layout_height="60dp"
+        android:src="@drawable/dummy_100x80" />
+
+    <RelativeLayout
+        android:id="@+id/my_page_fragment2_layout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@id/my_page_fragment2_thumbnail">
+
+        <TextView
+            android:id="@+id/my_page_fragment2_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2018.09.12"
+            android:textSize="9sp" />
+
+        <TextView
+            android:id="@+id/my_page_fragment2_contents_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/my_page_fragment2_date"
+            android:text="용비불패"
+            android:textColor="#000000"
+            android:textSize="15sp" />
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/my_page_fragment2_alarm"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerInParent="true"
+        android:background="@drawable/alarm_1">
+
+    </Button>
+
+</RelativeLayout>

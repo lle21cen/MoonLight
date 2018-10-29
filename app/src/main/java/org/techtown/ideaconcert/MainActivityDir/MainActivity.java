@@ -177,6 +177,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 else {
                     Intent intent;
                     intent = new Intent(getApplicationContext(), MyPageActivity.class);
+                    intent.putExtra("user_pk", info.getUser_pk());
                     startActivity(intent);
                 }
             }

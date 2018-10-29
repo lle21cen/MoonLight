@@ -8,10 +8,6 @@ public class TabPagerAdapter extends FragmentStatePagerAdapter {
 
     private int tabCount;
 
-    public TabPagerAdapter(FragmentManager fm) {
-        super(fm);
-    }
-
     public TabPagerAdapter(FragmentManager fm, int tabCount) {
         super(fm);
         this.tabCount = tabCount;

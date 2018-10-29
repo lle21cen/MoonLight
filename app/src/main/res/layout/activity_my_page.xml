@@ -65,14 +65,13 @@
                 android:src="@drawable/ic_keyboard_arrow_right_blue_24dp" />
 
             <Button
-                android:id="@+id/my_page_title_setting"
+                android:id="@+id/my_page_title_setting_btn"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="5dp"
                 android:background="@drawable/setting" />
-
         </RelativeLayout>
 
     </android.support.v7.widget.Toolbar>
@@ -84,6 +83,7 @@
         android:layout_below="@id/my_page_toolbar"
         android:minHeight="?attr/actionBarSize"
         app:tabGravity="center"
+        app:tabIndicatorColor="#e90005"
         app:tabSelectedTextColor="#e90005"
         app:tabTextColor="#666666" />
 

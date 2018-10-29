@@ -15,8 +15,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -43,18 +41,11 @@ import com.google.firebase.auth.FirebaseUser;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.techtown.ideaconcert.ActivityCodes;
-import org.techtown.ideaconcert.DatabaseRequest;
 import org.techtown.ideaconcert.LoginDir.LoginActivity;
 import org.techtown.ideaconcert.R;
 import org.techtown.ideaconcert.UserInformation;
 
-import java.util.Arrays;
-
 public class LoginMethodFragment extends Fragment implements View.OnClickListener {
-
-    private final String EmailDupCheckURL = "http://lle21cen.cafe24.com/EmailDupCheck.php";
-    private final String SignInBySnsURL = "http://lle21cen.cafe24.com/SignInBySns.php";
-    private final String SignUpBySnsURL = "http://lle21cen.cafe24.com/SignUpBySns.php";
 
     View view;
     private String email, name, login_method; // user's email and name

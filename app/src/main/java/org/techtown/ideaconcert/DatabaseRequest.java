@@ -24,10 +24,10 @@ public class DatabaseRequest extends StringRequest {
         parameters.put("login_method", login_method);
     }
 
-    public DatabaseRequest(Response.Listener<String> listener, String URL, int tag) {
+    public DatabaseRequest(Response.Listener<String> listener, String URL, int user_pk) {
         super(Method.POST, URL, listener, null);
         parameters = new HashMap<>();
-        parameters.put("tag", String.valueOf(tag));
+        parameters.put("user_pk", String.valueOf(user_pk));
     }
 
     public Map<String, String> getParams() {

@@ -34,9 +34,16 @@ import org.techtown.ideaconcert.ContentsMainDir.WorksListViewItem;
 import org.techtown.ideaconcert.LoginDir.LoginActivity;
 import org.techtown.ideaconcert.MainActivityDir.GetBitmapImageFromURL;
 import org.techtown.ideaconcert.R;
+import org.techtown.ideaconcert.SQLiteDir.DBHelper;
+import org.techtown.ideaconcert.SQLiteDir.DBNames;
+import org.techtown.ideaconcert.SQLiteDir.RecentViewPair;
 
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 public class WebtoonActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -144,7 +151,11 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
             user_pk = 1;
         ContentsItemLikeDBRequest contentsItemLikeDBRequest = new ContentsItemLikeDBRequest(getContentsLIkeCountURL, getContentsItemLikeCountListener, item_pk, user_pk, 1);
         requestQueue.add(contentsItemLikeDBRequest);
+
+        addRecentViewDataToSqlite();
+
     }
+
 
     private Response.Listener<String> getContentsItemLikeCountListener = new Response.Listener<String>() {
         @Override
@@ -319,5 +330,19 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
         intent.putExtra("position", new_position);
         startActivity(intent);
         finish();
+    }
+
+    private void addRecentViewDataToSqlite() {
+        // 마이페이지 최근 본 웹툰 목록에 웹툰 이름과 현재 날짜 저장하기
+        Date today = new Date();
+        SimpleDateFormat date = new SimpleDateFormat("yyyy.MM.dd");
+        DBHelper dbHelper = new DBHelper(this, DBNames.RECENT_VIEW_DB, null, 1);
+
+//        dbHelper.dropTable("recent_view"); // 디버깅을 위한 테이블 드랍
+//        dbHelper.createTable("recent_view"); // 디버깅을 위한 테이블 생성
+
+        dbHelper.testDB();
+        dbHelper.addRecentViewData(item_title, date.format(today), String.valueOf(contents_num));
+
     }
 }

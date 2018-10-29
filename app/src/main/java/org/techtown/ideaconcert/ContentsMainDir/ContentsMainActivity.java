@@ -126,7 +126,6 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                ArrayList<WorksListViewItem> items = adapter.getWorksListViewItems();
                 Intent intent = new Intent(ContentsMainActivity.this, WebtoonActivity.class);
                 putExtraData(intent, position);
                 startActivityForResult(intent, ActivityCodes.WEBTOON_REQUEST);
@@ -134,7 +133,7 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
         });
 
         SharedPreferences sharedPreferences = getSharedPreferences("loginData", MODE_PRIVATE);
-        user_pk = sharedPreferences.getInt("user_pk", 0);
+        user_pk = sharedPreferences.getInt("userPk", 0);
         if (user_pk == 0)
             user_pk = 1;
         ContentsLikeDBRequest contentsItemLikeDBRequest = new ContentsLikeDBRequest(getContentsLIkeCountURL, getContentsLikeCountListener, selected_contents_pk, user_pk, 2);
@@ -152,9 +151,8 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
                     is_like_clicked = true;
                 }
                 int count = jsonObject.getInt("count");
-                contents_like_count.setText(""+count);
-            }catch (Exception e)
-            {
+                contents_like_count.setText("" + count);
+            } catch (Exception e) {
                 Log.e("like count error", e.getMessage());
             }
         }
@@ -185,7 +183,7 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
                     info_title.setText(main_contents_name);
                     info_writer.setText(writer_name);
                     info_painter.setText(painter_name);
-                    info_view_count.setText(""+view_count);
+                    info_view_count.setText("" + view_count);
                     summary_text.setText(summary);
 
                     if (!jsonResponse.getBoolean("result_exist")) return;
@@ -248,18 +246,15 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
                         is_like_clicked = false;
                         Toast.makeText(ContentsMainActivity.this, "취소되었습니다.", Toast.LENGTH_SHORT).show();
                         contents_like_btn.setBackgroundDrawable(ContextCompat.getDrawable(ContentsMainActivity.this, R.drawable.ic_favorite_border_black_24dp));
-                    }else {
+                    } else {
                         is_like_clicked = true;
                         Toast.makeText(ContentsMainActivity.this, "관심목록에 담겼습니다.", Toast.LENGTH_SHORT).show();
                         contents_like_btn.setBackgroundDrawable(ContextCompat.getDrawable(ContentsMainActivity.this, R.drawable.ic_favorite_red_24dp));
                     }
-                }
-                else {
+                } else {
                     Log.e("success check errmsg", jsonObject.getString("errmsg"));
                 }
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 Log.e("success check error", e.getMessage());
             }
         }
@@ -272,35 +267,35 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
                 ArrayList<WorksListViewItem> items = adapter.getWorksListViewItems();
                 int position;
                 if (sortSpinner.getSelectedItemPosition() == 0)
-                    position = items.size()-1;
+                    position = items.size() - 1;
                 else
                     position = 0;
                 Intent intent = new Intent(ContentsMainActivity.this, WebtoonActivity.class);
                 putExtraData(intent, position);
                 startActivityForResult(intent, ActivityCodes.WEBTOON_REQUEST);
                 break;
-            case R.id.contents_main_back : case R.id.contents_main_title_bar_title :
+            case R.id.contents_main_back:
+            case R.id.contents_main_title_bar_title:
                 finish();
                 break;
-            case R.id.contents_main_like :
+            case R.id.contents_main_like:
                 // 타이틀바에 있는 좋아요 버튼을 누르면 해당 작품의 데이터베이스 테이블에 like 1 증가
                 ContentsLikeDBRequest contentsItemLikeDBRequest;
                 RequestQueue requestQueue = Volley.newRequestQueue(ContentsMainActivity.this);
                 if (is_like_clicked) {
                     contentsItemLikeDBRequest = new ContentsLikeDBRequest(insertDeleteContentsLikeDataURL, successCheckListener, selected_contents_pk, user_pk, 0);
-                }else {
+                } else {
                     contentsItemLikeDBRequest = new ContentsLikeDBRequest(insertDeleteContentsLikeDataURL, successCheckListener, selected_contents_pk, user_pk, 1);
                 }
                 requestQueue.add(contentsItemLikeDBRequest);
                 break;
-            case R.id.contents_main_open_summary_btn :
+            case R.id.contents_main_open_summary_btn:
                 if (is_summary_opened) {
                     is_summary_opened = false;
                     summary_text.setMaxLines(3);
                     summary_text.setEllipsize(TextUtils.TruncateAt.END);
                     summary_btn.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.ic_keyboard_arrow_down_black_24dp));
-                }
-                else {
+                } else {
                     is_summary_opened = true;
                     summary_text.setMaxLines(Integer.MAX_VALUE);
                     summary_text.setEllipsize(null);
@@ -310,8 +305,7 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
-    public void putExtraData(Intent intent, int position)
-    {
+    public void putExtraData(Intent intent, int position) {
         itemList = adapter.getWorksListViewItems();
         intent.putExtra("position", position);
     }
