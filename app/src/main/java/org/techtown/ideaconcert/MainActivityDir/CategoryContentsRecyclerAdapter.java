@@ -86,4 +86,8 @@ public class CategoryContentsRecyclerAdapter extends RecyclerView.Adapter<Recycl
         item.setContents_pk(contents_pk);
         items.add(item);
     }
+
+    void clearItem() {
+        items.clear();
+    }
 }

@@ -13,4 +13,6 @@ public class ActivityCodes extends Application {
     public static final int WEBTOON_SUCCESS = 91, WEBTOON_FAIL= 90, WEBTOON_REQUEST = 89; // from ContentsMainActivity
     public static final int COMMENT_SUCCESS = 88, COMMENT_FAIL= 87, COMMENT_REQUEST = 86; // from WebtoonActivity
     public static final int SETTINGS_SUCCESS = 85, SETTINGS_FAIL= 84, SETTINGS_REQUEST = 83; // from WebtoonActivity
+    public static final int MYCASH_SUCCESS = 82, MYCASH_FAIL= 81, MYCASH_REQUEST = 80; // from MyPageActivity
+
 }

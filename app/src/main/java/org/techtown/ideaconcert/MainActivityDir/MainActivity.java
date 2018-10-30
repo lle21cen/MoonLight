@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -62,6 +63,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     // 카테고리 메뉴에 필요한 변수들
     private CategoryContentsRecyclerAdapter categoryContentsRecyclerAdapter;
+    // adapter 바꾸기
+    private CategoryContentsRecyclerAdapter loveAdapter, academyAdapter, chivalryAdapter, actionAdapter, comicAdapter;
     private RecyclerView categoryRecycler;
     private RecyclerView.LayoutManager categoryRecyclerLayoutManager, newArrivalLayoutManger,
             bestRecyclerManager, recommendRecyclerManager, eventRecyclerManager;
@@ -86,11 +89,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EventRecyclerAdapter eventRecyclerAdapter;
     private RecyclerView eventBannerRecycler;
 
+    // categoryContentsListener 클래스 선언
+    CategoryContentsListener categoryContentsListener;
     @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        final RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
+        categoryContentsListener = new CategoryContentsListener();
 
         mainScrollView = findViewById(R.id.main_scroll_view);
 
@@ -103,31 +110,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         bannerUrlArray = new ArrayList<>();
 
-        open_category_btn = findViewById(R.id.main_open_category);
-        open_category_btn.setOnClickListener(this); // 카테고리 펼처보기 버튼 setOnClickListener 설정
+        // 카테고리 TabLayout 기본 설정
+        TabLayout category_tab_layout =findViewById(R.id.main_category_tab);
+        category_tab_layout.addTab(category_tab_layout.newTab().setText("인기"));
+        category_tab_layout.addTab(category_tab_layout.newTab().setText("연애"));
+        category_tab_layout.addTab(category_tab_layout.newTab().setText("학원"));
+        category_tab_layout.addTab(category_tab_layout.newTab().setText("무협"));
+        category_tab_layout.addTab(category_tab_layout.newTab().setText("액션"));
+        category_tab_layout.addTab(category_tab_layout.newTab().setText("코믹"));
+//        category_tab_layout.addTab(category_tab_layout.newTab().setIcon(R.drawable.option));
+        category_tab_layout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        pop = findViewById(R.id.main_pop);
-        love = findViewById(R.id.main_love);
-        edu = findViewById(R.id.main_edu);
-        chivalry = findViewById(R.id.main_chivalry);
-        action = findViewById(R.id.main_action);
-        comic = findViewById(R.id.main_comic);
+        category_tab_layout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                int position = tab.getPosition() + 1;
+                categoryContentsListener.setCategory(position);
+                ContentsDBRequest contentsDBRequest = new ContentsDBRequest(categoryContentsListener, categoryContentsURL, 0, position); // tag 필요 없음
+                requestQueue.add(contentsDBRequest);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
         footer_up_btn = findViewById(R.id.main_footer_up_btn);
-
-        pop.setOnClickListener(this);
-        love.setOnClickListener(this);
-        edu.setOnClickListener(this);
-        chivalry.setOnClickListener(this);
-        action.setOnClickListener(this);
-        comic.setOnClickListener(this);
         footer_up_btn.setOnClickListener(this);
 
         // 카테고리 메뉴에 필요한 변수들
         categoryRecycler = findViewById(R.id.main_category_recycler);
         categoryRecyclerLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         categoryRecycler.setLayoutManager(categoryRecyclerLayoutManager);
-        categoryContentsRecyclerAdapter = new CategoryContentsRecyclerAdapter();
         categoryRecycler.addItemDecoration(new RecyclerViewDecoration(10));
+        categoryContentsRecyclerAdapter = new CategoryContentsRecyclerAdapter();
+
+        // 어뎁터 변수들 선언
+        loveAdapter = new CategoryContentsRecyclerAdapter();
+        academyAdapter = new CategoryContentsRecyclerAdapter();
+        chivalryAdapter = new CategoryContentsRecyclerAdapter();
+        actionAdapter = new CategoryContentsRecyclerAdapter();
+        comicAdapter = new CategoryContentsRecyclerAdapter();
 
         // 신작 메뉴에 필요한 변수들
         arrivalRecycler = findViewById(R.id.main_arrival_recycler);
@@ -192,7 +221,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // 상단 광고 배너(ViewPager)에 넣을 이미지가 몇개인지 개수를 알아와서 그 개수로 초기화
         BannerDBRequest bannerDBRequest = new BannerDBRequest(bannerListener, getBannerInfoURL, 1); // 최상단 배너 정보
-        RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
         requestQueue.add(bannerDBRequest);
 
         // 이벤트 광고 배너(RecyclerView)에 넣을 이미지가 몇개인지 개수를 알아와서 그 개수로 초기화
@@ -214,7 +242,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         };
 
         // 카테고리별 콘텐츠 정보를 데이터베이스에서 얻어와서 recycler view에 설정
-        ContentsDBRequest contentsDBRequest = new ContentsDBRequest(CategoryContentsListener, categoryContentsURL, 0); // tag 필요 없음
+        int position = category_tab_layout.getSelectedTabPosition()+1;
+        categoryContentsListener.setCategory(position);
+        ContentsDBRequest contentsDBRequest = new ContentsDBRequest(categoryContentsListener, categoryContentsURL, 0, position); // tag 필요 없음
         requestQueue.add(contentsDBRequest);
 
         // 신작 콘텐츠 정보를 데이터베이스에서 얻어와서 recycler view에 설정
@@ -404,7 +434,57 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     };
 
     // 카테고리 콘텐츠 데이터베이스에서 url과 정보를 가져와 처리하는 리스너
-    private Response.Listener<String> CategoryContentsListener = new Response.Listener<String>() {
+//    private Response.Listener<String> CategoryContentsListener = new Response.Listener<String>() {
+//        @Override
+//        public void onResponse(String response) {
+//            try {
+//                ShowProgressDialog.dismissProgressDialog();
+//                JSONObject jsonResponse = new JSONObject(response);
+//                // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
+//                JSONArray result = jsonResponse.getJSONArray("result");
+//                boolean exist = jsonResponse.getBoolean("exist");
+//                if (exist) {
+//                    int num_category_contents_data = jsonResponse.getInt("num_result");
+//                    for (int i = 0; i < num_category_contents_data; i++) {
+//                        // 데이터베이스에 들어있는 콘텐츠의 수만큼 for문을 돌려 layout에 image추가
+//                        try {
+//                            JSONObject temp = result.getJSONObject(i);
+//                            int contents_pk = temp.getInt("contents_pk");
+//
+//                            URL url = new URL(temp.getString("url"));
+//                            GetBitmapImageFromURL getBitmapImageFromURL = new GetBitmapImageFromURL(url);
+//                            getBitmapImageFromURL.start();
+//                            getBitmapImageFromURL.join();
+//                            Bitmap bitmap = getBitmapImageFromURL.getBitmap();
+//
+//                            String contents_name = temp.getString("contents_name");
+//                            String painter_name = temp.getString("painter_name");
+////                            String writer_name = temp.getString("writer_name"); // 글 작가 이름 추가?
+//                            int view_count = temp.getInt("view_count");
+//
+//                            categoryContentsRecyclerAdapter.addItem(bitmap, contents_name, painter_name, view_count, contents_pk);
+//                        } catch (Exception e) {
+//                            Log.e("setBitmap error", e.getMessage());
+//                        }
+//                    }
+//                    categoryRecycler.setAdapter(categoryContentsRecyclerAdapter);
+//                } else {
+//                    Log.e("No Banner", "표시 할 배너가 없습니다.");
+//                }
+//            } catch (Exception e) {
+//                Log.e("contentsListener", e.getMessage());
+//            }
+//        }
+//    };
+
+    class CategoryContentsListener implements Response.Listener<String> {
+
+        CategoryContentsRecyclerAdapter adapter;
+
+        public void setAdapter(int position) {
+
+        }
+
         @Override
         public void onResponse(String response) {
             try {
@@ -413,7 +493,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
                 JSONArray result = jsonResponse.getJSONArray("result");
                 boolean exist = jsonResponse.getBoolean("exist");
-
                 if (exist) {
                     int num_category_contents_data = jsonResponse.getInt("num_result");
                     for (int i = 0; i < num_category_contents_data; i++) {
@@ -446,7 +525,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.e("contentsListener", e.getMessage());
             }
         }
-    };
+    }
 
     // 할인메뉴 리스너
     private Response.Listener<String> disCountContentsListener = new Response.Listener<String>() {
@@ -557,33 +636,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         comic.setTextColor(Color.parseColor("#000000"));
 
         switch (view.getId()) {
-            case R.id.main_pop:
-                pop.setTextColor(Color.parseColor("#ff0000"));
-                break;
-
-            case R.id.main_love:
-                love.setTextColor(Color.parseColor("#ff0000"));
-                break;
-
-            case R.id.main_edu:
-                edu.setTextColor(Color.parseColor("#ff0000"));
-                break;
-
-            case R.id.main_chivalry:
-                chivalry.setTextColor(Color.parseColor("#ff0000"));
-                break;
-
-            case R.id.main_action:
-                action.setTextColor(Color.parseColor("#ff0000"));
-                break;
-
-            case R.id.main_comic:
-                comic.setTextColor(Color.parseColor("#ff0000"));
-                break;
-            // ------------------------------------------------------------------------------------------------------------- //
-            case R.id.main_open_category:
-
-                break;
             case R.id.main_footer_up_btn:
                 mainScrollView.fullScroll(ScrollView.FOCUS_UP);
                 break;

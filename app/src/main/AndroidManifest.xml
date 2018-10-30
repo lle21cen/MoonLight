@@ -56,6 +56,7 @@
         <activity android:name=".CommentDir.CommentActivity" />
         <activity android:name=".LoginDir.LoginActivity" />
         <activity android:name=".MyPageDir.MyPageActivity" />
+        <activity android:name=".MyCashDir.MyCashActivity"></activity>
     </application>
 
 </manifest>

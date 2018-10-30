@@ -23,78 +23,22 @@
             android:background="#ece6e6"
             app:layout_constraintTop_toBottomOf="@+id/main_titlebar" />
 
-        <LinearLayout
-            android:id="@+id/main_category_layout"
-            android:layout_width="match_parent"
+        <android.support.design.widget.TabLayout
+            android:id="@+id/main_category_tab"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/main_pager">
+            app:layout_constraintTop_toBottomOf="@+id/main_pager" />
 
-            <TextView
-                android:id="@+id/main_pop"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="인기"
-                android:layout_weight="1"
-                android:textSize="15dp" />
-
-            <TextView
-                android:id="@+id/main_love"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_margin="10dp"
-                android:text="연애"
-                android:textSize="15dp" />
-
-            <TextView
-                android:id="@+id/main_edu"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="학원"
-                android:textSize="15dp" />
-
-            <TextView
-                android:id="@+id/main_chivalry"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:layout_weight="1"
-                android:text="무협"
-                android:textSize="15dp" />
-
-            <TextView
-                android:id="@+id/main_action"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:layout_weight="1"
-                android:text="액션"
-                android:textSize="15dp" />
-
-            <TextView
-                android:id="@+id/main_comic"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:layout_weight="1"
-                android:text="코믹"
-                android:textSize="15dp" />
-
-            <Button
-                android:id="@+id/main_open_category"
-                android:layout_width="0dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:background="@drawable/ic_open_icon"/>
-
-        </LinearLayout>
-
+        <ImageView
+            android:id="@+id/main_category_open_img"
+            android:src="@drawable/option"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/main_category_tab"
+            app:layout_constraintTop_toBottomOf="@id/main_pager"
+            app:layout_constraintBottom_toBottomOf="@id/main_category_tab"
+            android:layout_width="25dp"
+            android:layout_height="25dp" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/main_category_recycler"
@@ -102,13 +46,13 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@+id/main_category_layout" />
+            app:layout_constraintTop_toBottomOf="@+id/main_category_tab" />
 
         <TextView
-            android:layout_marginTop="10dp"
             android:id="@+id/main_sub_add_banner"
             android:layout_width="match_parent"
             android:layout_height="40dp"
+            android:layout_marginTop="10dp"
             android:background="#b393da"
             android:paddingTop="10dp"
             android:text="서브 광고 배너"
@@ -127,8 +71,8 @@
         <TextView
             android:id="@+id/main_newarrival_text"
             android:layout_width="wrap_content"
-            android:layout_marginTop="10dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:text="이달의 신작보기"
             android:textSize="20dp"
             android:textStyle="bold"
@@ -143,11 +87,11 @@
             app:layout_constraintTop_toBottomOf="@id/main_newarrival_text" />
 
         <include
-            android:layout_marginTop="20dp"
             android:id="@+id/main_discount_include"
             layout="@layout/main_discount_contents"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             app:layout_constraintTop_toBottomOf="@id/main_arrival_recycler" />
 
         <include
@@ -158,11 +102,11 @@
             app:layout_constraintTop_toBottomOf="@id/main_discount_include" />
 
         <include
-            android:layout_marginTop="20dp"
             android:id="@+id/main_recommend_include"
             layout="@layout/main_recommend_contents"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             app:layout_constraintTop_toBottomOf="@id/main_best_include" />
 
         <TextView
@@ -177,8 +121,8 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/main_event_recycler"
             android:layout_width="match_parent"
-            android:background="#fdceca"
             android:layout_height="wrap_content"
+            android:background="#fdceca"
             app:layout_constraintTop_toBottomOf="@id/main_event_text" />
 
         <include

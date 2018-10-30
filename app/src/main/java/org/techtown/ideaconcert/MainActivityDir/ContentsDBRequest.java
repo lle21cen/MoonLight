@@ -15,6 +15,13 @@ public class ContentsDBRequest extends StringRequest{
         parameters.put("tag", String.valueOf(tag));
     }
 
+    public ContentsDBRequest(Response.Listener<String> listener, String URL, int tag, int category) {
+        super(Method.POST, URL, listener, null);
+        parameters = new HashMap<>();
+        parameters.put("tag", String.valueOf(tag));
+        parameters.put("category", String.valueOf(category));
+    }
+
     public Map<String, String> getParams() {
         return parameters;
     }
