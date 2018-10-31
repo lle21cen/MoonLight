@@ -2,59 +2,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <RelativeLayout
-        android:id="@+id/cash_layout2"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/cash_layout1"
-        android:layout_centerHorizontal="true"
-        android:paddingTop="30dp"
-        android:paddingRight="20dp"
-        android:paddingBottom="30dp">
-
-        <ImageView
-            android:id="@+id/cash_coin_img"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_centerVertical="true"
-            android:src="@drawable/coin" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/cash_coin_img"
-            android:gravity="center"
-            android:text=" 보유캐시"
-            android:textColor="#000000"
-            android:textSize="15sp" />
-
-        <TextView
-            android:id="@+id/cash_cash_retention"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/cash_cash_text"
-            android:text="0"
-            android:textColor="#000000"
-            android:textSize="30sp" />
-
-        <TextView
-            android:id="@+id/cash_cash_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/cash_cash_retention"
-            android:layout_alignParentRight="true"
-            android:text=" Cash" />
-    </RelativeLayout>
-
     <include
         android:id="@+id/cash_list"
         layout="@layout/cash_cash_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/cash_layout2"
         android:layout_centerHorizontal="true" />
 
     <RelativeLayout

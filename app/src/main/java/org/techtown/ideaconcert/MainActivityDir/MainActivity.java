@@ -59,12 +59,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int banner_data_num; // 배너 데이터베이스에 들어있는 데이터의 개수를 저장
     private Handler bannerHandler; // 배너가 일정 시간 경과 시 자동으로 넘어가도록 만드는 핸들러
 
-    private TextView pop, love, edu, chivalry, action, comic;
-
     // 카테고리 메뉴에 필요한 변수들
-    private CategoryContentsRecyclerAdapter categoryContentsRecyclerAdapter;
-    // adapter 바꾸기
-    private CategoryContentsRecyclerAdapter loveAdapter, academyAdapter, chivalryAdapter, actionAdapter, comicAdapter;
+    private CategoryContentsRecyclerAdapter popAdapter, loveAdapter, academyAdapter, chivalryAdapter, actionAdapter, comicAdapter;
+
     private RecyclerView categoryRecycler;
     private RecyclerView.LayoutManager categoryRecyclerLayoutManager, newArrivalLayoutManger,
             bestRecyclerManager, recommendRecyclerManager, eventRecyclerManager;
@@ -91,13 +88,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     // categoryContentsListener 클래스 선언
     CategoryContentsListener categoryContentsListener;
+
     @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         final RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
-        categoryContentsListener = new CategoryContentsListener();
 
         mainScrollView = findViewById(R.id.main_scroll_view);
 
@@ -111,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bannerUrlArray = new ArrayList<>();
 
         // 카테고리 TabLayout 기본 설정
-        TabLayout category_tab_layout =findViewById(R.id.main_category_tab);
+        TabLayout category_tab_layout = findViewById(R.id.main_category_tab);
         category_tab_layout.addTab(category_tab_layout.newTab().setText("인기"));
         category_tab_layout.addTab(category_tab_layout.newTab().setText("연애"));
         category_tab_layout.addTab(category_tab_layout.newTab().setText("학원"));
@@ -121,26 +118,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        category_tab_layout.addTab(category_tab_layout.newTab().setIcon(R.drawable.option));
         category_tab_layout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        category_tab_layout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                int position = tab.getPosition() + 1;
-                categoryContentsListener.setCategory(position);
-                ContentsDBRequest contentsDBRequest = new ContentsDBRequest(categoryContentsListener, categoryContentsURL, 0, position); // tag 필요 없음
-                requestQueue.add(contentsDBRequest);
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
         footer_up_btn = findViewById(R.id.main_footer_up_btn);
         footer_up_btn.setOnClickListener(this);
 
@@ -149,7 +126,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         categoryRecyclerLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         categoryRecycler.setLayoutManager(categoryRecyclerLayoutManager);
         categoryRecycler.addItemDecoration(new RecyclerViewDecoration(10));
-        categoryContentsRecyclerAdapter = new CategoryContentsRecyclerAdapter();
+
+        popAdapter = new CategoryContentsRecyclerAdapter();
+        loveAdapter = new CategoryContentsRecyclerAdapter();
+        academyAdapter = new CategoryContentsRecyclerAdapter();
+        chivalryAdapter = new CategoryContentsRecyclerAdapter();
+        actionAdapter = new CategoryContentsRecyclerAdapter();
+        comicAdapter = new CategoryContentsRecyclerAdapter();
 
         // 어뎁터 변수들 선언
         loveAdapter = new CategoryContentsRecyclerAdapter();
@@ -202,8 +185,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Intent intent;
                     intent = new Intent(getApplicationContext(), SettingsActivity.class);
                     startActivity(intent);
-                }
-                else {
+                } else {
                     Intent intent;
                     intent = new Intent(getApplicationContext(), MyPageActivity.class);
                     intent.putExtra("user_pk", info.getUser_pk());
@@ -241,11 +223,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         };
 
+        category_tab_layout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                int position = tab.getPosition() + 1;
+                CategoryContentsRecyclerAdapter adapter = getCategoryAdapterByPosition(position);
+                if (adapter.getItemCount() == 0) {
+                    categoryContentsListener = new CategoryContentsListener(adapter);
+                    ContentsDBRequest contentsDBRequest = new ContentsDBRequest(categoryContentsListener, categoryContentsURL, 0, position); // tag 필요 없음
+                    requestQueue.add(contentsDBRequest);
+                } else {
+                    categoryRecycler.swapAdapter(adapter, true);
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
         // 카테고리별 콘텐츠 정보를 데이터베이스에서 얻어와서 recycler view에 설정
-        int position = category_tab_layout.getSelectedTabPosition()+1;
-        categoryContentsListener.setCategory(position);
-        ContentsDBRequest contentsDBRequest = new ContentsDBRequest(categoryContentsListener, categoryContentsURL, 0, position); // tag 필요 없음
-        requestQueue.add(contentsDBRequest);
+        ContentsDBRequest contentsDBRequest;
+
+        int position = category_tab_layout.getSelectedTabPosition() + 1;
+        CategoryContentsRecyclerAdapter adapter = getCategoryAdapterByPosition(position);
+        if (adapter.getItemCount() == 0) {
+            categoryContentsListener = new CategoryContentsListener(adapter);
+            contentsDBRequest = new ContentsDBRequest(categoryContentsListener, categoryContentsURL, 0, position); // tag 필요 없음
+            requestQueue.add(contentsDBRequest);
+        } else {
+            categoryRecycler.setAdapter(adapter);
+        }
 
         // 신작 콘텐츠 정보를 데이터베이스에서 얻어와서 recycler view에 설정
         contentsDBRequest = new ContentsDBRequest(newArrivalListener, arrivalContentsURL, 1); // 1 : 할인 작품
@@ -372,7 +386,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     };
 
-
     // 신작메뉴 리스너
     private Response.Listener<String> newArrivalListener = new Response.Listener<String>() {
         @Override
@@ -433,56 +446,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     };
 
-    // 카테고리 콘텐츠 데이터베이스에서 url과 정보를 가져와 처리하는 리스너
-//    private Response.Listener<String> CategoryContentsListener = new Response.Listener<String>() {
-//        @Override
-//        public void onResponse(String response) {
-//            try {
-//                ShowProgressDialog.dismissProgressDialog();
-//                JSONObject jsonResponse = new JSONObject(response);
-//                // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
-//                JSONArray result = jsonResponse.getJSONArray("result");
-//                boolean exist = jsonResponse.getBoolean("exist");
-//                if (exist) {
-//                    int num_category_contents_data = jsonResponse.getInt("num_result");
-//                    for (int i = 0; i < num_category_contents_data; i++) {
-//                        // 데이터베이스에 들어있는 콘텐츠의 수만큼 for문을 돌려 layout에 image추가
-//                        try {
-//                            JSONObject temp = result.getJSONObject(i);
-//                            int contents_pk = temp.getInt("contents_pk");
-//
-//                            URL url = new URL(temp.getString("url"));
-//                            GetBitmapImageFromURL getBitmapImageFromURL = new GetBitmapImageFromURL(url);
-//                            getBitmapImageFromURL.start();
-//                            getBitmapImageFromURL.join();
-//                            Bitmap bitmap = getBitmapImageFromURL.getBitmap();
-//
-//                            String contents_name = temp.getString("contents_name");
-//                            String painter_name = temp.getString("painter_name");
-////                            String writer_name = temp.getString("writer_name"); // 글 작가 이름 추가?
-//                            int view_count = temp.getInt("view_count");
-//
-//                            categoryContentsRecyclerAdapter.addItem(bitmap, contents_name, painter_name, view_count, contents_pk);
-//                        } catch (Exception e) {
-//                            Log.e("setBitmap error", e.getMessage());
-//                        }
-//                    }
-//                    categoryRecycler.setAdapter(categoryContentsRecyclerAdapter);
-//                } else {
-//                    Log.e("No Banner", "표시 할 배너가 없습니다.");
-//                }
-//            } catch (Exception e) {
-//                Log.e("contentsListener", e.getMessage());
-//            }
-//        }
-//    };
-
     class CategoryContentsListener implements Response.Listener<String> {
 
         CategoryContentsRecyclerAdapter adapter;
 
-        public void setAdapter(int position) {
-
+        public CategoryContentsListener(CategoryContentsRecyclerAdapter adapter) {
+            this.adapter = adapter;
         }
 
         @Override
@@ -491,9 +460,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ShowProgressDialog.dismissProgressDialog();
                 JSONObject jsonResponse = new JSONObject(response);
                 // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
-                JSONArray result = jsonResponse.getJSONArray("result");
                 boolean exist = jsonResponse.getBoolean("exist");
                 if (exist) {
+                    JSONArray result = jsonResponse.getJSONArray("result");
                     int num_category_contents_data = jsonResponse.getInt("num_result");
                     for (int i = 0; i < num_category_contents_data; i++) {
                         // 데이터베이스에 들어있는 콘텐츠의 수만큼 for문을 돌려 layout에 image추가
@@ -512,17 +481,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                            String writer_name = temp.getString("writer_name"); // 글 작가 이름 추가?
                             int view_count = temp.getInt("view_count");
 
-                            categoryContentsRecyclerAdapter.addItem(bitmap, contents_name, painter_name, view_count, contents_pk);
+                            adapter.addItem(bitmap, contents_name, painter_name, view_count, contents_pk);
                         } catch (Exception e) {
                             Log.e("setBitmap error", e.getMessage());
                         }
                     }
-                    categoryRecycler.setAdapter(categoryContentsRecyclerAdapter);
                 } else {
-                    Log.e("No Banner", "표시 할 배너가 없습니다.");
+                    Log.e("No Contents", "표시 할 컨텐츠가 없습니다.");
                 }
+                categoryRecycler.swapAdapter(adapter, true);
             } catch (Exception e) {
                 Log.e("contentsListener", e.getMessage());
+                categoryRecycler.swapAdapter(adapter, true);
             }
         }
     }
@@ -627,18 +597,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
 
-        //--------------------------------------------- 카테고리 텍스트 선택시 색상 변경 -------------------------------------------------- //
-        pop.setTextColor(Color.parseColor("#000000"));
-        love.setTextColor(Color.parseColor("#000000"));
-        edu.setTextColor(Color.parseColor("#000000"));
-        chivalry.setTextColor(Color.parseColor("#000000"));
-        action.setTextColor(Color.parseColor("#000000"));
-        comic.setTextColor(Color.parseColor("#000000"));
+    }
 
-        switch (view.getId()) {
-            case R.id.main_footer_up_btn:
-                mainScrollView.fullScroll(ScrollView.FOCUS_UP);
-                break;
+    public CategoryContentsRecyclerAdapter getCategoryAdapterByPosition(int position) {
+        CategoryContentsRecyclerAdapter adapter;
+        if (position == 1) {
+            adapter = popAdapter;
+        } else if (position == 2) {
+            adapter = loveAdapter;
+        } else if (position == 3) {
+            adapter = academyAdapter;
+        } else if (position == 4) {
+            adapter = chivalryAdapter;
+        } else if (position == 5) {
+            adapter = actionAdapter;
+        } else if (position == 6) {
+            adapter = comicAdapter;
+        } else {
+            return null;
         }
+        return adapter;
     }
 }

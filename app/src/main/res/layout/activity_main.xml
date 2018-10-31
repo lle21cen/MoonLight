@@ -27,6 +27,8 @@
             android:id="@+id/main_category_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:tabSelectedTextColor="#e90005"
+            app:tabIndicatorColor="#e90005"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/main_pager" />
 
