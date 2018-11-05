@@ -3,6 +3,7 @@ package org.techtown.ideaconcert.MainActivityDir;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,19 +46,19 @@ public class CategoryContentsRecyclerAdapter extends RecyclerView.Adapter<Recycl
         CategoryViewHolder categoryViewHolder = (CategoryViewHolder) holder;
         final CategoryContentsItem item = items.get(position);
 
-        categoryViewHolder.worksImageView.setImageBitmap(item.getBitmap());
+        SetBitmapImageFromUrlTask task = new SetBitmapImageFromUrlTask(categoryViewHolder.worksImageView, 100, 140);
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, item.getThumbnailUrl());
+
         categoryViewHolder.author_name_view.setText(item.getPainter_name());
         categoryViewHolder.contents_name_view.setText(item.getWork_name());
 
         String viewCountText;
         int viewCount = item.getView_count();
-        if (viewCount > 1000)
-        {
+        if (viewCount > 1000) {
             viewCount /= 1000;
-            viewCountText = viewCount+"k";
-        }
-        else {
-            viewCountText = viewCount+"";
+            viewCountText = viewCount + "k";
+        } else {
+            viewCountText = viewCount + "";
         }
         categoryViewHolder.view_count_view.setText(viewCountText);
 
@@ -77,16 +78,15 @@ public class CategoryContentsRecyclerAdapter extends RecyclerView.Adapter<Recycl
         return items.size();
     }
 
-    void addItem(Bitmap bitmap, String item_name, String painter_name, int view_count, int contents_pk) {
+    void addItem(String thumbnailUrl, String item_name, String painter_name, int view_count, int contents_pk) {
         CategoryContentsItem item = new CategoryContentsItem();
-        item.setBitmap(bitmap);
+        item.setThumbnailUrl(thumbnailUrl);
         item.setWork_name(item_name);
         item.setPainter_name(painter_name);
         item.setView_count(view_count);
         item.setContents_pk(contents_pk);
         items.add(item);
     }
-
     void clearItem() {
         items.clear();
     }

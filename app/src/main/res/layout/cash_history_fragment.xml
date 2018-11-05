@@ -3,21 +3,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/cash_history_layout"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/cash_history_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginBottom="120dp"
-        android:background="#efefef"
-        android:orientation="vertical"/>
+        android:background="#efefef"/>
 
     <ImageView
-        android:layout_centerHorizontal="true"
-        android:layout_alignBottom="@id/cash_history_layout"
-        android:layout_marginBottom="5dp"
-        android:src="@drawable/open"
         android:layout_width="25dp"
-        android:layout_height="15dp" />
+        android:layout_height="15dp"
+        android:layout_alignBottom="@id/cash_history_recycler_view"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dp"
+        android:src="@drawable/open" />
 </RelativeLayout>

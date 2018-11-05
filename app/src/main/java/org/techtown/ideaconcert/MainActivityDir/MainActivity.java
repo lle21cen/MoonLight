@@ -3,20 +3,19 @@ package org.techtown.ideaconcert.MainActivityDir;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,17 +30,18 @@ import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.MyPageDir.MyPageActivity;
 import org.techtown.ideaconcert.R;
 import org.techtown.ideaconcert.SettingsDir.SettingsActivity;
-import org.techtown.ideaconcert.ShowProgressDialog;
 import org.techtown.ideaconcert.UserInformation;
 
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    final private String getBannerInfoURL = "http://lle21cen.cafe24.com/GetBannerInfo.php";
-    final private String categoryContentsURL = "http://lle21cen.cafe24.com/GetCategoryContents.php";
+
+    //        final private String getBannerInfoURL = "http://lle21cen.cafe24.com/GetBannerInfo.php";
+    final private String getBannerInfoURL = "http://192.168.1.186:8090/platform/GetBannerInfo";
+
+    final private String categoryContentsURL = "http://192.168.1.186:8090/platform/GetCategoryContents";
     final private String arrivalContentsURL = "http://lle21cen.cafe24.com/GetArrivalContents.php"; // 이름 싹~ 바꿔야 함, 신작, 베스트, 추천 에 똑같이 사용
     final private String discountContentsURL = "http://lle21cen.cafe24.com/GetDiscountContents.php";
 
@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private ViewPager bannerPager; // (???) 배너
     private final int BANNER_FLIP_TIME = 5000; // 배너가 자동으로 넘어가는 시간 (1000 = 1초)
-    private ArrayList<URL> bannerUrlArray; // 배너 데이터베이스에 있는 URL을 저장하여 BannerPagerAdapter 클래스에서 사용
     private int banner_data_num; // 배너 데이터베이스에 들어있는 데이터의 개수를 저장
     private Handler bannerHandler; // 배너가 일정 시간 경과 시 자동으로 넘어가도록 만드는 핸들러
 
@@ -89,13 +88,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // categoryContentsListener 클래스 선언
     CategoryContentsListener categoryContentsListener;
 
+    private int deviceWidth;
     @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        final RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
 
+        DisplayMetrics dm = getApplicationContext().getResources().getDisplayMetrics();
+        deviceWidth = dm.widthPixels;
+
+        final RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
         mainScrollView = findViewById(R.id.main_scroll_view);
 
         info = (UserInformation) getApplication(); // 유저 정보를 저장하기 위한 Application 변수
@@ -104,8 +107,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Date today = new Date();
         SimpleDateFormat date = new SimpleDateFormat("yyyy.MM");
         bestContentsDateTextView.setText("[" + date.format(today) + "]");
-
-        bannerUrlArray = new ArrayList<>();
 
         // 카테고리 TabLayout 기본 설정
         TabLayout category_tab_layout = findViewById(R.id.main_category_tab);
@@ -161,7 +162,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bestRecyclerAdapter = new NewArrivalRecyclerAdapter();
         bestRecycler.addItemDecoration(new RecyclerViewDecoration(10));
 
-
         // 추천 메뉴에 필요한 변수들
         recommendRecycler = findViewById(R.id.main_recommend_recycler);
         recommendRecyclerManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         eventBannerRecycler = findViewById(R.id.main_event_recycler);
         eventRecyclerManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         eventBannerRecycler.setLayoutManager(eventRecyclerManager);
-        eventRecyclerAdapter = new EventRecyclerAdapter();
+        eventRecyclerAdapter = new EventRecyclerAdapter(deviceWidth, (int)Math.round(deviceWidth/2.6));
         eventBannerRecycler.addItemDecoration(new RecyclerViewDecoration(10));
 
         // 이건 왜 여기???
@@ -200,14 +200,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // 광고 배너 페이저 초기화
         bannerPager = findViewById(R.id.main_pager);
+        ConstraintLayout.LayoutParams viewPagerParams = new ConstraintLayout.LayoutParams(deviceWidth, (int)Math.round(deviceWidth / 1.7));
+        viewPagerParams.topToBottom = R.id.main_titlebar;
+        bannerPager.setLayoutParams(viewPagerParams);
 
         // 상단 광고 배너(ViewPager)에 넣을 이미지가 몇개인지 개수를 알아와서 그 개수로 초기화
         BannerDBRequest bannerDBRequest = new BannerDBRequest(bannerListener, getBannerInfoURL, 1); // 최상단 배너 정보
-        requestQueue.add(bannerDBRequest);
+        requestQueue.add(bannerDBRequest); // 광고 배너 묶어 놓은 상태 -> 풀어서 사용
 
         // 이벤트 광고 배너(RecyclerView)에 넣을 이미지가 몇개인지 개수를 알아와서 그 개수로 초기화
         bannerDBRequest = new BannerDBRequest(eventBannerListener, getBannerInfoURL, 2); // 오늘의 이벤트 광고 배너 정보
-        requestQueue.add(bannerDBRequest);
+        requestQueue.add(bannerDBRequest); // 광고 배너 묶어 놓은 상태 -> 풀어서 사용
 
         // 광고 배너 핸들러 => 자동으로 넘기는 기능을 담당
         bannerHandler = new Handler() {
@@ -276,8 +279,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //  작품 정보를 데이터베이스에서 얻어와서 recycler view에 설정
         contentsDBRequest = new ContentsDBRequest(newArrivalListener, arrivalContentsURL, 3); // 3 : 추천 작품
         requestQueue.add(contentsDBRequest);
-
-        ShowProgressDialog.showProgressDialog(this);
     }
 
     // Indicator 초기화
@@ -327,29 +328,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void onResponse(String response) {
             try {
                 JSONObject jsonResponse = new JSONObject(response);
+                Log.e("HTML", response);
+
                 // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
                 JSONArray result = jsonResponse.getJSONArray("result");
                 boolean exist = jsonResponse.getBoolean("exist");
                 if (exist) {
+                    ArrayList<BannerPagerItem> items = new ArrayList<>();
                     int num_result = jsonResponse.getInt("num_result");
                     for (int i = 0; i < num_result; i++) {
                         // 데이터베이스에 들어있는 배너의 수만큼 for문을 돌려 url을 배열에 저장
                         JSONObject temp = result.getJSONObject(i);
-                        bannerUrlArray.add(new URL(temp.getString("url")));
+                        String url = temp.getString("url");
+                        int contents_pk = temp.getInt("contents_pk");
+                        items.add(new BannerPagerItem(url));
                     }
-
                     // 광고 배너 ViewPager 관련 변수 선언, 초기화
-
                     banner_data_num = num_result;
-                    BannerPagerAdapter adapter = new BannerPagerAdapter(getLayoutInflater(), num_result, bannerUrlArray);
+                    BannerPagerAdapter adapter = new BannerPagerAdapter(getLayoutInflater(), num_result, items, deviceWidth, (int)Math.round(deviceWidth/1.7));
                     bannerPager.setAdapter(adapter);
                     bannerThread.start(); // 최상단 배너에 대한 adater가 설정되면 자동으로 넘어가는 Thread가 실행되도록 설정
-
                 } else {
                     Log.e("No Banner", "표시 할 배너가 없습니다.");
                 }
             } catch (Exception e) {
                 Log.e("bannerListener", e.getMessage());
+                Log.e("html", response);
             }
         }
     };
@@ -368,13 +372,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         // 데이터베이스에 들어있는 배너의 수만큼 for문을 돌려 url을 배열에 저장
                         JSONObject temp = result.getJSONObject(i);
                         String url = temp.getString("url");
-                        GetBitmapImageFromURL getBitmapImageFromURL = new GetBitmapImageFromURL(new URL((url)));
-                        getBitmapImageFromURL.start();
-                        getBitmapImageFromURL.join();
-                        Bitmap bitmap = getBitmapImageFromURL.getBitmap();
+
                         int contents_pk = temp.getInt("contents_pk");
 
-                        eventRecyclerAdapter.addItem(contents_pk, bitmap);
+                        eventRecyclerAdapter.addItem(contents_pk, url);
                     }
                     eventBannerRecycler.setAdapter(eventRecyclerAdapter);
                 } else {
@@ -418,20 +419,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         // 데이터베이스에 들어있는 콘텐츠의 수만큼 for문을 돌려 layout에 image추가
                         try {
                             JSONObject temp = result.getJSONObject(i);
-                            URL url = new URL(temp.getString("url"));
-
-                            GetBitmapImageFromURL getBitmapImageFromURL = new GetBitmapImageFromURL(url);
-                            getBitmapImageFromURL.start();
-                            getBitmapImageFromURL.join();
-                            Bitmap bitmap = getBitmapImageFromURL.getBitmap();
-
+                            String url = temp.getString("url");
                             int contents_pk = temp.getInt("contents_pk");
                             String contents_name = temp.getString("contents_name");
-                            String writer_anme = temp.getString("writer_name");
+                            String writer_name = temp.getString("writer_name");
                             String painter_name = temp.getString("painter_name");
                             double star_rating = temp.getDouble("star_rating");
 
-                            adapter.addItem(contents_pk, bitmap, contents_name, star_rating, painter_name);
+                            adapter.addItem(contents_pk, url, contents_name, star_rating, painter_name);
                         } catch (Exception e) {
                             Log.e("setBitmap error", e.getMessage());
                         }
@@ -457,7 +452,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onResponse(String response) {
             try {
-                ShowProgressDialog.dismissProgressDialog();
                 JSONObject jsonResponse = new JSONObject(response);
                 // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
                 boolean exist = jsonResponse.getBoolean("exist");
@@ -470,18 +464,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             JSONObject temp = result.getJSONObject(i);
                             int contents_pk = temp.getInt("contents_pk");
 
-                            URL url = new URL(temp.getString("url"));
-                            GetBitmapImageFromURL getBitmapImageFromURL = new GetBitmapImageFromURL(url);
-                            getBitmapImageFromURL.start();
-                            getBitmapImageFromURL.join();
-                            Bitmap bitmap = getBitmapImageFromURL.getBitmap();
+                            String url = temp.getString("url");
 
                             String contents_name = temp.getString("contents_name");
                             String painter_name = temp.getString("painter_name");
 //                            String writer_name = temp.getString("writer_name"); // 글 작가 이름 추가?
                             int view_count = temp.getInt("view_count");
 
-                            adapter.addItem(bitmap, contents_name, painter_name, view_count, contents_pk);
+//                            adapter.addItem(null, contents_name, painter_name, view_count, contents_pk);
+                            adapter.addItem(url, contents_name, painter_name, view_count, contents_pk);
                         } catch (Exception e) {
                             Log.e("setBitmap error", e.getMessage());
                         }
@@ -489,9 +480,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 } else {
                     Log.e("No Contents", "표시 할 컨텐츠가 없습니다.");
                 }
-                categoryRecycler.swapAdapter(adapter, true);
             } catch (Exception e) {
-                Log.e("contentsListener", e.getMessage());
+                Log.e("contentsListener", "" + e.getMessage());
+            } finally {
                 categoryRecycler.swapAdapter(adapter, true);
             }
         }
@@ -520,11 +511,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             else items = items3;
 
                             JSONObject temp = result.getJSONObject(i);
-                            URL url = new URL(temp.getString("url"));
-                            GetBitmapImageFromURL getBitmapImageFromURL = new GetBitmapImageFromURL(url);
-                            getBitmapImageFromURL.start();
-                            getBitmapImageFromURL.join();
-                            Bitmap thumbnail = getBitmapImageFromURL.getBitmap();
+                            String url = temp.getString("url");
 
                             int contents_pk = temp.getInt("contents_pk");
                             String contents_name = temp.getString("contents_name");
@@ -535,7 +522,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             double star_rating = temp.getDouble("star_rating");
 
                             DiscountContentsItem item = new DiscountContentsItem();
-                            item.setBitmap(thumbnail);
+                            item.setThumbnailUrl(url);
                             item.setContents_pk(contents_pk);
                             item.setTitle(contents_name);
                             item.setWriter(writer_name);
@@ -580,8 +567,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int user_pk = loginData.getInt("userPk", 0);
         String name = loginData.getString("userName", null);
         String email = loginData.getString("userEmail", null);
+        int role = loginData.getInt("userRole", 0);
         if (method != null) {
-            info.setUserInformation(method, user_pk, name, email, false);
+            info.setUserInformation(method, user_pk, name, email, false, role);
             testInfo();
             isLoginTurn = false;
         }
@@ -592,11 +580,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.i("Main, User PK", "" + info.getUser_pk());
         Log.i("Main, Name", info.getUser_name());
         Log.i("Main, Email", info.getUserEmail());
+        Log.i("Main, Role", "" + info.getRole());
     }
 
     @Override
     public void onClick(View view) {
-
+        switch (view.getId()) {
+            case R.id.main_footer_up_btn:
+                mainScrollView.fullScroll(ScrollView.FOCUS_UP);
+        }
     }
 
     public CategoryContentsRecyclerAdapter getCategoryAdapterByPosition(int position) {
@@ -617,5 +609,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return null;
         }
         return adapter;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Toast.makeText(this, "onDestroy()", Toast.LENGTH_SHORT).show();
+        bannerPager.removeAllViews();
+        categoryRecycler.removeAllViews();
+        arrivalRecycler.removeAllViews();
+        discountPager.removeAllViews();
+        bestRecycler.removeAllViews();
+        recommendRecycler.removeAllViews();
+        eventBannerRecycler.removeAllViews();
     }
 }

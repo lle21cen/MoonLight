@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="100dp"
-    android:layout_height="120dp">
+    android:layout_height="140dp">
 
     <ImageView
         android:id="@+id/main_arrival_item_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/dummy_cate_cont" />
+        android:src="@drawable/dummy_100x140" />
 
         <RelativeLayout
             android:layout_width="match_parent"

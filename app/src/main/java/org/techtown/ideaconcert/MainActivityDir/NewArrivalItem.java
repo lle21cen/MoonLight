@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 public class NewArrivalItem {
     // 신작보기와 베스트 9과 추천 작품에서 사용
     int contents_pk;
-    Bitmap bitmap;
+    String thumbnail_url;
     String work_name, painter_name;
     double star_rating;
 
@@ -41,11 +41,11 @@ public class NewArrivalItem {
         this.star_rating = star_rating;
     }
 
-    public Bitmap getBitmap() {
-        return bitmap;
+    public String getThumbnail_url() {
+        return thumbnail_url;
     }
 
-    public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
+    public void setThumbnail_url(String thumbnail_url) {
+        this.thumbnail_url = thumbnail_url;
     }
 }

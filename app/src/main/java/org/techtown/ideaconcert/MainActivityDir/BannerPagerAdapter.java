@@ -1,6 +1,7 @@
 package org.techtown.ideaconcert.MainActivityDir;
 
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.techtown.ideaconcert.MainActivityDir.GetBitmapImageFromURL;
 import org.techtown.ideaconcert.R;
@@ -19,13 +21,15 @@ import java.util.ArrayList;
 public class BannerPagerAdapter extends PagerAdapter {
 
     LayoutInflater inflater;
-    private int count;
-    private ArrayList<URL> urls;
+    private int count, width, height;
+    private ArrayList<BannerPagerItem> items;
 
-    public BannerPagerAdapter(LayoutInflater inflater, int count, ArrayList<URL> urls) {
+    public BannerPagerAdapter(LayoutInflater inflater, int count, ArrayList<BannerPagerItem> items, int width, int height) {
         this.inflater = inflater;
         this.count = count;
-        this.urls = urls;
+        this.items = items;
+        this.width = width;
+        this.height = height;
     }
 
     @Override
@@ -40,19 +44,15 @@ public class BannerPagerAdapter extends PagerAdapter {
         final ImageView bannerImg = view.findViewById(R.id.banner_img);
         final TextView indicator_red_txt = view.findViewById(R.id.banner_indi_red);
         final TextView indicator_white_txt = view.findViewById(R.id.banner_indi_white);
-        GetBitmapImageFromURL bannerThread = new GetBitmapImageFromURL(urls.get(position));
-        bannerThread.start();
-        try {
-            bannerThread.join();
-            Bitmap bitmap = bannerThread.getBitmap();
-            bannerImg.setImageBitmap(bitmap);
-            bannerImg.setAdjustViewBounds(true);
+
+        bannerImg.setAdjustViewBounds(true);
+
+        SetBitmapImageFromUrlTask task = new SetBitmapImageFromUrlTask(bannerImg, width, height);
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, items.get(position).getUrl());
 //            Log.e("size", ""+bitmap.getHeight()+", " +bitmap.getWidth());
-            indicator_red_txt.setText("" + (position + 1));
-            indicator_white_txt.setText("/" + count);
-        } catch (Exception e) {
-            Log.e("setBitmap error", e.getMessage());
-        }
+        indicator_red_txt.setText("" + (position + 1));
+        indicator_white_txt.setText("/" + count);
+
         container.addView(view);
         return view;
     }

@@ -13,10 +13,19 @@ public class UserInformation extends Application {
     private String userEmail; // user_email 로 수정하자 나중에
     private String user_name;
     private int cash;
+    private int role;
 
-//    private String user_first_name; // Only Facebook
-//    private String user_middle_name; // Only Facebook
-//    private String user_last_name; // Only Facebook
+    public int getRole() {
+        return role;
+    }
+
+    public void setRole(int role) {
+        this.role = role;
+        SharedPreferences loginData = getSharedPreferences("loginData", MODE_PRIVATE);
+        SharedPreferences.Editor editor = loginData.edit();
+        editor.putInt("userRole", role);
+        editor.apply();
+    }
 
     public String getLogin_method() {
         return login_method;
@@ -81,16 +90,19 @@ public class UserInformation extends Application {
         user_pk = 0;
         user_name = null;
         userEmail = null;
+        role = 0;
         SharedPreferences loginData = getSharedPreferences("loginData", MODE_PRIVATE);
         SharedPreferences.Editor editor = loginData.edit();
         editor.clear();
         editor.apply();
     }
-    public void setUserInformation(String method, int pk, String name, String email, boolean autoLogin) {
+    public void setUserInformation(String method, int pk, String name, String email, boolean autoLogin, int role) {
         user_pk = pk;
         login_method = method;
         user_name = name;
         userEmail = email;
+        this.role = role;
+
         if (autoLogin) {
             SharedPreferences loginData = getSharedPreferences("loginData", MODE_PRIVATE);
             SharedPreferences.Editor editor = loginData.edit();
@@ -98,9 +110,9 @@ public class UserInformation extends Application {
             editor.putString("loginMethod", method);
             editor.putString("userName", name);
             editor.putString("userEmail", email);
+            editor.putInt("userRole", role);
             editor.apply();
         }
         // Family name, Given Name need?
     }
-
 }

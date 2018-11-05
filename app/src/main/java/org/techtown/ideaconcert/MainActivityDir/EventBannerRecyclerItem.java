@@ -2,9 +2,9 @@ package org.techtown.ideaconcert.MainActivityDir;
 
 import android.graphics.Bitmap;
 
-public class BannerItem {
+public class EventBannerRecyclerItem {
     int contents_pk;
-    Bitmap bitmap;
+    String image_url;
 
     public int getContents_pk() {
         return contents_pk;
@@ -14,11 +14,11 @@ public class BannerItem {
         this.contents_pk = contents_pk;
     }
 
-    public Bitmap getBitmap() {
-        return bitmap;
+    public String getImage_url() {
+        return image_url;
     }
 
-    public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
+    public void setImage_url(String image_url) {
+        this.image_url = image_url;
     }
 }

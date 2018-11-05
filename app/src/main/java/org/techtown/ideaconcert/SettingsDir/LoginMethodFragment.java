@@ -178,7 +178,7 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
                             email = response.getJSONObject().getString("email");
                             name = response.getJSONObject().getString("name");
                             login_method = "Facebook";
-                            userInformation.setUserInformation(login_method, 0, name, email, true);
+                            userInformation.setUserInformation(login_method, 0, name, email, true, 2);
                             replaceFragment(new SettingsPreferenceFragment());
                         } catch (JSONException e) {
                             Log.e("facebook error", e.getMessage());
@@ -212,7 +212,7 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
                 name = account.getDisplayName();
                 login_method = "Google";
 
-                userInformation.setUserInformation(login_method, 0, name, email, true);
+                userInformation.setUserInformation(login_method, 0, name, email, true, 2);
                 // 사용자 정보 입력하고 액티비티 종료, 이름 형식 정리 필요
                 replaceFragment(new SettingsPreferenceFragment());
             } else {
@@ -233,10 +233,10 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
         super.onStart();
         FirebaseUser currentUser = auth.getCurrentUser();
         if (currentUser != null) {
-            userInformation.setUserInformation("Google", 0, currentUser.getDisplayName(), currentUser.getEmail(), true);
+            userInformation.setUserInformation("Google", 0, currentUser.getDisplayName(), currentUser.getEmail(), true, 2);
             replaceFragment(new SettingsPreferenceFragment());
         }
-//        testInfo();
+        testInfo();
     }
 
     protected void replaceFragment(Fragment fragment) {
@@ -249,5 +249,6 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
         Toast.makeText(getActivity(), "User PK = " + userInformation.getUser_pk(), Toast.LENGTH_SHORT).show();
         Toast.makeText(getActivity(), "Name = " + userInformation.getUser_name(), Toast.LENGTH_SHORT).show();
         Toast.makeText(getActivity(), "Email = " + userInformation.getUserEmail(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Role = " + userInformation.getRole(), Toast.LENGTH_SHORT).show();
     }
 }

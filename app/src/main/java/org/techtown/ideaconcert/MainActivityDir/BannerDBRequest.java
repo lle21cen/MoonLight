@@ -15,6 +15,10 @@ public class BannerDBRequest extends StringRequest {
         parameters.put("tag", String.valueOf(tag));
     }
 
+    public BannerDBRequest(Response.Listener<String> listener, String url) {
+        super(Method.POST, url, listener, null);
+        parameters = new HashMap<>();
+    }
     public Map<String, String> getParams() {
         return parameters;
     }

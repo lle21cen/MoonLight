@@ -1,19 +1,9 @@
 package org.techtown.ideaconcert.MainActivityDir;
 
-import android.graphics.Bitmap;
-
 public class CategoryContentsItem {
-    Bitmap bitmap;
+    String thumbnailUrl;
     String work_name, painter_name;
     int view_count, contents_pk;
-
-    public Bitmap getBitmap() {
-        return bitmap;
-    }
-
-    public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
-    }
 
     public String getWork_name() {
         return work_name;
@@ -45,5 +35,13 @@ public class CategoryContentsItem {
 
     public void setContents_pk(int contents_pk) {
         this.contents_pk = contents_pk;
+    }
+
+    public String getThumbnailUrl() {
+        return thumbnailUrl;
+    }
+
+    public void setThumbnailUrl(String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
     }
 }

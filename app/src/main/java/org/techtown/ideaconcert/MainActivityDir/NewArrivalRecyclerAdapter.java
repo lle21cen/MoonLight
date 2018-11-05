@@ -2,6 +2,7 @@ package org.techtown.ideaconcert.MainActivityDir;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,7 +45,9 @@ public class NewArrivalRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         NewArrivalViewHolder newArrivalViewHolder = (NewArrivalViewHolder) holder;
         NewArrivalItem item = items.get(position);
-        newArrivalViewHolder.worksImageView.setImageBitmap(item.getBitmap());
+
+        SetBitmapImageFromUrlTask task = new SetBitmapImageFromUrlTask(newArrivalViewHolder.worksImageView, 100, 140);
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, item.getThumbnail_url());
         newArrivalViewHolder.author_name_view.setText(item.getPainter_name());
         newArrivalViewHolder.contents_name_view.setText(item.getWork_name());
         newArrivalViewHolder.star_rating_view.setText(""+item.getStar_rating());
@@ -63,10 +66,10 @@ public class NewArrivalRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
         return items.size();
     }
 
-    void addItem(int contents_pk, Bitmap bitmap, String item_name, double star_rating, String painter_name) {
+    void addItem(int contents_pk, String thumbnail_url, String item_name, double star_rating, String painter_name) {
         NewArrivalItem item = new NewArrivalItem();
         item.setContents_pk(contents_pk);
-        item.setBitmap(bitmap);
+        item.setThumbnail_url(thumbnail_url);
         item.setWork_name(item_name);
         item.setPainter_name(painter_name);
         item.setStar_rating(star_rating);

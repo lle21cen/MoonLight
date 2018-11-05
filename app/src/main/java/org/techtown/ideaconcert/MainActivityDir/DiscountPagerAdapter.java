@@ -2,6 +2,7 @@ package org.techtown.ideaconcert.MainActivityDir;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.util.Log;
@@ -57,7 +58,10 @@ public class DiscountPagerAdapter extends PagerAdapter {
 
         if (items1.size() > position) {
             DiscountContentsItem item = items1.get(position);
-            thumbnail_view.setImageBitmap(item.getBitmap());
+
+            SetBitmapImageFromUrlTask task = new SetBitmapImageFromUrlTask(thumbnail_view, 70, 98);
+            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, item.getThumbnailUrl());
+
             title_view.setText(item.getTitle());
             star_rating_view.setText("" + item.getStar_rating());
             writer_name_view.setText(item.getWriter());
@@ -84,7 +88,10 @@ public class DiscountPagerAdapter extends PagerAdapter {
 
         if (items2.size() > position) {
             DiscountContentsItem item2 = items2.get(position);
-            thumbnail_view2.setImageBitmap(item2.getBitmap());
+
+            SetBitmapImageFromUrlTask task = new SetBitmapImageFromUrlTask(thumbnail_view2, 70, 98);
+            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, item2.getThumbnailUrl());
+
             title_view2.setText(item2.getTitle());
             star_rating_view2.setText("" + item2.getStar_rating());
             writer_name_view2.setText(item2.getWriter());
@@ -111,7 +118,10 @@ public class DiscountPagerAdapter extends PagerAdapter {
 
         if (items3.size() > position) {
             DiscountContentsItem item3 = items3.get(position);
-            thumbnail_view3.setImageBitmap(item3.getBitmap());
+
+            SetBitmapImageFromUrlTask task = new SetBitmapImageFromUrlTask(thumbnail_view3, 70, 98);
+            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, item3.getThumbnailUrl());
+
             title_view3.setText(item3.getTitle());
             star_rating_view3.setText("" + item3.getStar_rating());
             writer_name_view3.setText(item3.getWriter());

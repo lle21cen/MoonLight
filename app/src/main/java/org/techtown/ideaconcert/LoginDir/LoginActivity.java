@@ -89,7 +89,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     int user_pk = jsonResponse.getInt("user_pk");
                                     String email = jsonResponse.getString("email");
                                     String name = jsonResponse.getString("name");
-                                    userInformation.setUserInformation("Normal", user_pk, name, email, true);
+                                    int role = jsonResponse.getInt("user_type_number");
+                                    userInformation.setUserInformation("Normal", user_pk, name, email, true, role);
                                     AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                                     builder.setMessage("로그인에 성공했습니다 ").setCancelable(false)
                                             .setPositiveButton("확인", new DialogInterface.OnClickListener() {

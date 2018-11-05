@@ -3,17 +3,16 @@ package org.techtown.ideaconcert.MainActivityDir;
 import android.graphics.Bitmap;
 
 public class DiscountContentsItem {
-    Bitmap bitmap;
-    String title, writer, painter, summary;
+    String thumbnailUrl, title, writer, painter, summary;
     int contents_pk, view_count;
     double star_rating;
 
-    public Bitmap getBitmap() {
-        return bitmap;
+    public String getThumbnailUrl() {
+        return thumbnailUrl;
     }
 
-    public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
+    public void setThumbnailUrl(String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
     }
 
     public String getTitle() {

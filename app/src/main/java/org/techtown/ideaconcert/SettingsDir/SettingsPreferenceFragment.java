@@ -173,18 +173,19 @@ public class SettingsPreferenceFragment extends PreferenceFragment implements Pr
             try {
                 JSONObject jsonObject = new JSONObject(response);
                 int user_pk = jsonObject.getInt("user_pk");
+                int role = jsonObject.getInt("user_type_number");
                 userInformation.setUser_pk(user_pk);
+                userInformation.setRole(role);
 
                 ////////////////////////////// FOR DEBUGGING ////////////////////////////////////////
                 String email = userInformation.getUserEmail();
                 String name = userInformation.getUser_name();
                 int pk = userInformation.getUser_pk();
-                Toast.makeText(getActivity(), "email= " + email + "name= " + name + "user_pk= " + pk, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "email= " + email + "name= " + name + "user_pk= " + pk + "role = " + role, Toast.LENGTH_SHORT).show();
                 /////////////////////////////////////////////////////////////////////////////////////
             } catch (Exception e) {
                 Log.e("sns sign in error", "" + e.getMessage());
             }
         }
     };
-
 }

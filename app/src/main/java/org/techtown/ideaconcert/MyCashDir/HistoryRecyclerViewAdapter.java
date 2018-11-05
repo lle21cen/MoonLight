@@ -2,65 +2,70 @@ package org.techtown.ideaconcert.MyCashDir;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.techtown.ideaconcert.R;
 
 import java.util.ArrayList;
 
-public class HistoryListViewAdapter extends BaseAdapter {
+public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private ArrayList<HistoryListViewItem> items = new ArrayList<>();
+    ArrayList<HistoryListViewItem> items = new ArrayList<>();
+
+    public static class HistoryRecyclerViewHolder extends RecyclerView.ViewHolder {
+        TextView dateView;
+        TextView cashView;
+        TextView purchaseView;
+
+        HistoryRecyclerViewHolder(View view) {
+            super(view);
+            dateView = view.findViewById(R.id.main_arrival_item_name);
+            cashView = view.findViewById(R.id.main_arrival_item_star_rating);
+            purchaseView = view.findViewById(R.id.main_arrival_item_author_name);
+        }
+    }
 
     @Override
-    public int getCount() {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cash_history_fragment_item, parent, false);
+        return new HistoryRecyclerViewHolder(v);
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+        HistoryRecyclerViewHolder historyRecyclerViewHolder = (HistoryRecyclerViewHolder) holder;
+        HistoryListViewItem item = items.get(position);
+
+        historyRecyclerViewHolder.dateView.setText(item.getDate());
+        historyRecyclerViewHolder.cashView.setText("+"+item.getCash());
+        if (item.isPurchase()) {
+            historyRecyclerViewHolder.purchaseView.setText("구매 취소");
+            historyRecyclerViewHolder.purchaseView.setTextColor(Color.rgb(233, 0, 5));
+        }
+        else {
+            historyRecyclerViewHolder.purchaseView.setText("구매 완료");
+        }
+
+        historyRecyclerViewHolder.purchaseView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Context context = view.getContext();
+                Toast.makeText(context, "position = " + position, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public int getItemCount() {
         return items.size();
     }
 
-    @Override
-    public Object getItem(int i) {
-        return items.get(i);
-    }
-
-    @Override
-    public long getItemId(int i) {
-        return i;
-    }
-
-    @Override
-    public View getView(int position, View view, ViewGroup parent) {
-        final Context context = parent.getContext();
-
-        if (view == null) {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.cash_history_fragment_item, parent, false);
-        }
-        TextView dateText = view.findViewById(R.id.history_item_date);
-        TextView cashText = view.findViewById(R.id.history_item_cash);
-        TextView purchaseText = view.findViewById(R.id.history_item_purchase);
-
-        HistoryListViewItem item = items.get(position);
-        dateText.setText(item.getDate());
-        cashText.setText("+" + item.getCash());
-        if (item.isPurchase()) {
-            purchaseText.setText("구매 완료");
-        }
-        else {
-            purchaseText.setText("구매 취소");
-            purchaseText.setTextColor(Color.rgb(233, 0, 5));
-        }
-        return view;
-    }
-
     public void addItem(String date, String cash, boolean purchase) {
-        HistoryListViewItem item = new HistoryListViewItem();
-        item.setDate(date);
-        item.setCash(cash);
-        item.setPurchase(purchase);
-        items.add(item);
+        items.add(new HistoryListViewItem(date, cash, purchase));
     }
 }
