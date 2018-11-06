@@ -1,6 +1,7 @@
 package org.techtown.ideaconcert.MyPageDir;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
@@ -33,6 +34,12 @@ public class MyPageActivity extends AppCompatActivity implements View.OnClickLis
 
         // 내 캐시 Fragment로 이동하는 TextView와 ImageView의 클릭 리스너 설정
         TextView my_cash = findViewById(R.id.my_page_my_cash);
+        TextView user_name = findViewById(R.id.my_page_id);
+        SharedPreferences preferences = getSharedPreferences("loginData", MODE_PRIVATE);
+        String name = preferences.getString("userName", null);
+        if (name != null)
+            user_name.setText(name);
+
         ImageView my_cash_arrow = findViewById(R.id.my_page_my_cash_img);
         my_cash.setOnClickListener(this);
         my_cash_arrow.setOnClickListener(this);

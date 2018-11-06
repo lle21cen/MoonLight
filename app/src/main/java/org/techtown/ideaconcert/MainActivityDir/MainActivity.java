@@ -42,8 +42,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     final private String getBannerInfoURL = "http://192.168.1.186:8090/platform/GetBannerInfo";
 
     final private String categoryContentsURL = "http://192.168.1.186:8090/platform/GetCategoryContents";
-    final private String arrivalContentsURL = "http://lle21cen.cafe24.com/GetArrivalContents.php"; // 이름 싹~ 바꿔야 함, 신작, 베스트, 추천 에 똑같이 사용
-    final private String discountContentsURL = "http://lle21cen.cafe24.com/GetDiscountContents.php";
+//    final private String selectedContentsURL = "http://lle21cen.cafe24.com/GetSelectedContents.php";
+    final private String selectedContentsURL = "http://192.168.1.186:8090/platform/GetSelectedContents";
+//    final private String discountContentsURL = "http://lle21cen.cafe24.com/GetDiscountContents.php";
 
     ScrollView mainScrollView; // 메인 액태비티 최상위 레이아웃 ScrollView
 
@@ -201,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 광고 배너 페이저 초기화
         bannerPager = findViewById(R.id.main_pager);
         ConstraintLayout.LayoutParams viewPagerParams = new ConstraintLayout.LayoutParams(deviceWidth, (int)Math.round(deviceWidth / 1.7));
-        viewPagerParams.topToBottom = R.id.main_titlebar;
+        viewPagerParams.topToBottom = R.id.main_toolbar;
         bannerPager.setLayoutParams(viewPagerParams);
 
         // 상단 광고 배너(ViewPager)에 넣을 이미지가 몇개인지 개수를 알아와서 그 개수로 초기화
@@ -265,19 +266,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         // 신작 콘텐츠 정보를 데이터베이스에서 얻어와서 recycler view에 설정
-        contentsDBRequest = new ContentsDBRequest(newArrivalListener, arrivalContentsURL, 1); // 1 : 할인 작품
+        contentsDBRequest = new ContentsDBRequest(newArrivalListener, selectedContentsURL, 1); // 1 : 신작 작품
         requestQueue.add(contentsDBRequest);
 
         // 할인 작품 정보를 데이터베이스에서 얻어와서 recycler view에 설정
-        contentsDBRequest = new ContentsDBRequest(disCountContentsListener, discountContentsURL, 0); // tag 필요 없음 -> 나중에 데이터베이스부터 바꿀 필요 있음
+        contentsDBRequest = new ContentsDBRequest(disCountContentsListener, selectedContentsURL, 2); // 2 : 할인 작품
         requestQueue.add(contentsDBRequest);
 
         // 베스트 작품 정보를 데이터베이스에서 얻어와서 recycler view에 설정
-        contentsDBRequest = new ContentsDBRequest(newArrivalListener, arrivalContentsURL, 2); // 2 : 베스트 작품
+        contentsDBRequest = new ContentsDBRequest(newArrivalListener, selectedContentsURL, 3); // 3 : 베스트 작품
         requestQueue.add(contentsDBRequest);
 
         //  작품 정보를 데이터베이스에서 얻어와서 recycler view에 설정
-        contentsDBRequest = new ContentsDBRequest(newArrivalListener, arrivalContentsURL, 3); // 3 : 추천 작품
+        contentsDBRequest = new ContentsDBRequest(newArrivalListener, selectedContentsURL, 4); // 4 : 추천 작품
         requestQueue.add(contentsDBRequest);
     }
 
@@ -285,7 +286,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void initIndicator(int count) {
         circleAnimIndicator.setItemMargin(10);
         circleAnimIndicator.setAnimDuration(300);
-        circleAnimIndicator.createDotPanel(count, R.drawable.ic_circle_black_10dp, R.drawable.ic_circle_blue_10dp);
+        circleAnimIndicator.createDotPanel(count, R.drawable.ic_circle_black_10dp, R.drawable.ic_circle_purple_10dp);
     }
 
     private ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
@@ -328,7 +329,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void onResponse(String response) {
             try {
                 JSONObject jsonResponse = new JSONObject(response);
-                Log.e("HTML", response);
 
                 // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
                 JSONArray result = jsonResponse.getJSONArray("result");
@@ -353,7 +353,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             } catch (Exception e) {
                 Log.e("bannerListener", e.getMessage());
-                Log.e("html", response);
             }
         }
     };
@@ -387,7 +386,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     };
 
-    // 신작메뉴 리스너
+    // 선택된 메뉴 리스너
     private Response.Listener<String> newArrivalListener = new Response.Listener<String>() {
         @Override
         public void onResponse(String response) {
@@ -402,10 +401,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (tag == 1) {
                     adapter = newArrivalRecyclerAdapter;
                     recyclerView = arrivalRecycler;
-                } else if (tag == 2) {
+                } else if (tag == 3) {
                     adapter = bestRecyclerAdapter;
                     recyclerView = bestRecycler;
-                } else if (tag == 3) {
+                } else if (tag == 4) {
                     adapter = recommendRecyclerAdapter;
                     recyclerView = recommendRecycler;
                 } else {
@@ -436,7 +435,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Log.e("No Arrival", "표시 할 신작이 없습니다.");
                 }
             } catch (Exception e) {
-                Log.e("arrivalContentsListener", e.getMessage());
+                Log.e("selectedListener", e.getMessage());
             }
         }
     };
@@ -614,7 +613,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Toast.makeText(this, "onDestroy()", Toast.LENGTH_SHORT).show();
         bannerPager.removeAllViews();
         categoryRecycler.removeAllViews();
         arrivalRecycler.removeAllViews();

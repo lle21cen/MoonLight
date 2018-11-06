@@ -3,6 +3,7 @@ package org.techtown.ideaconcert.MyCashDir;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,9 +25,9 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
         HistoryRecyclerViewHolder(View view) {
             super(view);
-            dateView = view.findViewById(R.id.main_arrival_item_name);
-            cashView = view.findViewById(R.id.main_arrival_item_star_rating);
-            purchaseView = view.findViewById(R.id.main_arrival_item_author_name);
+            dateView = view.findViewById(R.id.history_item_date);
+            cashView = view.findViewById(R.id.history_item_cash);
+            purchaseView = view.findViewById(R.id.history_item_purchase);
         }
     }
 

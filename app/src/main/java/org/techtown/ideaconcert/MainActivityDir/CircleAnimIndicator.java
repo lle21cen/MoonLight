@@ -15,7 +15,7 @@ public class CircleAnimIndicator extends LinearLayout {
 
     private Context context;
     // 원 사이의 간격
-    private int itemMargin = 10;
+    private int itemMargin = 5;
 
     // 애니메이션 시간
     private int animDuration = 250;
@@ -43,10 +43,8 @@ public class CircleAnimIndicator extends LinearLayout {
         this.context = context;
     }
 
-
     /**
      * 기본 점 생성
-     *
      * @param count         점의 갯수
      * @param defaultCircle 점의 이미지
      */

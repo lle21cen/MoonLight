@@ -1,13 +1,16 @@
 package org.techtown.ideaconcert.CommentDir;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -20,10 +23,8 @@ import org.techtown.ideaconcert.R;
 
 public class CommentActivity extends AppCompatActivity implements View.OnClickListener {
 
-    ListView commentList;
     Button bestButton, allButton;
-    CommentListViewAdapter adapter;
-    private final String getCommentURL = "http://lle21cen.cafe24.com/GetComment.php";
+    ViewPager commentPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,61 +33,38 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
 
         bestButton = findViewById(R.id.comment_best_btn);
         allButton = findViewById(R.id.comment_all_btn);
+        bestButton.setOnClickListener(this);
+        allButton.setOnClickListener(this);
+
+        commentPager = findViewById(R.id.comment_view_pager);
+        CommentPagerAdapter pagerAdapter = new CommentPagerAdapter(getSupportFragmentManager());
+        commentPager.setAdapter(pagerAdapter);
+        commentPager.setCurrentItem(0);
+        commentPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                setButtonAndBackgroundColor(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         Intent intent = getIntent();
-        int item_pk = intent.getIntExtra("item_pk", 0);
         int contents_num = intent.getIntExtra("contents_num", 0);
 
         String item_title = intent.getStringExtra("item_title");
         TextView workNameView = findViewById(R.id.comment_work_name_txt);
         workNameView.setText(item_title + " " + contents_num + "화");
         workNameView.setOnClickListener(this);
-
-        commentList = findViewById(R.id.comment_listview);
-        adapter = new CommentListViewAdapter();
-
-        CommentDBRequest commentDBRequest = new CommentDBRequest(getCommentURL, commentListener, item_pk);
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(commentDBRequest);
     }
-
-    private Response.Listener<String> commentListener = new Response.Listener<String>() {
-        private String email, date, comment;
-        private int reply_num, like_num;
-
-        @Override
-        public void onResponse(String response) {
-            try {
-                JSONObject jsonResponse = new JSONObject(response);
-                // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
-                JSONArray result = jsonResponse.getJSONArray("result");
-                boolean exist = jsonResponse.getBoolean("exist");
-                if (exist) {
-                    int num_category_contents_data = jsonResponse.getInt("num_result");
-                    for (int i = 0; i < num_category_contents_data; i++) {
-                        // 데이터베이스에 들어있는 콘텐츠의 수만큼 for문을 돌려 layout에 image추가
-                        try {
-                            JSONObject temp = result.getJSONObject(i);
-                            email = temp.getString("email");
-                            date = temp.getString("date");
-                            comment = temp.getString("comment");
-                            reply_num = temp.getInt("reply_num");
-                            like_num = temp.getInt("like_num");
-
-                            adapter.addItem(email, date, comment, reply_num, like_num);
-                        } catch (Exception e) {
-                            Log.e("set item error", e.getMessage());
-                        }
-                    }
-                    commentList.setAdapter(adapter);
-                } else {
-                    Log.e("No Data", "데이터가 없습니다.");
-                }
-            } catch (Exception e) {
-                Log.e("Comment Listener", e.getMessage());
-            }
-        }
-    };
 
     @Override
     public void onClick(View view) {
@@ -94,6 +72,29 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.comment_work_name_txt:
                 setResult(ActivityCodes.COMMENT_SUCCESS);
                 finish();
+                break;
+            case R.id.comment_best_btn :
+                setButtonAndBackgroundColor(0);
+                commentPager.setCurrentItem(0);
+                break;
+            case R.id.comment_all_btn :
+                setButtonAndBackgroundColor(1);
+                commentPager.setCurrentItem(1);
+                break;
+        }
+    }
+
+    private void setButtonAndBackgroundColor(int position) {
+        if (position == 0) {
+            bestButton.setTextColor(Color.rgb(120, 106, 170));
+            bestButton.setBackgroundColor(Color.rgb(255, 255, 255));
+            allButton.setTextColor(Color.rgb(255, 255, 255));
+            allButton.setBackgroundColor(Color.rgb(120, 106, 170));
+        } else if (position == 1) {
+            allButton.setTextColor(Color.rgb(120, 106, 170));
+            allButton.setBackgroundColor(Color.rgb(255, 255, 255));
+            bestButton.setTextColor(Color.rgb(255, 255, 255));
+            bestButton.setBackgroundColor(Color.rgb(120, 106, 170));
         }
     }
 }

@@ -68,6 +68,7 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webtoon);
 
+        LinearLayout commentLayout = findViewById(R.id.webtoon_comment_layout);
         headerLayout = findViewById(R.id.webtoon_header_layout);
         footerLayout = findViewById(R.id.webtoon_footer_layout);
         webtoonLayout = findViewById(R.id.main_webtoon_layout);
@@ -122,6 +123,7 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
         comments_count_text.setOnClickListener(this);
         like_btn.setOnClickListener(this);
         like_count_text.setOnClickListener(this);
+        commentLayout.setOnClickListener(this);
 
         contents_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -274,8 +276,7 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
                 }
                 requestQueue.add(insertDeleteContentsLikeRequest);
                 break;
-            case R.id.webtoon_comments_btn:
-            case R.id.webtoon_comments_count:
+            case R.id.webtoon_comment_layout :
                 Intent intent = new Intent(WebtoonActivity.this, CommentActivity.class);
                 intent.putExtra("item_pk", item_pk);
                 intent.putExtra("item_title", item_title);

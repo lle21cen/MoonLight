@@ -125,7 +125,7 @@ public class SettingsPreferenceFragment extends PreferenceFragment implements Pr
                 getActivity().finish();
                 break;
             case "settings_login_info_pref":
-                getFragmentManager().beginTransaction().replace(R.id.settings_layout, new LoginMethodFragment()).commit();
+                getFragmentManager().beginTransaction().replace(R.id.settings_layout, new LoginMethodFragment()).addToBackStack(null).commit();
                 break;
             case "settings_consult_pref":
                 Toast.makeText(getActivity(), preference.getTitle(), Toast.LENGTH_SHORT).show();

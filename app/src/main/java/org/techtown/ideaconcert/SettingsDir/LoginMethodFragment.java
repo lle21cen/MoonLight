@@ -84,7 +84,7 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
 
         callbackManager = CallbackManager.Factory.create();
 
-        facebook_login = (LoginButton) view.findViewById(R.id.login_method_facebook);
+        facebook_login = view.findViewById(R.id.login_method_facebook);
         facebook_login.setReadPermissions("email");
         // If using in a fragment
         facebook_login.setFragment(this);
@@ -236,7 +236,7 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
             userInformation.setUserInformation("Google", 0, currentUser.getDisplayName(), currentUser.getEmail(), true, 2);
             replaceFragment(new SettingsPreferenceFragment());
         }
-        testInfo();
+//        testInfo();
     }
 
     protected void replaceFragment(Fragment fragment) {

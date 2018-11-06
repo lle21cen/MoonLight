@@ -3,21 +3,26 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/comment_work_name_txt"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_gravity="center"
-        android:drawableLeft="@drawable/ic_navigate_before_black_24dp"
-        android:gravity="center"
-        android:text="작품명 들어갈 자리입니다."
-        android:textStyle="bold" />
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/webtoon_comment_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/comment_work_name_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:drawableLeft="@drawable/ic_navigate_before_black_24dp"
+            android:gravity="center"
+            android:text="작품명"
+            android:textStyle="bold" />
+    </android.support.v7.widget.Toolbar>
 
     <LinearLayout
         android:id="@+id/comment_2button_layout"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_below="@+id/comment_work_name_txt"
+        android:layout_height="50dp"
+        android:layout_below="@+id/webtoon_comment_toolbar"
         android:orientation="horizontal">
 
         <Button
@@ -25,23 +30,24 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="#ffffff"
             android:text="BEST"
-            android:textColor="#b431ff" />
+            android:textColor="#786aaa" />
 
         <Button
             android:id="@+id/comment_all_btn"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="#786aaa"
             android:text="전체댓글"
-            android:textColor="#b431ff" />
+            android:textColor="#ffffff" />
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/comment_listview"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/comment_view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:listSelector="@android:color/transparent"
-        android:layout_below="@id/comment_2button_layout"
-        android:layout_margin="5dp" />
+        android:layout_below="@id/comment_2button_layout" />
+
 </RelativeLayout>

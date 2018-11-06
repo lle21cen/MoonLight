@@ -171,7 +171,7 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
                 // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
                 boolean exist = jsonResponse.getBoolean("exist");
                 if (exist) {
-                    URL thumbnailURL = new URL(jsonResponse.getString("thumbnail"));
+                    URL thumbnailURL = new URL(jsonResponse.getString("url"));
                     String main_contents_name = jsonResponse.getString("contents_name");
                     String writer_name = jsonResponse.getString("writer_name");
                     String painter_name = jsonResponse.getString("painter_name");
