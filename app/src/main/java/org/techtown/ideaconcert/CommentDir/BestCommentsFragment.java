@@ -35,7 +35,9 @@ public class BestCommentsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.comment_best_fragment, container, false);
         bestCommentListView = view.findViewById(R.id.best_comment_listview);
-        adapter = new CommentListViewAdapter();
+        adapter = new CommentListViewAdapter(bestCommentListView);
+        bestButton = getActivity().findViewById(R.id.comment_best_btn);
+
         Intent intent = getActivity().getIntent();
         int item_pk = intent.getIntExtra("item_pk", 0);
         try {
@@ -50,7 +52,7 @@ public class BestCommentsFragment extends Fragment {
 
     private Response.Listener<String> commentListener = new Response.Listener<String>() {
         private String email, date, comment;
-        private int reply_num, like_num;
+        private int reply_num, like_num, comment_pk;
 
         @Override
         public void onResponse(String response) {
@@ -65,22 +67,24 @@ public class BestCommentsFragment extends Fragment {
                         // 데이터베이스에 들어있는 콘텐츠의 수만큼 for문을 돌려 layout에 image추가
                         try {
                             JSONObject temp = result.getJSONObject(i);
+                            comment_pk = temp.getInt("comment_pk");
                             email = temp.getString("email");
                             date = temp.getString("date");
                             comment = temp.getString("comment");
                             reply_num = temp.getInt("reply_num");
                             like_num = temp.getInt("like_num");
-                            adapter.addItem(email, date, comment, reply_num, like_num);
+                            adapter.addItem(comment_pk, email, date, comment, reply_num, like_num, 1);
                         } catch (Exception e) {
-                            Log.e("set item error", e.getMessage());
+                            Log.e("댓글에러", e.getMessage());
                         }
                     }
                     bestCommentListView.setAdapter(adapter);
+                    bestButton.setText("BEST("+num_result+")");
                 } else {
-                    Log.e("No Data", "데이터가 없습니다.");
+                    Log.e("댓글없음", "댓글이 없습니다.");
                 }
             } catch (Exception e) {
-                Log.e("Comment Listener", e.getMessage());
+                Log.e("댓글리스너에러", e.getMessage());
             }
         }
     };

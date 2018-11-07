@@ -16,6 +16,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,17 +40,17 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     //        final private String getBannerInfoURL = "http://lle21cen.cafe24.com/GetBannerInfo.php";
-    final private String getBannerInfoURL = "http://192.168.1.186:8090/platform/GetBannerInfo";
-
-    final private String categoryContentsURL = "http://192.168.1.186:8090/platform/GetCategoryContents";
+    final private String getBannerInfoURL = ActivityCodes.DATABASE_IP + "GetBannerInfo";
+    final private String categoryContentsURL = ActivityCodes.DATABASE_IP + "GetCategoryContents";
 //    final private String selectedContentsURL = "http://lle21cen.cafe24.com/GetSelectedContents.php";
-    final private String selectedContentsURL = "http://192.168.1.186:8090/platform/GetSelectedContents";
+    final private String selectedContentsURL = ActivityCodes.DATABASE_IP + "GetSelectedContents";
 //    final private String discountContentsURL = "http://lle21cen.cafe24.com/GetDiscountContents.php";
 
     ScrollView mainScrollView; // 메인 액태비티 최상위 레이아웃 ScrollView
 
     UserInformation info; // 로그인 한 사용자의 정보를 저장. Application 수준에서 관리됨.
     Button mypage_btn, open_category_btn, footer_up_btn;
+
     boolean isLoginTurn = true; // 로그인이 된 상태인지 안된 상태인지 판단. true일 경우 로그인이 안 된 상태 -----------> 지울지 판단할 필요 생김 나중에 귀찮
 
     private SharedPreferences loginData; // 사용자의 로그인 정보를 파일로 저장하여 로그인 상태를 유지함
@@ -427,7 +428,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                             adapter.addItem(contents_pk, url, contents_name, star_rating, painter_name);
                         } catch (Exception e) {
-                            Log.e("setBitmap error", e.getMessage());
+                            Log.e("selected contents error", e.getMessage());
                         }
                     }
                     recyclerView.setAdapter(adapter);
@@ -462,25 +463,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         try {
                             JSONObject temp = result.getJSONObject(i);
                             int contents_pk = temp.getInt("contents_pk");
-
                             String url = temp.getString("url");
-
                             String contents_name = temp.getString("contents_name");
                             String painter_name = temp.getString("painter_name");
 //                            String writer_name = temp.getString("writer_name"); // 글 작가 이름 추가?
                             int view_count = temp.getInt("view_count");
+                            int movie = temp.getInt("movie");
 
-//                            adapter.addItem(null, contents_name, painter_name, view_count, contents_pk);
-                            adapter.addItem(url, contents_name, painter_name, view_count, contents_pk);
+                            adapter.addItem(url, contents_name, painter_name, view_count, contents_pk, movie);
                         } catch (Exception e) {
-                            Log.e("setBitmap error", e.getMessage());
+                            Log.e("카테고리아이템에러", e.getMessage());
                         }
                     }
                 } else {
                     Log.e("No Contents", "표시 할 컨텐츠가 없습니다.");
                 }
             } catch (Exception e) {
-                Log.e("contentsListener", "" + e.getMessage());
+                Log.e("카테고리리스너에러", "리스너에러");
             } finally {
                 categoryRecycler.swapAdapter(adapter, true);
             }
@@ -532,7 +531,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             items.add(item);
 
                         } catch (Exception e) {
-                            Log.e("setBitmap error", e.getMessage());
+                            Log.e("discount contents error", e.getMessage());
                         }
                     }
                     DiscountPagerAdapter adapter = new DiscountPagerAdapter(getLayoutInflater(), items1, items2, items3);
@@ -542,7 +541,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Log.e("No Arrival", "할인 목록이 없습니다..");
                 }
             } catch (Exception e) {
-                Log.e("arrivalContentsListener", e.getMessage());
+                Log.e("할인작품리스너에러", e.getMessage());
             }
         }
     };

@@ -56,7 +56,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_toRightOf="@id/my_page_nim"
                 android:text="내 캐시 200"
-                android:textColor="#1d68bf" />
+                android:textColor="#786aaa" />
 
             <ImageView
                 android:id="@+id/my_page_my_cash_img"

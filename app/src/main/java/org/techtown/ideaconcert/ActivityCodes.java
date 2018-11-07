@@ -15,4 +15,5 @@ public class ActivityCodes extends Application {
     public static final int SETTINGS_SUCCESS = 85, SETTINGS_FAIL= 84, SETTINGS_REQUEST = 83; // from WebtoonActivity
     public static final int MYCASH_SUCCESS = 82, MYCASH_FAIL= 81, MYCASH_REQUEST = 80; // from MyPageActivity
 
+    public static final String DATABASE_IP = "http://192.168.1.186:8090/platform/";
 }

@@ -4,18 +4,18 @@ import android.graphics.Bitmap;
 
 public class WorksListViewItem {
     private int contentsItemPk, contentsNum, commentCount;
-    private Bitmap bitmp; // 오타 - 수정귀찮
+    private String thumbnail_url;
     private String worksTitle;
     private String watchNum;
+    private String movie_url;
     private double star_rating;
 
-
-    public Bitmap getBitmp() {
-        return bitmp;
+    public String getThumbnail_url() {
+        return thumbnail_url;
     }
 
-    public void setBitmp(Bitmap bitmp) {
-        this.bitmp = bitmp;
+    public void setThumbnail_url(String thumbnail_url) {
+        this.thumbnail_url = thumbnail_url;
     }
 
     public int getContentsNum() {
@@ -61,5 +61,13 @@ public class WorksListViewItem {
     }
     public void setContentsItemPk(int contentsItemPk) {
         this.contentsItemPk = contentsItemPk;
+    }
+
+    public String getMovie_url() {
+        return movie_url;
+    }
+
+    public void setMovie_url(String movie_url) {
+        this.movie_url = movie_url;
     }
 }

@@ -19,7 +19,6 @@ public class AllCommentFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.comment_all_fragment, container, false);
 
-
         return view;
     }
 }

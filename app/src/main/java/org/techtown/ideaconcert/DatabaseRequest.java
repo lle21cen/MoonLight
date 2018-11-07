@@ -10,6 +10,15 @@ public class DatabaseRequest extends StringRequest {
 
     Map<String, String> parameters;
 
+    public DatabaseRequest(Response.Listener<String> listener, String url) {
+        super(Method.POST, url, listener, null);
+    }
+
+    public void setComment_pk(int comment_pk) {
+        parameters = new HashMap<>();
+        parameters.put("comment_pk", String.valueOf(comment_pk));
+    }
+
     public DatabaseRequest(Response.Listener<String> listener, String url, String email) {
         super(Method.POST, url, listener, null);
         parameters = new HashMap<>();

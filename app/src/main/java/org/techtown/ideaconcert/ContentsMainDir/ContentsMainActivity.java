@@ -39,7 +39,7 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
     // 이미지만 따로 동적으로 설정하도록 바꾸어서 컨텐츠 로딩에 걸리는 시간을 단축할 필요가 있음
     // 변수명 통일 시키기 ... 귀찮
 
-    static final String getContentsItemURL = "http://lle21cen.cafe24.com/GetContentsItem.php";
+    static final String getContentsItemURL = ActivityCodes.DATABASE_IP + "GetContentsItem";
     private final String getContentsLIkeCountURL = "http://lle21cen.cafe24.com/GetContentsLIkeCount.php";
     private final String insertDeleteContentsLikeDataURL = "http://lle21cen.cafe24.com/InsertDeleteContentsLikeData.php";
 
@@ -80,6 +80,7 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
 
         titlebar_title.setOnClickListener(this);
 
+        thumbnail = findViewById(R.id.contents_main_info_img);
         back_btn = findViewById(R.id.contents_main_back);
         like_img = findViewById(R.id.contents_main_info_like_img);
 
@@ -162,7 +163,7 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
         private String title, watch_num;
         private double star_rating;
         private int contents_item_pk, contents_num, comments_count;
-        private URL url;
+        private String thumbnail_url, movie_url;
 
         @Override
         public void onResponse(String response) {
@@ -178,7 +179,12 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
                     int view_count = jsonResponse.getInt("view_count");
                     String summary = jsonResponse.getString("summary");
 
-                    // thumbnail.setImageBitmap(); 효율성을 위해 나중에 쓰래드로 구현.
+                    GetBitmapImageFromURL getBitmapImageFromURL = new GetBitmapImageFromURL(thumbnailURL);
+                    getBitmapImageFromURL.start();
+                    getBitmapImageFromURL.join();
+                    Bitmap bitmap = getBitmapImageFromURL.getBitmap();
+
+                    thumbnail.setImageBitmap(bitmap); // 효율성을 위해 나중에 쓰래드로 구현.
                     titlebar_title.setText(main_contents_name);
                     info_title.setText(main_contents_name);
                     info_writer.setText(writer_name);
@@ -199,18 +205,13 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
                             contents_item_pk = temp.getInt("contents_item_pk");
                             contents_num = temp.getInt("contents_num");
                             title = temp.getString("contents_name");
-                            url = new URL(temp.getString("url"));
+                            thumbnail_url = temp.getString("url");
                             watch_num = temp.getString("view_count");
                             star_rating = temp.getDouble("star_rating");
                             comments_count = temp.getInt("comments_count");
+                            movie_url = temp.getString("movie_url");
 
-                            GetBitmapImageFromURL getBitmapImageFromURL = new GetBitmapImageFromURL(url);
-                            getBitmapImageFromURL.start();
-                            getBitmapImageFromURL.join();
-                            Bitmap bitmap = getBitmapImageFromURL.getBitmap();
-                            // 이미지만 따로 동적으로 설정하도록 바꾸어서 컨텐츠 로딩에 걸리는 시간을 단축할 필요가 있음
-
-                            adapter.addItem(contents_item_pk, contents_num, title, bitmap, watch_num, star_rating, comments_count);
+                            adapter.addItem(contents_item_pk, contents_num, title, thumbnail_url, watch_num, star_rating, comments_count, movie_url);
                         } catch (Exception e) {
                             Log.e("set item error", e.getMessage());
                         }

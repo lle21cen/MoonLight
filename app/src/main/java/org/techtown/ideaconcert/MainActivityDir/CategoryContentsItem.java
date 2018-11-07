@@ -3,7 +3,7 @@ package org.techtown.ideaconcert.MainActivityDir;
 public class CategoryContentsItem {
     String thumbnailUrl;
     String work_name, painter_name;
-    int view_count, contents_pk;
+    int view_count, contents_pk, movie;
 
     public String getWork_name() {
         return work_name;
@@ -43,5 +43,13 @@ public class CategoryContentsItem {
 
     public void setThumbnailUrl(String thumbnailUrl) {
         this.thumbnailUrl = thumbnailUrl;
+    }
+
+    public int getMovie() {
+        return movie;
+    }
+
+    public void setMovie(int movie) {
+        this.movie = movie;
     }
 }

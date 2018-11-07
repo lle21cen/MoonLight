@@ -54,6 +54,5 @@ public class SetBitmapImageFromUrlTask extends AsyncTask<String, Void, Bitmap> {
     protected void onPostExecute(Bitmap bitmap) {
         super.onPostExecute(bitmap);
         imageView.setImageBitmap(bitmap);
-        Log.e("execute", "success");
     }
 }

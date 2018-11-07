@@ -2,6 +2,7 @@ package org.techtown.ideaconcert.ContentsMainDir;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -9,8 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.techtown.ideaconcert.MainActivityDir.SetBitmapImageFromUrlTask;
 import org.techtown.ideaconcert.R;
 
 import java.util.ArrayList;
@@ -52,26 +56,34 @@ public class WorksListViewAdapter extends BaseAdapter {
 
         final WorksListViewItem listViewItem = worksListViewItems.get(position);
 
-        worksImageView.setImageBitmap(listViewItem.getBitmp());
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)worksImageView.getLayoutParams();
+
+        SetBitmapImageFromUrlTask task = new SetBitmapImageFromUrlTask(worksImageView, params.width/2, params.height/2);
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, listViewItem.getThumbnail_url());
+
         titleView.setText(listViewItem.getWorksTitle() + " " + listViewItem.getContentsNum() + "화");
         watchView.setText(listViewItem.getWatchNum());
         ratingView.setText(""+listViewItem.getStar_rating());
         commentsNumView.setText("" + listViewItem.getCommentCount());
 
+        String movie_url = listViewItem.getMovie_url();
+        if (movie_url != null)
+            Toast.makeText(context, "movie_url= " + movie_url, Toast.LENGTH_SHORT).show();
+
         // 위젯에 대한 이벤트 리스너 작성
         return convertView;
     }
 
-    public void addItem(int contents_pk, int contents_num, String title, Bitmap bitmap, String watch, double star_rating, int comments) {
+    public void addItem(int contents_pk, int contents_num, String title, String thumbnail_url, String watch, double star_rating, int comments, String movie_url) {
         WorksListViewItem item = new WorksListViewItem();
         item.setContentsItemPk(contents_pk);
         item.setContentsNum(contents_num);
         item.setWorksTitle(title);
-        item.setBitmp(bitmap);
+        item.setThumbnail_url(thumbnail_url);
         item.setWatchNum(watch);
         item.setStar_rating(star_rating);
         item.setCommentCount(comments);
-
+        item.setMovie_url(movie_url);
         worksListViewItems.add(item);
     }
 

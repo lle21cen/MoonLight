@@ -21,7 +21,7 @@ public class CategoryContentsRecyclerAdapter extends RecyclerView.Adapter<Recycl
     private ArrayList<CategoryContentsItem> items = new ArrayList<>();
 
     public static class CategoryViewHolder extends RecyclerView.ViewHolder {
-        ImageView worksImageView;
+        ImageView worksImageView, movieImageView;
         TextView contents_name_view;
         TextView author_name_view;
         TextView view_count_view;
@@ -29,6 +29,7 @@ public class CategoryContentsRecyclerAdapter extends RecyclerView.Adapter<Recycl
         CategoryViewHolder(View view) {
             super(view);
             worksImageView = view.findViewById(R.id.main_category_item_img);
+            movieImageView = view.findViewById(R.id.main_category_movie_img);
             contents_name_view = view.findViewById(R.id.main_category_item_name);
             author_name_view = view.findViewById(R.id.main_category_author_name);
             view_count_view = view.findViewById(R.id.main_category_view_count);
@@ -60,6 +61,10 @@ public class CategoryContentsRecyclerAdapter extends RecyclerView.Adapter<Recycl
         } else {
             viewCountText = viewCount + "";
         }
+        if (item.getMovie()==1) {
+            categoryViewHolder.movieImageView.setVisibility(View.VISIBLE);
+        }
+
         categoryViewHolder.view_count_view.setText(viewCountText);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -78,13 +83,14 @@ public class CategoryContentsRecyclerAdapter extends RecyclerView.Adapter<Recycl
         return items.size();
     }
 
-    void addItem(String thumbnailUrl, String item_name, String painter_name, int view_count, int contents_pk) {
+    void addItem(String thumbnailUrl, String item_name, String painter_name, int view_count, int contents_pk, int movie) {
         CategoryContentsItem item = new CategoryContentsItem();
         item.setThumbnailUrl(thumbnailUrl);
         item.setWork_name(item_name);
         item.setPainter_name(painter_name);
         item.setView_count(view_count);
         item.setContents_pk(contents_pk);
+        item.setMovie(movie);
         items.add(item);
     }
     void clearItem() {
