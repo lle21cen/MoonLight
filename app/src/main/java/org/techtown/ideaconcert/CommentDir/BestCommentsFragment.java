@@ -1,7 +1,6 @@
 package org.techtown.ideaconcert.CommentDir;
 
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -20,6 +19,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.techtown.ideaconcert.R;
+import org.techtown.ideaconcert.UserInformation;
 
 public class BestCommentsFragment extends Fragment {
 
@@ -33,19 +33,24 @@ public class BestCommentsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.comment_best_fragment, container, false);
-        bestCommentListView = view.findViewById(R.id.best_comment_listview);
-        adapter = new CommentListViewAdapter(bestCommentListView);
+        UserInformation userInformation = (UserInformation) getActivity().getApplication();
+        int user_pk = userInformation.getUser_pk();
+
+        view = inflater.inflate(R.layout.comment_fragment, container, false);
+        bestCommentListView = view.findViewById(R.id.comment_listview);
+        adapter = new CommentListViewAdapter(bestCommentListView, user_pk);
+        adapter.setFragment_from(CommentListViewAdapter.FROM_BESTFRAGMENT);
         bestButton = getActivity().findViewById(R.id.comment_best_btn);
 
         Intent intent = getActivity().getIntent();
         int item_pk = intent.getIntExtra("item_pk", 0);
+
         try {
-            CommentDBRequest commentDBRequest = new CommentDBRequest(getCommentURL, commentListener, item_pk);
+            CommentDBRequest commentDBRequest = new CommentDBRequest(getCommentURL, commentListener, item_pk, 1);
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
             requestQueue.add(commentDBRequest);
         } catch (Exception e) {
-            Log.e("comment error", ""+e.getMessage());
+            Log.e("comment error", "" + e.getMessage());
         }
         return view;
     }
@@ -79,7 +84,7 @@ public class BestCommentsFragment extends Fragment {
                         }
                     }
                     bestCommentListView.setAdapter(adapter);
-                    bestButton.setText("BEST("+num_result+")");
+                    bestButton.setText("BEST(" + num_result + ")");
                 } else {
                     Log.e("댓글없음", "댓글이 없습니다.");
                 }

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:background="#ffffff"
     android:layout_height="wrap_content">
 
     <android.support.v7.widget.Toolbar
@@ -48,6 +51,25 @@
         android:id="@+id/comment_view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@+id/comment_edit_text"
         android:layout_below="@id/comment_2button_layout" />
 
+    <EditText
+        android:id="@+id/comment_edit_text"
+        android:maxLength="3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#ffffff"
+        android:layout_toLeftOf="@id/comment_enter"
+        android:hint="댓글을 입력해주세요 :)" />
+
+    <Button
+        android:id="@+id/comment_enter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:background="#ffffff"
+        android:text="입력" />
 </RelativeLayout>

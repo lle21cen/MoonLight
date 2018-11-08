@@ -50,9 +50,9 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
     LinearLayout headerLayout, footerLayout, webtoonLayout, contents_option_menu;
     TextView title_text, star_rating_text, like_count_text, comments_count_text, order_text;
     Button option_btn, comments_btn, prev_btn, next_btn, like_btn;
-    private final String getContentsItemImageURL = "http://lle21cen.cafe24.com/GetContentsItemImage.php";
-    private final String getContentsLIkeCountURL = "http://lle21cen.cafe24.com/GetContentsLIkeCount.php";
-    private final String insertDeleteContentsLikeDataURL = "http://lle21cen.cafe24.com/InsertDeleteContentsLikeData.php";
+    private final String getContentsItemImageURL = ActivityCodes.DATABASE_IP + "GetContentsItemImage";
+    private final String getContentsLIkeCountURL = ActivityCodes.DATABASE_IP + "GetContentsLikeCount";
+    private final String insertDeleteContentsLikeDataURL = ActivityCodes.DATABASE_IP + "InsertDeleteContentsLikeData";
 
 
     int item_pk, item_comments_count, contents_num;
@@ -151,11 +151,10 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
         int user_pk = sharedPreferences.getInt("user_pk", 0);
         if (user_pk == 0)
             user_pk = 1;
-        ContentsItemLikeDBRequest contentsItemLikeDBRequest = new ContentsItemLikeDBRequest(getContentsLIkeCountURL, getContentsItemLikeCountListener, item_pk, user_pk, 1);
+        ContentsItemLikeDBRequest contentsItemLikeDBRequest = new ContentsItemLikeDBRequest(getContentsLIkeCountURL, getContentsItemLikeCountListener, item_pk, user_pk, 2);
         requestQueue.add(contentsItemLikeDBRequest);
 
         addRecentViewDataToSqlite();
-
     }
 
 

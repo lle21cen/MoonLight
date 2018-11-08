@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,20 +20,27 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.techtown.ideaconcert.DatabaseRequest;
 import org.techtown.ideaconcert.R;
+import org.techtown.ideaconcert.UserInformation;
 
 import java.util.ArrayList;
 
 public class CommentListViewAdapter extends BaseAdapter {
 
     final private String getCommentReplyURL = "http://lle21cen.cafe24.com/GetCommentReply.php";
+    final private String insertCommentLikeDataURL = "http://lle21cen.cafe24.com/InsertCommentLikeData.php";
 
     ArrayList<CommentListViewItem> items = new ArrayList<>();
     private Context context;
     private int itemPosition;
     ListView commentListView;
+    private int user_pk;
 
-    public CommentListViewAdapter(ListView commentListView) {
+    private int fragment_from; // 1이면 BestCommentsFragment에서 호출 2이면 AllCommentFragment에서 호출
+    static final int FROM_BESTFRAGMENT = 1, FROM_ALLFRAGMENT = 2;
+
+    public CommentListViewAdapter(ListView commentListView, int user_pk) {
         this.commentListView = commentListView;
+        this.user_pk = user_pk;
     }
 
     @Override
@@ -52,12 +61,13 @@ public class CommentListViewAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         context = parent.getContext();
+
         itemPosition = position;
         final CommentListViewItem listViewItem = items.get(position);
         int tag = listViewItem.getTag();
 
         TextView emailView, dateView, commentView, replyView, likeNumView, accusationView;
-        TextView reply_emailView, reply_dateView, reply_commentView, reply_likeNumView, reply_accusationView;
+        ImageView likeButton;
 
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -75,13 +85,14 @@ public class CommentListViewAdapter extends BaseAdapter {
             replyView = convertView.findViewById(R.id.comment_reply);
             likeNumView = convertView.findViewById(R.id.comment_item_like_num);
             accusationView = convertView.findViewById(R.id.comment_accusation);
+            likeButton = convertView.findViewById(R.id.comment_like_btn);
 
-            emailView.setText(listViewItem.getEmail());
-            dateView.setText(listViewItem.getDate());
-            commentView.setText("" + listViewItem.getComment());
+            ImageView bestImage = convertView.findViewById(R.id.comment_best_img);
+
+            if (fragment_from == 2) {
+                bestImage.setVisibility(View.GONE);
+            }
             replyView.setText("답글 " + listViewItem.getReply_num());
-            likeNumView.setText("" + listViewItem.getLike_num());
-
             replyView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -92,33 +103,37 @@ public class CommentListViewAdapter extends BaseAdapter {
                     requestQueue.add(request);
                 }
             });
-
-            accusationView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(context, "신고하기!, position=" + position, Toast.LENGTH_SHORT).show();
-                }
-            });
-        } else if (tag == 2) {
+        } else {
             // 답글 아이템 layout에 있는 view들
-            reply_emailView = convertView.findViewById(R.id.reply_item_email);
-            reply_dateView = convertView.findViewById(R.id.reply_item_date);
-            reply_commentView = convertView.findViewById(R.id.reply_item_comment);
-            reply_likeNumView = convertView.findViewById(R.id.reply_item_like_num);
-            reply_accusationView = convertView.findViewById(R.id.reply_accusation);
-
-            reply_emailView.setText(listViewItem.getEmail());
-            reply_dateView.setText(listViewItem.getDate());
-            reply_commentView.setText("" + listViewItem.getComment());
-            reply_likeNumView.setText("" + listViewItem.getLike_num());
-
-            reply_accusationView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(context, "신고하기!, position=" + position, Toast.LENGTH_SHORT).show();
-                }
-            });
+            emailView = convertView.findViewById(R.id.reply_item_email);
+            dateView = convertView.findViewById(R.id.reply_item_date);
+            commentView = convertView.findViewById(R.id.reply_item_comment);
+            likeNumView = convertView.findViewById(R.id.reply_item_like_num);
+            accusationView = convertView.findViewById(R.id.reply_accusation);
+            likeButton = convertView.findViewById(R.id.reply_like_btn);
         }
+
+        emailView.setText(listViewItem.getEmail());
+        dateView.setText(listViewItem.getDate());
+        commentView.setText("" + listViewItem.getComment());
+        likeNumView.setText("" + listViewItem.getLike_num());
+        likeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // 좋아요 버튼 눌렀을 경우
+                CommentInsertLikeDataRequest request = new CommentInsertLikeDataRequest(insertCommentLikeDataURL, commentLikeDataInsertListener, listViewItem.getComment_pk(), user_pk);
+                RequestQueue requestQueue = Volley.newRequestQueue(context);
+                requestQueue.add(request);
+            }
+        });
+
+        accusationView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "신고하기!, position=" + position, Toast.LENGTH_SHORT).show();
+            }
+        });
+
         return convertView;
     }
 
@@ -162,6 +177,7 @@ public class CommentListViewAdapter extends BaseAdapter {
                         item.setTag(2);
                         items.add(itemPosition, item);
                     }
+
                     commentListView.setAdapter(CommentListViewAdapter.this);
                 } else {
                     Log.e("답글없음", "답글이 없습니다.");
@@ -172,4 +188,30 @@ public class CommentListViewAdapter extends BaseAdapter {
         }
     };
 
+    private Response.Listener<String> commentLikeDataInsertListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonResponse = new JSONObject(response);
+                boolean exist = jsonResponse.getBoolean("exist");
+                if (exist) {
+                    Toast.makeText(context, "이미 좋아요을 누르셨습니다.", Toast.LENGTH_SHORT).show();
+                } else {
+                    boolean success = jsonResponse.getBoolean("success");
+                    if (success) {
+                        Toast.makeText(context, "좋아요를 눌렀습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(context, "에러 : " + jsonResponse.getString("errmsg"), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            } catch (Exception e) {
+                Log.e("답글리스너", e.getMessage());
+            }
+        }
+    };
+
+    public void setFragment_from(int fragment_from) {
+        this.fragment_from = fragment_from;
+    }
 }

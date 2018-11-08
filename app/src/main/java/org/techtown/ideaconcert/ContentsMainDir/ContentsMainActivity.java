@@ -40,8 +40,8 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
     // 변수명 통일 시키기 ... 귀찮
 
     static final String getContentsItemURL = ActivityCodes.DATABASE_IP + "GetContentsItem";
-    private final String getContentsLIkeCountURL = "http://lle21cen.cafe24.com/GetContentsLIkeCount.php";
-    private final String insertDeleteContentsLikeDataURL = "http://lle21cen.cafe24.com/InsertDeleteContentsLikeData.php";
+    private final String getContentsLIkeCountURL = ActivityCodes.DATABASE_IP + "GetContentsLikeCount";
+    private final String insertDeleteContentsLikeDataURL = ActivityCodes.DATABASE_IP + "InsertDeleteContentsLikeData";
 
     private int selected_contents_pk;
     private boolean is_like_clicked = false, is_summary_opened = false;
@@ -137,7 +137,7 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
         user_pk = sharedPreferences.getInt("userPk", 0);
         if (user_pk == 0)
             user_pk = 1;
-        ContentsLikeDBRequest contentsItemLikeDBRequest = new ContentsLikeDBRequest(getContentsLIkeCountURL, getContentsLikeCountListener, selected_contents_pk, user_pk, 2);
+        ContentsLikeDBRequest contentsItemLikeDBRequest = new ContentsLikeDBRequest(getContentsLIkeCountURL, getContentsLikeCountListener, selected_contents_pk, user_pk, 1);
         requestQueue.add(contentsItemLikeDBRequest);
     }
 
@@ -197,7 +197,6 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
                     JSONArray result = jsonResponse.getJSONArray("result");
                     int num_category_contents_data = jsonResponse.getInt("num_result");
 
-
                     for (int i = 0; i < num_category_contents_data; i++) {
                         // 데이터베이스에 들어있는 콘텐츠의 수만큼 for문을 돌려 layout에 image추가
                         try {
@@ -209,7 +208,10 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
                             watch_num = temp.getString("view_count");
                             star_rating = temp.getDouble("star_rating");
                             comments_count = temp.getInt("comments_count");
-                            movie_url = temp.getString("movie_url");
+
+                            movie_url = null;
+                            if (temp.has("movie_url"))
+                                movie_url = temp.getString("movie_url");
 
                             adapter.addItem(contents_item_pk, contents_num, title, thumbnail_url, watch_num, star_rating, comments_count, movie_url);
                         } catch (Exception e) {
@@ -284,7 +286,7 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
                 ContentsLikeDBRequest contentsItemLikeDBRequest;
                 RequestQueue requestQueue = Volley.newRequestQueue(ContentsMainActivity.this);
                 if (is_like_clicked) {
-                    contentsItemLikeDBRequest = new ContentsLikeDBRequest(insertDeleteContentsLikeDataURL, successCheckListener, selected_contents_pk, user_pk, 0);
+                    contentsItemLikeDBRequest = new ContentsLikeDBRequest(insertDeleteContentsLikeDataURL, successCheckListener, selected_contents_pk, user_pk, 2);
                 } else {
                     contentsItemLikeDBRequest = new ContentsLikeDBRequest(insertDeleteContentsLikeDataURL, successCheckListener, selected_contents_pk, user_pk, 1);
                 }

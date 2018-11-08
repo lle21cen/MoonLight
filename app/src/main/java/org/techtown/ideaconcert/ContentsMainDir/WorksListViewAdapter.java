@@ -53,22 +53,32 @@ public class WorksListViewAdapter extends BaseAdapter {
         TextView watchView = convertView.findViewById(R.id.contents_main_item_watch);
         TextView ratingView = convertView.findViewById(R.id.contents_main_star_rating);
         TextView commentsNumView = convertView.findViewById(R.id.contents_main_item_comments_num);
+        ImageView watchImageView = convertView.findViewById(R.id.contents_main_watch_img);
 
         final WorksListViewItem listViewItem = worksListViewItems.get(position);
 
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)worksImageView.getLayoutParams();
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) worksImageView.getLayoutParams();
 
-        SetBitmapImageFromUrlTask task = new SetBitmapImageFromUrlTask(worksImageView, params.width/2, params.height/2);
+        SetBitmapImageFromUrlTask task = new SetBitmapImageFromUrlTask(worksImageView, params.width / 2, params.height / 2);
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, listViewItem.getThumbnail_url());
 
         titleView.setText(listViewItem.getWorksTitle() + " " + listViewItem.getContentsNum() + "화");
         watchView.setText(listViewItem.getWatchNum());
-        ratingView.setText(""+listViewItem.getStar_rating());
+        ratingView.setText("" + listViewItem.getStar_rating());
         commentsNumView.setText("" + listViewItem.getCommentCount());
 
+        watchImageView.setVisibility(View.GONE);
         String movie_url = listViewItem.getMovie_url();
-        if (movie_url != null)
-            Toast.makeText(context, "movie_url= " + movie_url, Toast.LENGTH_SHORT).show();
+        if (movie_url != null && !movie_url.isEmpty()) {
+            watchImageView.setVisibility(View.VISIBLE);
+            watchImageView.setImageDrawable(context.getResources().getDrawable(R.drawable.watch_now));
+            watchImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(context, "watch video", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
 
         // 위젯에 대한 이벤트 리스너 작성
         return convertView;
