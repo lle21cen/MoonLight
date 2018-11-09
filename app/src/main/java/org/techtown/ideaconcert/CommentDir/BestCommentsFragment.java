@@ -78,7 +78,7 @@ public class BestCommentsFragment extends Fragment {
                             comment = temp.getString("comment");
                             reply_num = temp.getInt("reply_num");
                             like_num = temp.getInt("like_num");
-                            adapter.addItem(comment_pk, email, date, comment, reply_num, like_num, 1);
+                            adapter.addItem(comment_pk, email, date, comment, reply_num, like_num);
                         } catch (Exception e) {
                             Log.e("댓글에러", e.getMessage());
                         }

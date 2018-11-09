@@ -91,7 +91,6 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
                 commentPager.setCurrentItem(1);
                 break;
             case R.id.comment_enter:
-
                 String comment = commentEditText.getText().toString();
                 UserInformation userInformation = (UserInformation) getApplication();
                 String email = userInformation.getUserEmail();

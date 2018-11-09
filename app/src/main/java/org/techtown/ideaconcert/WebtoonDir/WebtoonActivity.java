@@ -276,6 +276,8 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
                 requestQueue.add(insertDeleteContentsLikeRequest);
                 break;
             case R.id.webtoon_comment_layout :
+            case R.id.webtoon_comments_btn :
+            case R.id.webtoon_comments_count :
                 Intent intent = new Intent(WebtoonActivity.this, CommentActivity.class);
                 intent.putExtra("item_pk", item_pk);
                 intent.putExtra("item_title", item_title);

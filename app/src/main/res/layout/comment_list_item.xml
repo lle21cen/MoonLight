@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/comment_item_date"
         android:layout_marginTop="25dp"
-        android:src="@drawable/ic_keyboard_arrow_left_black_24dp" />
+        android:src="@drawable/best" />
 
     <TextView
         android:id="@+id/comment_item_comment"
@@ -37,10 +37,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/comment_item_date"
         android:layout_marginTop="25dp"
-        android:layout_toRightOf="@id/comment_best_img"
         android:text="너무 재밌어요~다음화는 언제 볼 수 있을까요? 벌써부터 시간이 안가네요 ㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠ" />
 
     <LinearLayout
+        android:id="@+id/comment_item_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/comment_item_comment"
@@ -80,5 +80,12 @@
             android:gravity="center"
             android:text="0" />
     </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/comment_item_recycler_view"
+        android:orientation="vertical"
+        android:layout_below="@+id/comment_item_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 </RelativeLayout>
