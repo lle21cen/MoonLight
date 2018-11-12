@@ -1,30 +1,39 @@
 package org.techtown.ideaconcert.CommentDir;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import org.techtown.ideaconcert.ContentsMainDir.ContentsMainActivity;
-import org.techtown.ideaconcert.MainActivityDir.CategoryContentsItem;
-import org.techtown.ideaconcert.MainActivityDir.CategoryContentsRecyclerAdapter;
-import org.techtown.ideaconcert.MainActivityDir.SetBitmapImageFromUrlTask;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONObject;
 import org.techtown.ideaconcert.R;
 
 import java.util.ArrayList;
 
 public class ReplyRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    final private String insertCommentLikeDataURL = "http://lle21cen.cafe24.com/InsertCommentLikeData.php";
+
     private ArrayList<CommentListViewItem> items = new ArrayList<>();
+    private int user_pk;
+
+    public ReplyRecyclerViewAdapter(int user_pk) {
+        this.user_pk = user_pk;
+    }
 
     public static class ReplyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView emailView, dateView, commentView, likeNumView, accusationView, likeButton;
+        TextView emailView, dateView, commentView, likeNumView, accusationView;
+        ImageView likeButton;
 
         ReplyViewHolder(View view) {
             super(view);
@@ -45,38 +54,56 @@ public class ReplyRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        ReplyRecyclerViewAdapter.ReplyViewHolder replyViewHolder = (ReplyRecyclerViewAdapter.ReplyViewHolder) holder;
+        final ReplyRecyclerViewAdapter.ReplyViewHolder replyViewHolder = (ReplyRecyclerViewAdapter.ReplyViewHolder) holder;
         final CommentListViewItem item = items.get(position);
 
-        SetBitmapImageFromUrlTask task = new SetBitmapImageFromUrlTask(replyViewHolder.worksImageView, 100, 140);
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, item.getThumbnailUrl());
-
-        replyViewHolder.author_name_view.setText(item.getPainter_name());
-        replyViewHolder.contents_name_view.setText(item.getWork_name());
-
-        String viewCountText;
-        int viewCount = item.getView_count();
-        if (viewCount > 1000) {
-            viewCount /= 1000;
-            viewCountText = viewCount + "k";
-        } else {
-            viewCountText = viewCount + "";
-        }
-        if (item.getMovie()==1) {
-            categoryViewHolder.movieImageView.setVisibility(View.VISIBLE);
-        }
-
-        categoryViewHolder.view_count_view.setText(viewCountText);
-
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        replyViewHolder.emailView.setText(item.getEmail());
+        replyViewHolder.dateView.setText(item.getDate());
+        replyViewHolder.commentView.setText(item.getComment());
+        replyViewHolder.likeNumView.setText(""+item.getLike_num());
+        replyViewHolder.likeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Context context = view.getContext();
-                Intent intent = new Intent(context, ContentsMainActivity.class);
-                intent.putExtra("contents_pk", item.getContents_pk());
-                context.startActivity(intent);
+                InsertCommentLikeDataListener listener = new InsertCommentLikeDataListener(view.getContext(), position, replyViewHolder.likeNumView);
+                CommentInsertLikeDataRequest request = new CommentInsertLikeDataRequest(insertCommentLikeDataURL, listener, items.get(position).getComment_pk(), user_pk, 2); // tag=2 : 답글 테이블에 정보 저장
+                RequestQueue requestQueue = Volley.newRequestQueue(view.getContext());
+                requestQueue.add(request);
             }
         });
+    }
+
+    class InsertCommentLikeDataListener implements Response.Listener<String> {
+        private int position;
+        private TextView likeNumView;
+        private Context context;
+
+        public InsertCommentLikeDataListener(Context context, int position, TextView likeNumView) {
+            this.context = context;
+            this.position = position;
+            this.likeNumView = likeNumView;
+        }
+
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonResponse = new JSONObject(response);
+                boolean exist = jsonResponse.getBoolean("exist");
+                if (exist) {
+                    Toast.makeText(context, "이미 '좋아요'를 누르셨습니다.", Toast.LENGTH_SHORT).show();
+                } else {
+                    boolean success = jsonResponse.getBoolean("success");
+                    if (success) {
+                        Toast.makeText(context, "이 답글을 좋아합니다.", Toast.LENGTH_SHORT).show();
+                        items.get(position).setLike_num(items.get(position).getLike_num() + 1);
+                        likeNumView.setText("" + items.get(position).getLike_num());
+                    } else {
+                        Toast.makeText(context, "에러 : " + jsonResponse.getString("errmsg"), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            } catch (Exception e) {
+                Log.e("답글좋아요리스너", e.getMessage());
+            }
+        }
     }
 
     @Override
@@ -84,16 +111,16 @@ public class ReplyRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         return items.size();
     }
 
-    void addItem(String thumbnailUrl, String item_name, String painter_name, int view_count, int contents_pk, int movie) {
-        CategoryContentsItem item = new CategoryContentsItem();
-        item.setThumbnailUrl(thumbnailUrl);
-        item.setWork_name(item_name);
-        item.setPainter_name(painter_name);
-        item.setView_count(view_count);
-        item.setContents_pk(contents_pk);
-        item.setMovie(movie);
+    public void addItem(int comment_pk, String email, String date, String comment, int like_num) {
+        CommentListViewItem item = new CommentListViewItem();
+        item.setComment_pk(comment_pk);
+        item.setEmail(email);
+        item.setDate(date);
+        item.setComment(comment);
+        item.setLike_num(like_num);
         items.add(item);
     }
+
     void clearItem() {
         items.clear();
     }

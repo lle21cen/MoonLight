@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,31 +27,35 @@ public class AllCommentFragment extends Fragment {
     private final String getCommentURL = "http://lle21cen.cafe24.com/GetComment.php";
 
     View view;
-    CommentListViewAdapter adapter;
-    ListView allCommentListView;
-    Button bestButton;
+    CommentRecyclerViewAdapter adapter;
+    RecyclerView allCommentRecyclerView;
+    Button allButton;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.comment_fragment, container, false);
-        allCommentListView = view.findViewById(R.id.comment_listview);
-
         UserInformation userInformation = (UserInformation) getActivity().getApplication();
         int user_pk = userInformation.getUser_pk();
-        adapter = new CommentListViewAdapter(allCommentListView, user_pk);
-        adapter.setFragment_from(CommentListViewAdapter.FROM_ALLFRAGMENT);
-        bestButton = getActivity().findViewById(R.id.comment_best_btn);
+
+        view = inflater.inflate(R.layout.comment_fragment_recycler, container, false);
+        allCommentRecyclerView = view.findViewById(R.id.comment_recycler_view);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        allCommentRecyclerView.setLayoutManager(layoutManager);
+        adapter = new CommentRecyclerViewAdapter(user_pk);
+
+        adapter.setFragment_from(CommentRecyclerViewAdapter.FROM_ALLFRAGMENT);
+
+        allButton = getActivity().findViewById(R.id.comment_all_btn);
 
         Intent intent = getActivity().getIntent();
         int item_pk = intent.getIntExtra("item_pk", 0);
 
         try {
-            CommentDBRequest commentDBRequest = new CommentDBRequest(getCommentURL, commentListener, item_pk, 2);
+            CommentDBRequest commentDBRequest = new CommentDBRequest(getCommentURL, commentListener, item_pk, 2); // tag = 2 : 최신 순 정렬
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
             requestQueue.add(commentDBRequest);
         } catch (Exception e) {
-            Log.e("comment error", ""+e.getMessage());
+            Log.e("comment error", "" + e.getMessage());
         }
         return view;
     }
@@ -62,11 +68,13 @@ public class AllCommentFragment extends Fragment {
         public void onResponse(String response) {
             try {
                 JSONObject jsonResponse = new JSONObject(response);
+                // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
                 JSONArray result = jsonResponse.getJSONArray("result");
                 boolean exist = jsonResponse.getBoolean("exist");
                 if (exist) {
                     int num_result = jsonResponse.getInt("num_result");
                     for (int i = 0; i < num_result; i++) {
+                        // 데이터베이스에 들어있는 콘텐츠의 수만큼 for문을 돌려 layout에 image추가
                         try {
                             JSONObject temp = result.getJSONObject(i);
                             comment_pk = temp.getInt("comment_pk");
@@ -80,8 +88,8 @@ public class AllCommentFragment extends Fragment {
                             Log.e("댓글에러", e.getMessage());
                         }
                     }
-                    allCommentListView.setAdapter(adapter);
-                    bestButton.setText("BEST("+num_result+")");
+                    allCommentRecyclerView.setAdapter(adapter);
+                    allButton.setText("전체댓글(" + num_result + ")");
                 } else {
                     Log.e("댓글없음", "댓글이 없습니다.");
                 }
@@ -90,4 +98,5 @@ public class AllCommentFragment extends Fragment {
             }
         }
     };
+
 }

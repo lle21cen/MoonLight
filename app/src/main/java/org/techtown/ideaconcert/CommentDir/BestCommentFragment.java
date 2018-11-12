@@ -5,12 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ListView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -21,13 +22,13 @@ import org.json.JSONObject;
 import org.techtown.ideaconcert.R;
 import org.techtown.ideaconcert.UserInformation;
 
-public class BestCommentsFragment extends Fragment {
+public class BestCommentFragment extends Fragment {
 
     private final String getCommentURL = "http://lle21cen.cafe24.com/GetComment.php";
 
     View view;
-    CommentListViewAdapter adapter;
-    ListView bestCommentListView;
+    CommentRecyclerViewAdapter adapter;
+    RecyclerView bestCommentRecyclerView;
     Button bestButton;
 
     @Nullable
@@ -36,10 +37,13 @@ public class BestCommentsFragment extends Fragment {
         UserInformation userInformation = (UserInformation) getActivity().getApplication();
         int user_pk = userInformation.getUser_pk();
 
-        view = inflater.inflate(R.layout.comment_fragment, container, false);
-        bestCommentListView = view.findViewById(R.id.comment_listview);
-        adapter = new CommentListViewAdapter(bestCommentListView, user_pk);
-        adapter.setFragment_from(CommentListViewAdapter.FROM_BESTFRAGMENT);
+        view = inflater.inflate(R.layout.comment_fragment_recycler, container, false);
+        bestCommentRecyclerView = view.findViewById(R.id.comment_recycler_view);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        bestCommentRecyclerView.setLayoutManager(layoutManager);
+        adapter = new CommentRecyclerViewAdapter(user_pk);
+
+        adapter.setFragment_from(CommentRecyclerViewAdapter.FROM_BESTFRAGMENT);
         bestButton = getActivity().findViewById(R.id.comment_best_btn);
 
         Intent intent = getActivity().getIntent();
@@ -83,7 +87,7 @@ public class BestCommentsFragment extends Fragment {
                             Log.e("댓글에러", e.getMessage());
                         }
                     }
-                    bestCommentListView.setAdapter(adapter);
+                    bestCommentRecyclerView.setAdapter(adapter);
                     bestButton.setText("BEST(" + num_result + ")");
                 } else {
                     Log.e("댓글없음", "댓글이 없습니다.");

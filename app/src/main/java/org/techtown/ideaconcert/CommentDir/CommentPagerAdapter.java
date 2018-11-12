@@ -14,7 +14,7 @@ public class CommentPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return new BestCommentsFragment();
+                return new BestCommentFragment();
             case 1:
                 return new AllCommentFragment();
             default:

@@ -128,7 +128,7 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
                 JSONObject jsonResponse = new JSONObject(response);
                 boolean success = jsonResponse.getBoolean("success");
                 if (success) {
-                    Toast.makeText(CommentActivity.this, "댓글 달기에 성공했습니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CommentActivity.this, "댓글이 달렸습니다.", Toast.LENGTH_SHORT).show();
                     commentPager.setCurrentItem(1, true);
                 } else {
                     Toast.makeText(CommentActivity.this, "댓글 달기에 실패했습니다.", Toast.LENGTH_SHORT).show();
