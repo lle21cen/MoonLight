@@ -1,6 +1,7 @@
 package org.techtown.ideaconcert.ContentsMainDir;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import org.techtown.ideaconcert.MainActivityDir.SetBitmapImageFromUrlTask;
 import org.techtown.ideaconcert.R;
+import org.techtown.ideaconcert.WebtoonMovieDir.WebtoonMovieActivity;
 
 import java.util.ArrayList;
 
@@ -75,7 +77,8 @@ public class WorksListViewAdapter extends BaseAdapter {
             watchImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(context, "watch video", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(view.getContext(), WebtoonMovieActivity.class);
+                    view.getContext().startActivity(intent);
                 }
             });
         }

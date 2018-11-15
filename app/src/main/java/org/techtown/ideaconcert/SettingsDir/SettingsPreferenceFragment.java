@@ -1,5 +1,6 @@
 package org.techtown.ideaconcert.SettingsDir;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -16,12 +17,16 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
+import org.techtown.ideaconcert.ActivityCodes;
+import org.techtown.ideaconcert.ConsultDir.ConsultActivity;
 import org.techtown.ideaconcert.DatabaseRequest;
+import org.techtown.ideaconcert.FindPasswordDir.SetNewPasswordActivity;
 import org.techtown.ideaconcert.R;
 import org.techtown.ideaconcert.UserInformation;
+import org.techtown.ideaconcert.noticeDir.NoticeActivity;
 
 public class SettingsPreferenceFragment extends PreferenceFragment implements Preference.OnPreferenceClickListener {
-    private final String snsLoginProcessURL = "http://lle21cen.cafe24.com/SnsLoginProcess.php";
+    private final String snsLoginProcessURL = ActivityCodes.DATABASE_IP + "SnsLoginProcess";
     UserInformation userInformation;
     SharedPreferences prefs;
     LoginMethodFragment loginMethodFragment;
@@ -41,6 +46,7 @@ public class SettingsPreferenceFragment extends PreferenceFragment implements Pr
 
         Preference title_pref = findPreference("settings_title_bar_pref");
         Preference login_pref = findPreference("settings_login_info_pref");
+        Preference change_pw_pref = findPreference("settings_change_pw");
         Preference consult_pref = findPreference("settings_consult_pref");
         Preference notice_pref = findPreference("settings_notice_pref");
         Preference faq_pref = findPreference("settings_faq_pref");
@@ -65,6 +71,7 @@ public class SettingsPreferenceFragment extends PreferenceFragment implements Pr
 
         title_pref.setOnPreferenceClickListener(this);
         login_pref.setOnPreferenceClickListener(this);
+        change_pw_pref.setOnPreferenceClickListener(this);
         consult_pref.setOnPreferenceClickListener(this);
         notice_pref.setOnPreferenceClickListener(this);
         faq_pref.setOnPreferenceClickListener(this);
@@ -120,6 +127,7 @@ public class SettingsPreferenceFragment extends PreferenceFragment implements Pr
     @Override
     public boolean onPreferenceClick(Preference preference) {
 
+        Intent intent;
         switch (preference.getKey()) {
             case "settings_title_bar_pref":
                 getActivity().finish();
@@ -128,10 +136,12 @@ public class SettingsPreferenceFragment extends PreferenceFragment implements Pr
                 getFragmentManager().beginTransaction().replace(R.id.settings_layout, new LoginMethodFragment()).addToBackStack(null).commit();
                 break;
             case "settings_consult_pref":
-                Toast.makeText(getActivity(), preference.getTitle(), Toast.LENGTH_SHORT).show();
+                intent = new Intent(getActivity(), ConsultActivity.class);
+                startActivityForResult(intent, ActivityCodes.CONSULT_REQUEST);
                 break;
             case "settings_notice_pref":
-                Toast.makeText(getActivity(), preference.getTitle(), Toast.LENGTH_SHORT).show();
+                intent = new Intent(getActivity(), NoticeActivity.class);
+                startActivity(intent);
                 break;
             case "settings_faq_pref":
                 Toast.makeText(getActivity(), preference.getTitle(), Toast.LENGTH_SHORT).show();
@@ -142,6 +152,18 @@ public class SettingsPreferenceFragment extends PreferenceFragment implements Pr
             case "settings_clause_pref":
                 Toast.makeText(getActivity(), preference.getTitle(), Toast.LENGTH_SHORT).show();
                 break;
+            case "settings_change_pw" :
+                UserInformation userInformation = (UserInformation) getActivity().getApplication();
+                String email = userInformation.getUserEmail();
+                String login_method = userInformation.getLogin_method();
+
+                if (login_method.equals("Normal")) {
+                    intent = new Intent(getActivity(), SetNewPasswordActivity.class);
+                    intent.putExtra("email", email);
+                    startActivityForResult(intent, ActivityCodes.SET_NEW_PW_REQUEST);
+                } else {
+                    Toast.makeText(getActivity(), "SNS 로그인 시 비밀번호를 변경할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                }
         }
         return true;
     }

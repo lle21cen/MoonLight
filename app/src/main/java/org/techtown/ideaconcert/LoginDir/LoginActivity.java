@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,7 +18,7 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
 import org.techtown.ideaconcert.ActivityCodes;
-import org.techtown.ideaconcert.FindIDPasswordActivity;
+import org.techtown.ideaconcert.FindPasswordDir.FindPasswordActivity;
 import org.techtown.ideaconcert.R;
 import org.techtown.ideaconcert.RegisterActivityDir.RegisterActivity;
 import org.techtown.ideaconcert.UserInformation;
@@ -120,7 +119,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.login_find_btn:
                 // id/Password찾기 버튼 리스너
-                intent = new Intent(LoginActivity.this, FindIDPasswordActivity.class);
+                intent = new Intent(LoginActivity.this, FindPasswordActivity.class);
                 startActivityForResult(intent, ActivityCodes.FIND_REQUEST);
                 break;
             case R.id.login_back_btn:

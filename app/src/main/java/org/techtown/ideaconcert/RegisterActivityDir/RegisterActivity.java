@@ -36,7 +36,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     */
 
-    final static private String emailVerifyAndRegisterURL = "http://lle21cen.cafe24.com/EmailVerifyAndRegister.php"; // 이메일 중복체크와 디비에 회원 등록하는 URL
+    final static private String emailVerifyAndRegisterURL = ActivityCodes.DATABASE_IP + "EmailVerifyAndRegister"; // 이메일 중복체크와 디비에 회원 등록하는 URL
 
     AlertDialog.Builder builder;
     EditText nameText, emailText, pwdText, pwdConfirmText;

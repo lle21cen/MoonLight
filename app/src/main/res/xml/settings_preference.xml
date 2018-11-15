@@ -7,9 +7,13 @@
 
     <Preference
         android:key="settings_login_info_pref"
-        android:title="로그인 정보"
-        android:layout="@layout/settings_login_info_layout" />
+        android:layout="@layout/settings_login_info_layout"
+        android:title="로그인 정보" />
 
+    <Preference
+        android:key="settings_change_pw"
+        android:layout="@layout/settings_login_info_layout"
+        android:title="비밀번호 변경" />
     <PreferenceCategory
         android:layout="@layout/settings_category_layout"
         android:title="부가기능">
@@ -50,18 +54,18 @@
         android:title="고객 센터">
 
         <Preference
-            android:key="settings_consult_pref"
             android:icon="@drawable/ic_keyboard_arrow_right_black_24dp"
+            android:key="settings_consult_pref"
             android:layout="@layout/settings_preference_layout"
             android:title="1:1 문의" />
         <Preference
-            android:key="settings_notice_pref"
             android:icon="@drawable/ic_keyboard_arrow_right_black_24dp"
+            android:key="settings_notice_pref"
             android:layout="@layout/settings_preference_layout"
             android:title="공지사항" />
         <Preference
-            android:key="settings_faq_pref"
             android:icon="@drawable/ic_keyboard_arrow_right_black_24dp"
+            android:key="settings_faq_pref"
             android:layout="@layout/settings_preference_layout"
             android:title="자주묻는 질문" />
     </PreferenceCategory>

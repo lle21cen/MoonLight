@@ -1,22 +1,21 @@
-package org.techtown.ideaconcert.LoginDir;
+package org.techtown.ideaconcert.ConsultDir;
 
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 
-import org.techtown.ideaconcert.ActivityCodes;
-
 import java.util.HashMap;
 import java.util.Map;
 
-public class LoginRequest extends StringRequest {
+public class SendConsultMailRequest extends StringRequest {
     private Map<String, String> parameters;
-    final static private String URL = ActivityCodes.DATABASE_IP + "Login";
 
-    public LoginRequest(String email, String pw, Response.Listener<String> listener) {
+    public SendConsultMailRequest(String URL, Response.Listener<String> listener, String category, String title, String content, String email) {
         super(Method.POST, URL, listener, null);
         parameters = new HashMap<>();
+        parameters.put("category", category);
+        parameters.put("title", title);
+        parameters.put("content", content);
         parameters.put("email", email);
-        parameters.put("user_pw", pw);
     }
 
     public Map<String, String> getParams() {
