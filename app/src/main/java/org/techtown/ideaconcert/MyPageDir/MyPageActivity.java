@@ -44,9 +44,6 @@ public class MyPageActivity extends AppCompatActivity implements View.OnClickLis
         my_cash.setOnClickListener(this);
         my_cash_arrow.setOnClickListener(this);
 
-        Toolbar toolbar = findViewById(R.id.my_page_toolbar);
-        setSupportActionBar(toolbar);
-
         tabLayout = findViewById(R.id.my_page_tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText("최근 본 작품"));
         tabLayout.addTab(tabLayout.newTab().setText("관심 작품"));

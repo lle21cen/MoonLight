@@ -29,7 +29,7 @@ import org.techtown.ideaconcert.R;
 
 public class FindPasswordActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private final String IssueTempPasswordURL = ActivityCodes.DATABASE_IP + "IssueTempPassword";
+    private final String IssueTempPasswordURL = ActivityCodes.DATABASE_IP + "/platform/IssueTempPassword";
     EditText emailView, nameView;
     TextView infoTextView;
 

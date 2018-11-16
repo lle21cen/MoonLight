@@ -21,7 +21,7 @@ import org.techtown.ideaconcert.RegisterActivityDir.ValidatePwdEmail;
 
 public class SetNewPasswordActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private final String SetNewPasswordURL = ActivityCodes.DATABASE_IP + "UpdatePassword";
+    private final String SetNewPasswordURL = ActivityCodes.DATABASE_IP + "/platform/UpdatePassword";
 
     EditText newPwView,newPwConfirmView;
     TextView infoTextView;

@@ -3,6 +3,7 @@ package org.techtown.ideaconcert.ContentsMainDir;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.MainActivityDir.GetBitmapImageFromURL;
+import org.techtown.ideaconcert.MainActivityDir.SetBitmapImageFromUrlTask;
 import org.techtown.ideaconcert.R;
 import org.techtown.ideaconcert.WebtoonDir.WebtoonActivity;
 
@@ -39,9 +41,9 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
     // 이미지만 따로 동적으로 설정하도록 바꾸어서 컨텐츠 로딩에 걸리는 시간을 단축할 필요가 있음
     // 변수명 통일 시키기 ... 귀찮
 
-    static final String getContentsItemURL = ActivityCodes.DATABASE_IP + "GetContentsItem";
-    private final String getContentsLIkeCountURL = ActivityCodes.DATABASE_IP + "GetContentsLikeCount";
-    private final String insertDeleteContentsLikeDataURL = ActivityCodes.DATABASE_IP + "InsertDeleteContentsLikeData";
+    static final String getContentsItemURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsItem";
+    private final String getContentsLIkeCountURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsLikeCount";
+    private final String insertDeleteContentsLikeDataURL = ActivityCodes.DATABASE_IP + "/platform/InsertDeleteContentsLikeData";
 
     private int selected_contents_pk;
     private boolean is_like_clicked = false, is_summary_opened = false;
@@ -96,7 +98,7 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
         listView = findViewById(R.id.contents_main_list_works_list);
         adapter = new WorksListViewAdapter();
 
-        WorksDBRequest worksDBRequest = new WorksDBRequest(getContentsItemURL, worksListener, selected_contents_pk);
+        WorksDBRequest worksDBRequest = new WorksDBRequest(getContentsItemURL, getContentsItemListener, selected_contents_pk);
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(worksDBRequest);
 
@@ -159,7 +161,7 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
         }
     };
 
-    private Response.Listener<String> worksListener = new Response.Listener<String>() {
+    private Response.Listener<String> getContentsItemListener = new Response.Listener<String>() {
         private String title, watch_num;
         private double star_rating;
         private int contents_item_pk, contents_num, comments_count;
@@ -172,19 +174,16 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
                 // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
                 boolean exist = jsonResponse.getBoolean("exist");
                 if (exist) {
-                    URL thumbnailURL = new URL(jsonResponse.getString("url"));
+                    String info_img_url = jsonResponse.getString("url");
                     String main_contents_name = jsonResponse.getString("contents_name");
                     String writer_name = jsonResponse.getString("writer_name");
                     String painter_name = jsonResponse.getString("painter_name");
                     int view_count = jsonResponse.getInt("view_count");
                     String summary = jsonResponse.getString("summary");
 
-                    GetBitmapImageFromURL getBitmapImageFromURL = new GetBitmapImageFromURL(thumbnailURL);
-                    getBitmapImageFromURL.start();
-                    getBitmapImageFromURL.join();
-                    Bitmap bitmap = getBitmapImageFromURL.getBitmap();
+                    SetBitmapImageFromUrlTask task = new SetBitmapImageFromUrlTask(thumbnail, 110, 80);
+                    task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, info_img_url);
 
-                    thumbnail.setImageBitmap(bitmap); // 효율성을 위해 나중에 쓰래드로 구현.
                     titlebar_title.setText(main_contents_name);
                     info_title.setText(main_contents_name);
                     info_writer.setText(writer_name);

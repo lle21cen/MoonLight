@@ -20,13 +20,14 @@ import org.json.JSONObject;
 import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.ConsultDir.ConsultActivity;
 import org.techtown.ideaconcert.DatabaseRequest;
+import org.techtown.ideaconcert.FAQDir.FAQActivity;
 import org.techtown.ideaconcert.FindPasswordDir.SetNewPasswordActivity;
 import org.techtown.ideaconcert.R;
 import org.techtown.ideaconcert.UserInformation;
 import org.techtown.ideaconcert.noticeDir.NoticeActivity;
 
 public class SettingsPreferenceFragment extends PreferenceFragment implements Preference.OnPreferenceClickListener {
-    private final String snsLoginProcessURL = ActivityCodes.DATABASE_IP + "SnsLoginProcess";
+    private final String snsLoginProcessURL = ActivityCodes.DATABASE_IP + "/platform/SnsLoginProcess";
     UserInformation userInformation;
     SharedPreferences prefs;
     LoginMethodFragment loginMethodFragment;
@@ -144,13 +145,15 @@ public class SettingsPreferenceFragment extends PreferenceFragment implements Pr
                 startActivity(intent);
                 break;
             case "settings_faq_pref":
-                Toast.makeText(getActivity(), preference.getTitle(), Toast.LENGTH_SHORT).show();
+                intent = new Intent(getActivity(), FAQActivity.class);
+                startActivity(intent);
                 break;
             case "settings_version_pref":
                 Toast.makeText(getActivity(), preference.getTitle(), Toast.LENGTH_SHORT).show();
                 break;
             case "settings_clause_pref":
-                Toast.makeText(getActivity(), preference.getTitle(), Toast.LENGTH_SHORT).show();
+                intent = new Intent(getActivity(), TermsAndConditionActivity.class);
+                startActivity(intent);
                 break;
             case "settings_change_pw" :
                 UserInformation userInformation = (UserInformation) getActivity().getApplication();

@@ -8,6 +8,8 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import org.techtown.ideaconcert.ActivityCodes;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -30,7 +32,7 @@ public class SetBitmapImageFromUrlTask extends AsyncTask<String, Void, Bitmap> {
         String urlStr = urls[0];
         Bitmap image = null;
         try {
-            URL url = new URL(urlStr);
+            URL url = new URL(ActivityCodes.DATABASE_IP + urlStr);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setDoInput(true);
             connection.connect();

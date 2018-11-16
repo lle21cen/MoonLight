@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class LoginRequest extends StringRequest {
     private Map<String, String> parameters;
-    final static private String URL = ActivityCodes.DATABASE_IP + "Login";
+    final static private String URL = ActivityCodes.DATABASE_IP + "/Login";
 
     public LoginRequest(String email, String pw, Response.Listener<String> listener) {
         super(Method.POST, URL, listener, null);

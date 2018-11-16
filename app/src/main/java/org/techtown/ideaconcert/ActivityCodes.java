@@ -1,10 +1,6 @@
 package org.techtown.ideaconcert;
 
 import android.app.Application;
-import android.content.SharedPreferences;
-
-import com.facebook.login.LoginManager;
-import com.google.firebase.auth.FirebaseAuth;
 
 public class ActivityCodes extends Application {
     public static final int LOGIN_SUCCESS = 100, LOGIN_FAIL = 99,  LOGIN_REQUEST= 98;// from LoginActivty
@@ -18,5 +14,5 @@ public class ActivityCodes extends Application {
     public static final int SET_NEW_PW_SUCCESS = 76, SET_NEW_PW_FAIL= 75, SET_NEW_PW_REQUEST = 74; // from WebtoonActivity
     public static final int CONSULT_SUCCESS = 73, CONSULT_FAIL= 72, CONSULT_REQUEST = 71; // ConsultActivity
 
-    public static final String DATABASE_IP = "http://192.168.1.186:8090/platform/";
+    public static final String DATABASE_IP = "http://58.77.182.75:8090";
 }

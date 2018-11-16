@@ -40,10 +40,10 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     //        final private String getBannerInfoURL = "http://lle21cen.cafe24.com/GetBannerInfo.php";
-    final private String getBannerInfoURL = ActivityCodes.DATABASE_IP + "GetBannerInfo";
-    final private String categoryContentsURL = ActivityCodes.DATABASE_IP + "GetCategoryContents";
+    final private String getBannerInfoURL = ActivityCodes.DATABASE_IP + "/platform/GetBannerInfo";
+    final private String categoryContentsURL = ActivityCodes.DATABASE_IP + "/platform/GetCategoryContents";
 //    final private String selectedContentsURL = "http://lle21cen.cafe24.com/GetSelectedContents.php";
-    final private String selectedContentsURL = ActivityCodes.DATABASE_IP + "GetSelectedContents";
+    final private String selectedContentsURL = ActivityCodes.DATABASE_IP + "/platform/GetSelectedContents";
 //    final private String discountContentsURL = "http://lle21cen.cafe24.com/GetDiscountContents.php";
 
     ScrollView mainScrollView; // 메인 액태비티 최상위 레이아웃 ScrollView

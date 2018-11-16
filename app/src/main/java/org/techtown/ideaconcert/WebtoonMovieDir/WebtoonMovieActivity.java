@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.R;
 
 public class WebtoonMovieActivity extends AppCompatActivity {
@@ -31,7 +32,7 @@ public class WebtoonMovieActivity extends AppCompatActivity {
 
         final CustomVideoView video = findViewById(R.id.webtoon_movie_video_view);
 
-        String video_url = "http://192.168.1.186:8090/resources/platform/movie/360p.mp4";
+        String video_url = ActivityCodes.DATABASE_IP + "/resources/platform/movie/360p.mp4";
 
         Uri uri = Uri.parse(video_url);
         video.setVideoURI(uri);

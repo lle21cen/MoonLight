@@ -33,6 +33,7 @@ import org.techtown.ideaconcert.ContentsMainDir.ContentsMainActivity;
 import org.techtown.ideaconcert.ContentsMainDir.WorksListViewItem;
 import org.techtown.ideaconcert.LoginDir.LoginActivity;
 import org.techtown.ideaconcert.MainActivityDir.GetBitmapImageFromURL;
+import org.techtown.ideaconcert.MainActivityDir.SetBitmapImageFromUrlTask;
 import org.techtown.ideaconcert.R;
 import org.techtown.ideaconcert.SQLiteDir.DBHelper;
 import org.techtown.ideaconcert.SQLiteDir.DBNames;
@@ -50,10 +51,9 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
     LinearLayout headerLayout, footerLayout, webtoonLayout, contents_option_menu;
     TextView title_text, star_rating_text, like_count_text, comments_count_text, order_text;
     Button option_btn, comments_btn, prev_btn, next_btn, like_btn;
-    private final String getContentsItemImageURL = ActivityCodes.DATABASE_IP + "GetContentsItemImage";
-    private final String getContentsLIkeCountURL = ActivityCodes.DATABASE_IP + "GetContentsLikeCount";
-    private final String insertDeleteContentsLikeDataURL = ActivityCodes.DATABASE_IP + "InsertDeleteContentsLikeData";
-
+    private final String getContentsItemImageURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsItemImage";
+    private final String getContentsLIkeCountURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsLikeCount";
+    private final String insertDeleteContentsLikeDataURL = ActivityCodes.DATABASE_IP + "/platform/InsertDeleteContentsLikeData";
 
     int item_pk, item_comments_count, contents_num;
     String item_title;
@@ -188,22 +188,21 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
                 if (exist) {
                     int num_category_contents_data = jsonResponse.getInt("num_result");
                     LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
                     lp.setMargins(10, 10, 10, 10);
                     for (int i = 0; i < num_category_contents_data; i++) {
                         // 데이터베이스에 들어있는 컨텐츠의 수만큼 for문을 돌려 layout에 image추가
                         try {
                             JSONObject temp = result.getJSONObject(i);
 
-                            URL url = new URL(temp.getString("image_url"));
-                            GetBitmapImageFromURL getBitmapImageFromURL = new GetBitmapImageFromURL(url);
-                            getBitmapImageFromURL.start();
-                            getBitmapImageFromURL.join();
-                            Bitmap bitmap = getBitmapImageFromURL.getBitmap();
+                            String url = temp.getString("image_url");
 
                             ImageView webtoon = new ImageView(WebtoonActivity.this);
-                            webtoon.setImageBitmap(bitmap);
                             webtoon.setAdjustViewBounds(true); // 이미지의 가로를 화면 전체 크기에 맞춤
                             webtoon.setLayoutParams(lp);
+
+                            SetBitmapImageFromUrlTask task = new SetBitmapImageFromUrlTask(webtoon, 500, 2000);
+                            task.execute(url);
 
                             webtoonLayout.addView(webtoon);
                         } catch (Exception e) {
