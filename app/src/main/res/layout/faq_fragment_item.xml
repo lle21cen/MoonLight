@@ -6,20 +6,24 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:text="Q."
+        android:id="@+id/faq_item_q"
+        android:text="Q. "
         android:textColor="#786aaa"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <TextView
+        android:id="@+id/faq_question"
+        android:layout_toRightOf="@+id/faq_item_q"
         android:text="웹툰 연재를 제안하고"
-        android:layout_marginLeft="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <ImageView
+        android:id="@+id/faq_open_close_btn"
         android:layout_alignParentRight="true"
         android:src="@drawable/open"
         android:layout_width="15dp"
         android:layout_height="15dp" />
+
 </RelativeLayout>

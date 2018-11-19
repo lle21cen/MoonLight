@@ -8,6 +8,9 @@ import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
+
 import org.techtown.ideaconcert.R;
 
 public class FAQActivity extends AppCompatActivity implements View.OnClickListener {
@@ -42,24 +45,29 @@ public class FAQActivity extends AppCompatActivity implements View.OnClickListen
     @Override
     public void onClick(View view) {
         if (prevClickedButton != null)
-            prevClickedButton.setBackgroundColor(Color.rgb(192, 192, 192));
+            prevClickedButton.setBackgroundColor(Color.rgb(255, 255, 255));
         TextView nowClickedButton = (TextView) view;
-        nowClickedButton.setBackgroundColor(Color.GRAY);
+        nowClickedButton.setBackgroundColor(Color.rgb(192,192,192));
         prevClickedButton = nowClickedButton;
 
         switch (view.getId()) {
             case R.id.faq_all:
-
+                getFragmentManager().beginTransaction().replace(R.id.faq_fragment_layout, new FragmentByCategory(0)).commit();
                 break;
             case R.id.faq_service:
+                getFragmentManager().beginTransaction().replace(R.id.faq_fragment_layout, new FragmentByCategory(2)).commit();
                 break;
             case R.id.faq_pay:
+                getFragmentManager().beginTransaction().replace(R.id.faq_fragment_layout, new FragmentByCategory(3)).commit();
                 break;
             case R.id.faq_contents:
+                getFragmentManager().beginTransaction().replace(R.id.faq_fragment_layout, new FragmentByCategory(4)).commit();
                 break;
             case R.id.faq_publish:
+                getFragmentManager().beginTransaction().replace(R.id.faq_fragment_layout, new FragmentByCategory(5)).commit();
                 break;
             case R.id.faq_etc:
+                getFragmentManager().beginTransaction().replace(R.id.faq_fragment_layout, new FragmentByCategory(6)).commit();
                 break;
 
             case R.id.faq_back_btn:

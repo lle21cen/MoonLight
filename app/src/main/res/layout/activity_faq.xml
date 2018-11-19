@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ffffff"
     tools:context=".FAQDir.FAQActivity">
 
     <LinearLayout
@@ -34,7 +35,8 @@
     <TableLayout
         android:id="@+id/faq_table_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="101dp"
+        android:background="#ffffff"
         android:layout_below="@id/faq_title_layout"
         android:layout_centerHorizontal="true"
         android:layout_margin="10dp">
@@ -42,22 +44,26 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#c0c0c0"/>
+            android:background="#c0c0c0" />
 
-        <TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:gravity="center">
+
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="#c0c0c0"/>
+                android:background="#c0c0c0" />
 
             <TextView
                 android:id="@+id/faq_all"
                 android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="전체보기" />
+                android:text="전체보기"
+                android:textAlignment="center" />
 
             <View
                 android:layout_width="1dp"
@@ -67,11 +73,11 @@
             <TextView
                 android:id="@+id/faq_service"
                 android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="서비스 이용" />
+                android:text="서비스 이용"
+                android:textAlignment="center" />
 
             <View
                 android:layout_width="1dp"
@@ -81,15 +87,16 @@
             <TextView
                 android:id="@+id/faq_pay"
                 android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="결제/환불" />
+                android:text="결제/환불"
+                android:textAlignment="center" />
+
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="#c0c0c0"/>
+                android:background="#c0c0c0" />
 
         </TableRow>
 
@@ -98,21 +105,24 @@
             android:layout_height="1dp"
             android:background="#c0c0c0" />
 
-        <TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:gravity="center">
 
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="#c0c0c0"/>
+                android:background="#c0c0c0" />
 
             <TextView
                 android:id="@+id/faq_contents"
                 android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
-                android:layout_weight="1"
+                android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="콘텐츠" />
+                android:layout_weight="1"
+                android:text="콘텐츠"
+                android:textAlignment="center" />
 
             <View
                 android:layout_width="1dp"
@@ -122,11 +132,11 @@
             <TextView
                 android:id="@+id/faq_publish"
                 android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
-                android:layout_weight="1"
+                android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="연재/사업제안" />
+                android:layout_weight="1"
+                android:text="연재/사업제안"
+                android:textAlignment="center" />
 
             <View
                 android:layout_width="1dp"
@@ -136,22 +146,40 @@
             <TextView
                 android:id="@+id/faq_etc"
                 android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
-                android:layout_weight="1"
+                android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="기타" />
+                android:layout_weight="1"
+                android:text="기타"
+                android:textAlignment="center" />
+
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="#c0c0c0"/>
+                android:background="#c0c0c0" />
 
         </TableRow>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#c0c0c0"/>
+            android:background="#c0c0c0" />
 
     </TableLayout>
+
+    <View
+        android:id="@+id/faq_underline"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/faq_table_layout"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="#000000" />
+
+    <FrameLayout
+        android:id="@+id/faq_fragment_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/faq_underline" />
+
+
 </RelativeLayout>

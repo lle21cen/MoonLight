@@ -8,8 +8,6 @@ import java.util.Map;
 
 public class DatabaseRequest extends StringRequest {
 
-    /* 싹 다 정리 하기!! 생성자 방식이 아닌 파라미터 설정 방식으로 바꿔서 다 정리할 필요가 있음*/
-
     Map<String, String> parameters;
 
     public DatabaseRequest(Response.Listener<String> listener, String url) {

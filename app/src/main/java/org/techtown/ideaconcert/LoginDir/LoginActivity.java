@@ -105,7 +105,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 login_result_text.setText("가입정보가 없거나 로그인 정보가 잘못 되었습니다.");
                             }
                         } catch (Exception e) {
-                            Log.e("dberror", e.getMessage());
+                            Log.e("로그인에러", e.getMessage());
                         }
                     }
                 };
