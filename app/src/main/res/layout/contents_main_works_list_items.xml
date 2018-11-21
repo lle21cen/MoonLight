@@ -87,7 +87,7 @@
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_marginLeft="20dp"
-                android:src="@drawable/ic_comment_black_24dp" />
+                android:src="@drawable/comment" />
 
             <TextView
                 android:id="@+id/contents_main_item_comments_num"
@@ -113,7 +113,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:drawableTop="@drawable/ic_money_yellow_24dp"
+            android:drawableTop="@drawable/coin"
             android:text="0"
             android:textAlignment="center"
             android:textColor="#ffffff" />

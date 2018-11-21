@@ -103,8 +103,7 @@
                 android:id="@+id/webtoon_like_btn"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:layout_marginRight="10dp"
-                android:background="@drawable/ic_favorite_border_white_24dp" />
+                android:layout_marginRight="10dp" />
 
             <TextView
                 android:id="@+id/webtoon_like_count"
@@ -129,7 +128,7 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginRight="5dp"
-                android:background="@drawable/ic_comment_white_24dp" />
+                android:background="@drawable/comment" />
 
             <TextView
                 android:id="@+id/webtoon_comments_count"

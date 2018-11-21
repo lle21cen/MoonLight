@@ -1,6 +1,7 @@
 package org.techtown.ideaconcert.MainActivityDir;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.techtown.ideaconcert.ContentsMainDir.ContentsMainActivity;
 import org.techtown.ideaconcert.R;
 
 import java.util.ArrayList;
@@ -44,7 +46,7 @@ public class NewArrivalRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         NewArrivalViewHolder newArrivalViewHolder = (NewArrivalViewHolder) holder;
-        NewArrivalItem item = items.get(position);
+        final NewArrivalItem item = items.get(position);
 
         SetBitmapImageFromUrlTask task = new SetBitmapImageFromUrlTask(newArrivalViewHolder.worksImageView, 100, 140);
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, item.getThumbnail_url());
@@ -56,7 +58,9 @@ public class NewArrivalRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
             @Override
             public void onClick(View view) {
                 Context context = view.getContext();
-                Toast.makeText(context, "position = " + position, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(context, ContentsMainActivity.class);
+                intent.putExtra("contents_pk", item.getContents_pk());
+                context.startActivity(intent);
             }
         });
     }

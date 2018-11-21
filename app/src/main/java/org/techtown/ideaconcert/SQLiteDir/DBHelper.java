@@ -10,7 +10,9 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -28,7 +30,7 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         Toast.makeText(context, "DB Created", Toast.LENGTH_SHORT).show();
-        String sql = "CREATE TABLE recent_view(contents_name VARCHAR(20), view_date VARCHAR(20), contents_num VARCHAR(10), PRIMARY KEY(contents_name, view_date));";
+        String sql = "CREATE TABLE recent_view(contents_pk INTEGER, contents_name VARCHAR(20), view_date DATETIME, date_for_compare DATETIME, contents_num VARCHAR(10), PRIMARY KEY(contents_pk, contents_num));";
         sqLiteDatabase.execSQL(sql);
     }
 
@@ -41,22 +43,38 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
     }
 
-    public void addRecentViewData(String contents_name, String date, String contents_num) {
+    public void addOrUpdateRecentViewData(int contents_pk, String contents_name, String date, String date_for_compare, String contents_num) {
         try {
-            SQLiteDatabase db = getWritableDatabase();
-            String sql = "INSERT INTO recent_view(contents_name, view_date, contents_num) VALUES (?, ?, ?)";
+//            String sql = "SELECT contents_pk FROM recent_view WHERE contents_pk = " + contents_pk + ";";
+            SQLiteDatabase db = getReadableDatabase();
+//            Cursor cursor = db.rawQuery(sql, null);
+//            cursor.moveToNext();
+//            if (cursor.getCount() != 0) {
+//                sql = "UPDATE recent_view SET view_date = '" + date + "', contents_num = '"+ contents_num + "' WHERE contents_pk = " + contents_pk + ";";
+//                db.execSQL(sql);
+//            } else {
+//                sql = "INSERT INTO recent_view(contents_pk, contents_name, view_date, contents_num) VALUES (?, ?, ?, ?)";
+//                db = getWritableDatabase();
+//                db.execSQL(sql, new Object[]{
+//                        contents_pk, contents_name, date, contents_num
+//                });
+//            }
+
+            String sql = "INSERT INTO recent_view(contents_pk, contents_name, view_date, date_for_compare, contents_num) VALUES (?, ?, ?, ?, ?)";
+            db = getWritableDatabase();
             db.execSQL(sql, new Object[]{
-                    contents_name, date, contents_num
+                    contents_pk, contents_name, date, date_for_compare, contents_num
             });
+
             Log.i("SQLite", "Recent View Data Insert Success");
-        }catch (SQLException se) {
-            Log.e("add_data_error", ""+se.getMessage());
+        } catch (SQLException se) {
+            Log.e("add_data_error", "" + se.getMessage());
         }
     }
 
-    public void createTable(String table_name) {
+    public void createRecentViewTable() {
         SQLiteDatabase db = getWritableDatabase();
-        String sql = "CREATE TABLE recent_view(contents_name VARCHAR(20), view_date VARCHAR(20), contents_num VARCHAR(20), PRIMARY KEY(contents_name, view_date));";
+        String sql = "CREATE TABLE recent_view(contents_pk INTEGER, contents_name VARCHAR(20), view_date DATETIME, date_for_compare DATETIME, contents_num VARCHAR(10), PRIMARY KEY(contents_pk, contents_num));";
         db.execSQL(sql);
         Toast.makeText(context, "DB Created", Toast.LENGTH_SHORT).show();
     }
@@ -68,21 +86,38 @@ public class DBHelper extends SQLiteOpenHelper {
         Toast.makeText(context, "drop table success", Toast.LENGTH_SHORT).show();
     }
 
+    public int getReadContentsCount(int contents_pk) {
+        try {
+            String sql = "SELECT contents_pk FROM recent_view WHERE contents_pk = " + contents_pk + ";";
+            SQLiteDatabase db = getReadableDatabase();
+            Cursor cursor = db.rawQuery(sql, null);
+            return cursor.getCount();
+        } catch (SQLException se) {
+            Log.e("열람목록개수리턴오류", se.getMessage());
+            return 0;
+        }
+    }
+    public void  dropAllTables() {
+        SQLiteDatabase db = getWritableDatabase();
+    }
+
     public ArrayList<RecentViewPair> getAllRecentViewData() {
         try {
-            String sql = "SELECT contents_name, view_date, contents_num FROM recent_view";
+            String sql = "SELECT contents_pk, contents_name, view_date, MAX(date_for_compare), contents_num FROM recent_view GROUP BY contents_pk";
+//            String sql = "SELECT contents_pk, contents_name, view_date, contents_num FROM recent_view";
             SQLiteDatabase db = getReadableDatabase();
             Cursor cursor = db.rawQuery(sql, null);
 
-            ArrayList<RecentViewPair> datas = new ArrayList<>();
+            ArrayList<RecentViewPair> data = new ArrayList<>();
 
             while (cursor.moveToNext()) {
-                String name = cursor.getString(0);
-                String date = cursor.getString(1);
-                String num = cursor.getString(2);
-                datas.add(new RecentViewPair(name, date, num));
+                int contents_pk = cursor.getInt(0);
+                String name = cursor.getString(1);
+                String date = cursor.getString(2);
+                String num = cursor.getString(4);
+                data.add(new RecentViewPair(contents_pk, name, date, num));
             }
-            return datas;
+            return data;
         } catch (SQLException se) {
             Log.e("sql", se.getMessage());
             return new ArrayList<>();

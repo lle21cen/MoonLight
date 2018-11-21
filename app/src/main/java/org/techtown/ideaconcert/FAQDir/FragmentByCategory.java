@@ -40,5 +40,4 @@ public class FragmentByCategory extends Fragment {
 
         return view;
     }
-
 }

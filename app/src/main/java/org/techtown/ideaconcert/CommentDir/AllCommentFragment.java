@@ -19,12 +19,13 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.R;
 import org.techtown.ideaconcert.UserInformation;
 
 public class AllCommentFragment extends Fragment {
 
-    private final String getCommentURL = "http://lle21cen.cafe24.com/GetComment.php";
+    private final String getCommentURL = ActivityCodes.DATABASE_IP + "/platform/GetComment";
 
     View view;
     CommentRecyclerViewAdapter adapter;

@@ -17,6 +17,7 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.DatabaseRequest;
 import org.techtown.ideaconcert.R;
 
@@ -25,8 +26,8 @@ import java.util.ArrayList;
 public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private ArrayList<CommentListViewItem> items = new ArrayList<>();
-    final private String getCommentReplyURL = "http://lle21cen.cafe24.com/GetCommentReply.php";
-    final private String insertCommentLikeDataURL = "http://lle21cen.cafe24.com/InsertCommentLikeData.php";
+    final private String getCommentReplyURL = ActivityCodes.DATABASE_IP + "/platform/GetCommentReply";
+    final private String insertCommentLikeDataURL = ActivityCodes.DATABASE_IP + "/platform/InsertCommentLikeData";
     private int user_pk;
 
 

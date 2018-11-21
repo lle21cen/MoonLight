@@ -26,7 +26,7 @@ import org.techtown.ideaconcert.UserInformation;
 
 public class CommentActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private final String insertDeleteCommentURL = "http://lle21cen.cafe24.com/InsertDeleteComment.php";
+    private final String insertDeleteCommentURL = ActivityCodes.DATABASE_IP + "/platform/InsertDeleteComment";
     Button bestButton, allButton;
     ViewPager commentPager;
     EditText commentEditText;

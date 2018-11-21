@@ -80,12 +80,12 @@
         app:layout_constraintLeft_toRightOf="@+id/contents_main_info_view"
         app:layout_constraintTop_toBottomOf="@id/contents_main_info_painter" />
 
-    <ImageView
-        android:id="@+id/contents_main_info_like_img"
+    <Button
+        android:id="@+id/contents_main_like_btn"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:src="@drawable/pick_2"
-        android:layout_marginRight="3dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/pick_2"
         app:layout_constraintBottom_toBottomOf="@+id/contents_main_info_img"
         app:layout_constraintRight_toLeftOf="@+id/contents_main_info_like_count"
         app:layout_constraintTop_toBottomOf="@id/contents_main_info_painter" />

@@ -31,27 +31,26 @@ public class Fragment2LikeWorks extends Fragment {
     Fragment2RecyclerAdapter adapter;
     LinearLayoutManager recyclerViewManager;
 
-    private final String getLikeWorksListURL = "http://lle21cen.cafe24.com/GetContentsLikeData.php";
+    private final String getLikeWorksListURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsLikeData";
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        Intent intent = getActivity().getIntent();
+        int user_pk = intent.getIntExtra("user_pk", 0);
+
         view = inflater.inflate(R.layout.fragment_my_page2_like_works, container, false);
-        adapter = new Fragment2RecyclerAdapter();
+        adapter = new Fragment2RecyclerAdapter(user_pk);
         recycler = view.findViewById(R.id.my_page_fragment2_recycler);
         recyclerViewManager = new LinearLayoutManager(getActivity());
         recycler.setLayoutManager(recyclerViewManager);
 
-        Intent intent = getActivity().getIntent();
-        int user_pk = intent.getIntExtra("user_pk", 0);
         if (user_pk != 0) {
             DatabaseRequest databaseRequest = new DatabaseRequest(getLikeWorksListListener, getLikeWorksListURL, user_pk);
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
             requestQueue.add(databaseRequest);
-        } else {
-            Toast.makeText(getActivity(), "user_pk = 0", Toast.LENGTH_SHORT).show();
         }
-
         recycler.setAdapter(adapter);
         return view;
     }
@@ -65,7 +64,7 @@ public class Fragment2LikeWorks extends Fragment {
                 if (exist) {
                     int num_result = jsonObject.getInt("num_result");
                     JSONArray result = jsonObject.getJSONArray("result");
-                    for (int i=0; i<num_result; i++) {
+                    for (int i = 0; i < num_result; i++) {
                         JSONObject temp = result.getJSONObject(i);
                         int contents_pk = temp.getInt("contents_pk");
                         String date = temp.getString("date");
@@ -76,7 +75,7 @@ public class Fragment2LikeWorks extends Fragment {
                     }
                     recycler.setAdapter(adapter);
                 }
-            }catch (Exception e) {
+            } catch (Exception e) {
                 Log.e("like_works_error", e.getMessage());
             }
         }

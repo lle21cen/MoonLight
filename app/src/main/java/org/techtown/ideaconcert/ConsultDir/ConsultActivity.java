@@ -24,7 +24,7 @@ import org.techtown.ideaconcert.R;
 public class ConsultActivity extends AppCompatActivity {
 
 //    static final String SendConsultMailURL = ActivityCodes.DATABASE_IP + "GetContentsItem";
-    static final String SendConsultMailURL = ActivityCodes.DATABASE_IP + "/platform/SendConsultMail.php";
+    static final String SendConsultMailURL = ActivityCodes.DATABASE_IP + "/platform/SendConsultMail";
 
     Spinner consultCategorySpinner;
     EditText titleView, contentView, emailView;

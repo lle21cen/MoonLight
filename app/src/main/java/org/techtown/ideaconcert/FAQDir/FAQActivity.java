@@ -36,6 +36,8 @@ public class FAQActivity extends AppCompatActivity implements View.OnClickListen
         publishButton.setOnClickListener(this);
         etcButton.setOnClickListener(this);
 
+        setInitState(allButton);
+
         Button backButton = findViewById(R.id.faq_back_btn);
         TextView backText = findViewById(R.id.faq_back_txt);
         backButton.setOnClickListener(this);
@@ -76,4 +78,9 @@ public class FAQActivity extends AppCompatActivity implements View.OnClickListen
         }
     }
 
+    protected void setInitState(TextView nowClickedButton) {
+        nowClickedButton.setBackgroundColor(Color.rgb(192,192,192));
+        prevClickedButton = nowClickedButton;
+        getFragmentManager().beginTransaction().replace(R.id.faq_fragment_layout, new FragmentByCategory(0)).commit();
+    }
 }

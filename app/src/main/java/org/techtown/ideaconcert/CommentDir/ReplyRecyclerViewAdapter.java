@@ -15,13 +15,14 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
+import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.R;
 
 import java.util.ArrayList;
 
 public class ReplyRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    final private String insertCommentLikeDataURL = "http://lle21cen.cafe24.com/InsertCommentLikeData.php";
+    final private String insertCommentLikeDataURL = ActivityCodes.DATABASE_IP + "/platform/InsertCommentLikeData";
 
     private ArrayList<CommentListViewItem> items = new ArrayList<>();
     private int user_pk;

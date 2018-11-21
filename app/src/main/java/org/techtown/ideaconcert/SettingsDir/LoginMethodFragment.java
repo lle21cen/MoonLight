@@ -42,6 +42,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.LoginDir.LoginActivity;
+import org.techtown.ideaconcert.MyPageDir.MyPageActivity;
 import org.techtown.ideaconcert.R;
 import org.techtown.ideaconcert.UserInformation;
 
@@ -179,7 +180,7 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
                             name = response.getJSONObject().getString("name");
                             login_method = "Facebook";
                             userInformation.setUserInformation(login_method, 0, name, email, true, 2);
-                            replaceFragment(new SettingsPreferenceFragment());
+                            goToMyPageActivity();
                         } catch (JSONException e) {
                             Log.e("facebook error", e.getMessage());
                         }
@@ -214,15 +215,22 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
 
                 userInformation.setUserInformation(login_method, 0, name, email, true, 2);
                 // 사용자 정보 입력하고 액티비티 종료, 이름 형식 정리 필요
-                replaceFragment(new SettingsPreferenceFragment());
+                goToMyPageActivity();
             } else {
                 Log.e("google fail", "" + result.getStatus().getStatusMessage());
             }
         } else if (resultCode == ActivityCodes.LOGIN_SUCCESS) {
-            replaceFragment(new SettingsPreferenceFragment());
+            goToMyPageActivity();
         }
     }
 
+    protected void goToMyPageActivity() {
+        Intent intent = new Intent(getActivity(), MyPageActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("user_pk", userInformation.getUser_pk());
+        startActivity(intent);
+        getActivity().finish();
+    }
     @Override
     public void onResume() {
         super.onResume();

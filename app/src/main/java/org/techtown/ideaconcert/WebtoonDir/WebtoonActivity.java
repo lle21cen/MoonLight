@@ -1,14 +1,9 @@
 package org.techtown.ideaconcert.WebtoonDir;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -31,20 +26,15 @@ import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.CommentDir.CommentActivity;
 import org.techtown.ideaconcert.ContentsMainDir.ContentsMainActivity;
 import org.techtown.ideaconcert.ContentsMainDir.WorksListViewItem;
-import org.techtown.ideaconcert.LoginDir.LoginActivity;
 import org.techtown.ideaconcert.MainActivityDir.GetBitmapImageFromURL;
-import org.techtown.ideaconcert.MainActivityDir.SetBitmapImageFromUrlTask;
 import org.techtown.ideaconcert.R;
 import org.techtown.ideaconcert.SQLiteDir.DBHelper;
 import org.techtown.ideaconcert.SQLiteDir.DBNames;
-import org.techtown.ideaconcert.SQLiteDir.RecentViewPair;
 
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 public class WebtoonActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -53,9 +43,9 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
     Button option_btn, comments_btn, prev_btn, next_btn, like_btn;
     private final String getContentsItemImageURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsItemImage";
     private final String getContentsLIkeCountURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsLikeCount";
-    private final String insertDeleteContentsLikeDataURL = ActivityCodes.DATABASE_IP + "/platform/InsertDeleteContentsLikeData";
+    private final String insertDeleteContentsItemLikeDataURL = ActivityCodes.DATABASE_IP + "/platform/InsertDeleteContentsItemLikeData";
 
-    int item_pk, item_comments_count, contents_num;
+    int user_pk, item_pk, item_comments_count, contents_num, contents_pk;
     String item_title;
     int item_position;
 
@@ -93,6 +83,7 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
         item_title = items.get(item_position).getWorksTitle();
         item_comments_count = items.get(item_position).getCommentCount();
         contents_num = items.get(item_position).getContentsNum();
+        contents_pk = intent.getIntExtra("contents_pk", 0);
 
         title_text.setText(item_title + " " + contents_num + "화");
         comments_count_text.setText("" + item_comments_count);
@@ -140,6 +131,7 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
                     }
                 }
                 Intent intent = new Intent(WebtoonActivity.this, WebtoonActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 intent.putExtra("position", next_position);
                 startActivity(intent);
                 finish();
@@ -148,15 +140,15 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
 
         // 컨텐츠 아이템의 좋아요 개수를 DB에서 불러와 설정
         SharedPreferences sharedPreferences = getSharedPreferences("loginData", MODE_PRIVATE);
-        int user_pk = sharedPreferences.getInt("user_pk", 0);
+        user_pk = sharedPreferences.getInt("userPk", 0);
         if (user_pk == 0)
             user_pk = 1;
+
         ContentsItemLikeDBRequest contentsItemLikeDBRequest = new ContentsItemLikeDBRequest(getContentsLIkeCountURL, getContentsItemLikeCountListener, item_pk, user_pk, 2);
         requestQueue.add(contentsItemLikeDBRequest);
 
         addRecentViewDataToSqlite();
     }
-
 
     private Response.Listener<String> getContentsItemLikeCountListener = new Response.Listener<String>() {
         @Override
@@ -167,11 +159,14 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
                 int count = jsonResponse.getInt("count");
                 like_count_text.setText("" + count);
                 if (exist) {
-                    like_btn.setBackgroundDrawable(ContextCompat.getDrawable(WebtoonActivity.this, R.drawable.ic_favorite_red_24dp));
+                    like_btn.setBackgroundDrawable(ContextCompat.getDrawable(WebtoonActivity.this, R.drawable.pick_2));
                     is_like_clicked = true;
+                } else {
+                    like_btn.setBackgroundDrawable(ContextCompat.getDrawable(WebtoonActivity.this, R.drawable.ic_favorite_border_white_24dp));
+                    is_like_clicked = false;
                 }
             } catch (Exception e) {
-                Log.e("dberror", e.getMessage());
+                Log.e("좋아요를", e.getMessage());
             }
         }
     };
@@ -188,21 +183,26 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
                 if (exist) {
                     int num_category_contents_data = jsonResponse.getInt("num_result");
                     LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-
                     lp.setMargins(10, 10, 10, 10);
                     for (int i = 0; i < num_category_contents_data; i++) {
                         // 데이터베이스에 들어있는 컨텐츠의 수만큼 for문을 돌려 layout에 image추가
                         try {
                             JSONObject temp = result.getJSONObject(i);
 
-                            String url = temp.getString("image_url");
+                            String url_str = temp.getString("image_url");
 
                             ImageView webtoon = new ImageView(WebtoonActivity.this);
                             webtoon.setAdjustViewBounds(true); // 이미지의 가로를 화면 전체 크기에 맞춤
                             webtoon.setLayoutParams(lp);
 
-                            SetBitmapImageFromUrlTask task = new SetBitmapImageFromUrlTask(webtoon, 500, 2000);
-                            task.execute(url);
+//                            SetBitmapImageFromUrlTask task = new SetBitmapImageFromUrlTask(webtoon, 500, 2000);
+//                            task.execute(url_str);
+
+                            URL url = new URL(ActivityCodes.DATABASE_IP + temp.getString("image_url"));
+                            GetBitmapImageFromURL getBitmapImageFromURL = new GetBitmapImageFromURL(url);
+                            getBitmapImageFromURL.start();
+                            getBitmapImageFromURL.join();
+                            webtoon.setImageBitmap(getBitmapImageFromURL.getBitmap());
 
                             webtoonLayout.addView(webtoon);
                         } catch (Exception e) {
@@ -219,6 +219,7 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
         }
     };
 
+
     private Response.Listener<String> successCheckListener = new Response.Listener<String>() {
         @Override
         public void onResponse(String response) {
@@ -226,22 +227,20 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
                 JSONObject jsonObject = new JSONObject(response);
                 boolean success = jsonObject.getBoolean("success");
                 if (success) {
-                    if (is_like_clicked) {
-                        is_like_clicked = false;
-                        like_btn.setBackgroundDrawable(ContextCompat.getDrawable(WebtoonActivity.this, R.drawable.ic_favorite_red_24dp));
-                    }else {
-                        Toast.makeText(WebtoonActivity.this, "취소되었습니다.", Toast.LENGTH_SHORT).show();
+                    if (!is_like_clicked) {
                         is_like_clicked = true;
-                        like_btn.setBackgroundDrawable(ContextCompat.getDrawable(WebtoonActivity.this, R.drawable.ic_favorite_border_black_24dp));
+                        Toast.makeText(WebtoonActivity.this, "이 작품을 좋아합니다.", Toast.LENGTH_SHORT).show();
+                        like_btn.setBackgroundDrawable(ContextCompat.getDrawable(WebtoonActivity.this, R.drawable.pick_2));
+                    } else {
+                        Toast.makeText(WebtoonActivity.this, "취소되었습니다.", Toast.LENGTH_SHORT).show();
+                        is_like_clicked = false;
+                        like_btn.setBackgroundDrawable(ContextCompat.getDrawable(WebtoonActivity.this, R.drawable.ic_favorite_border_white_24dp));
                     }
+                } else {
+                    Log.e("웹툰좋아요삽입삭제실패", jsonObject.getString("errmsg"));
                 }
-                else {
-                    Log.e("success check errmsg", jsonObject.getString("errmsg"));
-                }
-            }
-            catch (Exception e)
-            {
-                Log.e("success check error", e.getMessage());
+            } catch (Exception e) {
+                Log.e("웹툰좋아요삽입삭제오류", e.getMessage());
             }
         }
     };
@@ -264,19 +263,18 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.webtoon_like_count:
                 InsertDeleteContentsLikeRequest insertDeleteContentsLikeRequest;
                 RequestQueue requestQueue = Volley.newRequestQueue(this);
-                if (is_like_clicked) {
-                    Toast.makeText(this, "취소했습니다.", Toast.LENGTH_SHORT).show();
+                if (!is_like_clicked) {
                     insertDeleteContentsLikeRequest
-                            = new InsertDeleteContentsLikeRequest(insertDeleteContentsLikeDataURL, successCheckListener, item_pk, 1, 0);
+                            = new InsertDeleteContentsLikeRequest(insertDeleteContentsItemLikeDataURL, successCheckListener, item_pk, user_pk, 1); // 1 : INSERT
                 } else {
                     insertDeleteContentsLikeRequest
-                            = new InsertDeleteContentsLikeRequest(insertDeleteContentsLikeDataURL, successCheckListener, item_pk, 1, 1);
+                            = new InsertDeleteContentsLikeRequest(insertDeleteContentsItemLikeDataURL, successCheckListener, item_pk, user_pk, 2); // 2 : DELETE
                 }
                 requestQueue.add(insertDeleteContentsLikeRequest);
                 break;
-            case R.id.webtoon_comment_layout :
-            case R.id.webtoon_comments_btn :
-            case R.id.webtoon_comments_count :
+            case R.id.webtoon_comment_layout:
+            case R.id.webtoon_comments_btn:
+            case R.id.webtoon_comments_count:
                 Intent intent = new Intent(WebtoonActivity.this, CommentActivity.class);
                 intent.putExtra("item_pk", item_pk);
                 intent.putExtra("item_title", item_title);
@@ -336,14 +334,9 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
     private void addRecentViewDataToSqlite() {
         // 마이페이지 최근 본 웹툰 목록에 웹툰 이름과 현재 날짜 저장하기
         Date today = new Date();
-        SimpleDateFormat date = new SimpleDateFormat("yyyy.MM.dd");
-        DBHelper dbHelper = new DBHelper(this, DBNames.RECENT_VIEW_DB, null, 1);
+        SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd kk:mm"); // 초단위로 저장하여 가장 최근에 본 작품을 갱신.
+        DBHelper dbHelper = new DBHelper(this, DBNames.CONTENTS_DB, null, 1);
 
-//        dbHelper.dropTable("recent_view"); // 디버깅을 위한 테이블 드랍
-//        dbHelper.createTable("recent_view"); // 디버깅을 위한 테이블 생성
-
-        dbHelper.testDB();
-        dbHelper.addRecentViewData(item_title, date.format(today), String.valueOf(contents_num));
-
+        dbHelper.addOrUpdateRecentViewData(contents_pk, item_title, date.format(today), String.valueOf(today), String.valueOf(contents_num));
     }
 }

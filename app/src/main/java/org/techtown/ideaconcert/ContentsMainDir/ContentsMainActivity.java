@@ -29,6 +29,8 @@ import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.MainActivityDir.GetBitmapImageFromURL;
 import org.techtown.ideaconcert.MainActivityDir.SetBitmapImageFromUrlTask;
 import org.techtown.ideaconcert.R;
+import org.techtown.ideaconcert.SQLiteDir.DBHelper;
+import org.techtown.ideaconcert.SQLiteDir.DBNames;
 import org.techtown.ideaconcert.WebtoonDir.WebtoonActivity;
 
 import java.net.URL;
@@ -41,7 +43,7 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
     // 이미지만 따로 동적으로 설정하도록 바꾸어서 컨텐츠 로딩에 걸리는 시간을 단축할 필요가 있음
     // 변수명 통일 시키기 ... 귀찮
 
-    static final String getContentsItemURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsItem";
+    private final String getContentsItemURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsItem";
     private final String getContentsLIkeCountURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsLikeCount";
     private final String insertDeleteContentsLikeDataURL = ActivityCodes.DATABASE_IP + "/platform/InsertDeleteContentsLikeData";
 
@@ -54,7 +56,7 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
             info_view_count, contents_like_count, summary_text, list_total_txt;
     private WorksListViewAdapter adapter;
     private Spinner sortSpinner;
-    private ImageView thumbnail, back_btn, like_img;
+    private ImageView thumbnail, back_btn;
 
     public static ArrayList<WorksListViewItem> itemList; // WebtonActivity에서도 사용하기 위해 public static으로 선언
     private int user_pk;
@@ -84,16 +86,17 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
 
         thumbnail = findViewById(R.id.contents_main_info_img);
         back_btn = findViewById(R.id.contents_main_back);
-        like_img = findViewById(R.id.contents_main_info_like_img);
 
         back_btn.setOnClickListener(this);
 
         first_episode_btn = findViewById(R.id.contents_main_first_episode); // 첫화보기 버튼
-        contents_like_btn = findViewById(R.id.contents_main_like);
+        contents_like_btn = findViewById(R.id.contents_main_like_btn);
         summary_btn = findViewById(R.id.contents_main_open_summary_btn);
         first_episode_btn.setOnClickListener(this);
         contents_like_btn.setOnClickListener(this);
         summary_btn.setOnClickListener(this);
+
+        readingText.setText(""+getReadContentsCount());
 
         listView = findViewById(R.id.contents_main_list_works_list);
         adapter = new WorksListViewAdapter();
@@ -150,7 +153,7 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
                 JSONObject jsonObject = new JSONObject(response);
                 boolean exist = jsonObject.getBoolean("exist");
                 if (exist) {
-                    contents_like_btn.setBackgroundDrawable(ContextCompat.getDrawable(ContentsMainActivity.this, R.drawable.ic_favorite_red_24dp));
+                    contents_like_btn.setBackgroundDrawable(ContextCompat.getDrawable(ContentsMainActivity.this, R.drawable.pick_2));
                     is_like_clicked = true;
                 }
                 int count = jsonObject.getInt("count");
@@ -251,7 +254,7 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
                     } else {
                         is_like_clicked = true;
                         Toast.makeText(ContentsMainActivity.this, "관심목록에 담겼습니다.", Toast.LENGTH_SHORT).show();
-                        contents_like_btn.setBackgroundDrawable(ContextCompat.getDrawable(ContentsMainActivity.this, R.drawable.ic_favorite_red_24dp));
+                        contents_like_btn.setBackgroundDrawable(ContextCompat.getDrawable(ContentsMainActivity.this, R.drawable.pick_2));
                     }
                 } else {
                     Log.e("success check errmsg", jsonObject.getString("errmsg"));
@@ -280,7 +283,7 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
             case R.id.contents_main_title_bar_title:
                 finish();
                 break;
-            case R.id.contents_main_like:
+            case R.id.contents_main_like_btn:
                 // 타이틀바에 있는 좋아요 버튼을 누르면 해당 작품의 데이터베이스 테이블에 like 1 증가
                 ContentsLikeDBRequest contentsItemLikeDBRequest;
                 RequestQueue requestQueue = Volley.newRequestQueue(ContentsMainActivity.this);
@@ -310,5 +313,11 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
     public void putExtraData(Intent intent, int position) {
         itemList = adapter.getWorksListViewItems();
         intent.putExtra("position", position);
+        intent.putExtra("contents_pk", selected_contents_pk);
+    }
+
+    protected int getReadContentsCount() {
+        DBHelper dbHelper = new DBHelper(this, DBNames.CONTENTS_DB, null, 1);
+        return dbHelper.getReadContentsCount(selected_contents_pk);
     }
 }

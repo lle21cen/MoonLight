@@ -1,15 +1,25 @@
 package org.techtown.ideaconcert.MyPageDir;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONObject;
+import org.techtown.ideaconcert.ActivityCodes;
+import org.techtown.ideaconcert.ContentsMainDir.ContentsLikeDBRequest;
 import org.techtown.ideaconcert.R;
 
 import java.util.ArrayList;
@@ -17,20 +27,26 @@ import java.util.ArrayList;
 public class Fragment2RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private ArrayList<Fragment2RecyclerItem> items = new ArrayList<>();
+    private final String insertDeleteContentsLikeDataURL = ActivityCodes.DATABASE_IP + "/platform/InsertDeleteContentsLikeData";
+    private boolean is_like_clicked;
+    private int user_pk;
+
+    public Fragment2RecyclerAdapter(int user_pk) {
+        this.user_pk = user_pk;
+    }
 
     public static class Fragment2Holder extends RecyclerView.ViewHolder {
 
         ImageView thumbnail;
         TextView date_text, contents_name_text;
-        Button alarm;
+        Button pick;
 
         Fragment2Holder(View view) {
             super(view);
             thumbnail = view.findViewById(R.id.my_page_fragment2_thumbnail);
             date_text = view.findViewById(R.id.my_page_fragment2_date);
             contents_name_text = view.findViewById(R.id.my_page_fragment2_contents_name);
-            alarm = view.findViewById(R.id.my_page_fragment2_alarm);
-            alarm.setTag("unchecked");
+            pick = view.findViewById(R.id.my_page_fragment2_pick);
         }
     }
 
@@ -44,24 +60,62 @@ public class Fragment2RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         final Fragment2RecyclerAdapter.Fragment2Holder fragment2Holder = (Fragment2RecyclerAdapter.Fragment2Holder) holder;
         final Fragment2RecyclerItem item = items.get(position);
+        is_like_clicked = true;
 
         // fragment1Holder.thumbnail.setImageBitmap(); // 효과적인 thumbnail 설정 방법 알아오기
         fragment2Holder.date_text.setText(item.getDate());
         fragment2Holder.contents_name_text.setText(item.getContents_name());
-        fragment2Holder.alarm.setOnClickListener(new View.OnClickListener() {
+        fragment2Holder.pick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // 관심 작품 목록 데이터베이스에서 불러온 내용을 기반으로 알림 설정 여부를 체크, 해제 해야 하지만 다음에 ... 일단 보이는 기능만
-                if (fragment2Holder.alarm.getTag().equals("unchecked")) {
-                    fragment2Holder.alarm.setBackgroundDrawable(ContextCompat.getDrawable(view.getContext(), R.drawable.alarm_2));
-                    fragment2Holder.alarm.setTag("checked");
+                ContentsLikeDBRequest request;
+                RequestQueue queue = Volley.newRequestQueue(view.getContext());
+                SuccessCheckListener listener = new SuccessCheckListener(view.getContext(), fragment2Holder);
+                if (!is_like_clicked) {
+//                    fragment2Holder.pick.setBackgroundDrawable(ContextCompat.getDrawable(view.getContext(), R.drawable.pick_2));
+                    request = new ContentsLikeDBRequest(insertDeleteContentsLikeDataURL, listener, item.getContents_pk(), user_pk, 1);
                 }
                 else {
-                    fragment2Holder.alarm.setBackgroundDrawable(ContextCompat.getDrawable(view.getContext(), R.drawable.alarm_1));
-                    fragment2Holder.alarm.setTag("unchecked");
+//                    fragment2Holder.pick.setBackgroundDrawable(ContextCompat.getDrawable(view.getContext(), R.drawable.pick_1));
+                    request = new ContentsLikeDBRequest(insertDeleteContentsLikeDataURL, listener, item.getContents_pk(), user_pk, 2);
                 }
+                queue.add(request);
             }
         });
+    }
+
+    public class SuccessCheckListener implements Response.Listener<String> {
+        Context context;
+        Fragment2Holder fragment2Holder;
+
+        public SuccessCheckListener(Context context, Fragment2Holder fragment2Holder) {
+            this.context = context;
+            this.fragment2Holder = fragment2Holder;
+        }
+
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                boolean success = jsonObject.getBoolean("success");
+                if (success) {
+                    if (is_like_clicked) {
+                        is_like_clicked = false;
+                        Toast.makeText(context, "취소되었습니다.", Toast.LENGTH_SHORT).show();
+                        fragment2Holder.pick.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.pick_1));
+                    } else {
+                        is_like_clicked = true;
+                        Toast.makeText(context, "관심목록에 담겼습니다.", Toast.LENGTH_SHORT).show();
+                        fragment2Holder.pick.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.pick_2));
+                    }
+                } else {
+                    Log.e("success check errmsg", jsonObject.getString("errmsg"));
+                }
+            } catch (Exception e) {
+                Log.e("success check error", e.getMessage());
+            }
+
+        }
     }
 
     @Override

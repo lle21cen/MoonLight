@@ -1,6 +1,7 @@
 package org.techtown.ideaconcert.MyPageDir;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +13,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.techtown.ideaconcert.ContentsMainDir.ContentsMainActivity;
+import org.techtown.ideaconcert.ContentsMainDir.WorksListViewItem;
 import org.techtown.ideaconcert.R;
 
 import java.util.ArrayList;
@@ -50,7 +53,16 @@ public class Fragment1RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
             // fragment1Holder.thumbnail.setImageBitmap(); // 효과적인 thumbnail 설정 방법 알아오기
             fragment1Holder.date_text.setText(item.getDate());
             fragment1Holder.contents_name_text.setText(item.getContents_name());
-            fragment1Holder.contents_num.setText(item.getContents_pk());
+            fragment1Holder.contents_num.setText(item.getContents_num());
+
+            fragment1Holder.continue_layout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(view.getContext(), ContentsMainActivity.class);
+                    intent.putExtra("contents_pk", item.getContents_pk());
+                    view.getContext().startActivity(intent);
+                }
+            });
         }
 
         @Override
@@ -58,11 +70,12 @@ public class Fragment1RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
             return items.size();
         }
 
-        protected void addItem(Bitmap thumbnail, String date, String contents_name, String contents_pk) {
+        protected void addItem(Bitmap thumbnail, int contents_pk, String date, String contents_name, String contents_num) {
             Fragment1RecyclerItem item = new Fragment1RecyclerItem();
             item.setThumbnail(thumbnail);
             item.setDate(date);
             item.setContents_name(contents_name);
+            item.setContents_num(contents_num);
             item.setContents_pk(contents_pk);
             items.add(item);
         }

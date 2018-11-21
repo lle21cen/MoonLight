@@ -58,6 +58,7 @@ public class SettingsPreferenceFragment extends PreferenceFragment implements Pr
         String user_email = login_data.getString("userEmail", null);
         String login_method = login_data.getString("loginMethod", null);
         if (login_method != null) {
+            change_pw_pref.setEnabled(true);
             login_pref.setSummary(user_email);
             if (login_method.equals("Facebook")) {
                 login_pref.setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.facebook_small_icon));
@@ -68,6 +69,7 @@ public class SettingsPreferenceFragment extends PreferenceFragment implements Pr
             }
         } else {
             login_pref.setSummary("로그인이 필요합니다.");
+            change_pw_pref.setEnabled(false);
         }
 
         title_pref.setOnPreferenceClickListener(this);
@@ -155,7 +157,7 @@ public class SettingsPreferenceFragment extends PreferenceFragment implements Pr
                 intent = new Intent(getActivity(), TermsAndConditionActivity.class);
                 startActivity(intent);
                 break;
-            case "settings_change_pw" :
+            case "settings_change_pw":
                 UserInformation userInformation = (UserInformation) getActivity().getApplication();
                 String email = userInformation.getUserEmail();
                 String login_method = userInformation.getLogin_method();
@@ -172,12 +174,19 @@ public class SettingsPreferenceFragment extends PreferenceFragment implements Pr
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
-        snsLoginProcess();
+//        snsLoginProcess();
     }
 
     protected void snsLoginProcess() {
+        // 삭제 대기 중 2018-11-21 17:22
         // 1. SNS 로그인으로 얻어온 email이 데이터베이스에 존재하는지 확인한다.
         // 2. 존재한다면 user_pk를 얻어온다.
         // 3. 존재하지 않는다면 SNS 로그인으로 얻어온 이메일, 이름 정보를 이용하여 데이터베이스에 저장한다. 그 후에 user_pk를 가져온다.
@@ -206,7 +215,7 @@ public class SettingsPreferenceFragment extends PreferenceFragment implements Pr
                 String email = userInformation.getUserEmail();
                 String name = userInformation.getUser_name();
                 int pk = userInformation.getUser_pk();
-                Toast.makeText(getActivity(), "email= " + email + "name= " + name + "user_pk= " + pk + "role = " + role, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity(), "email= " + email + "name= " + name + "user_pk= " + pk + "role = " + role, Toast.LENGTH_SHORT).show();
                 /////////////////////////////////////////////////////////////////////////////////////
             } catch (Exception e) {
                 Log.e("sns sign in error", "" + e.getMessage());

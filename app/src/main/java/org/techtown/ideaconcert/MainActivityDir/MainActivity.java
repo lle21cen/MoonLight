@@ -30,6 +30,8 @@ import org.json.JSONObject;
 import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.MyPageDir.MyPageActivity;
 import org.techtown.ideaconcert.R;
+import org.techtown.ideaconcert.SQLiteDir.DBHelper;
+import org.techtown.ideaconcert.SQLiteDir.DBNames;
 import org.techtown.ideaconcert.SettingsDir.SettingsActivity;
 import org.techtown.ideaconcert.UserInformation;
 
@@ -188,13 +190,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     intent = new Intent(getApplicationContext(), SettingsActivity.class);
                     startActivity(intent);
                 } else {
-                    Intent intent;
-                    intent = new Intent(getApplicationContext(), MyPageActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), MyPageActivity.class);
                     intent.putExtra("user_pk", info.getUser_pk());
                     startActivity(intent);
                 }
             }
         });
+        ImageView searchButton = findViewById(R.id.main_title_search_btn);
+        searchButton.setOnClickListener(this);
 
         // 이미 저장된 사용자 로그인 정보가 있는지 확인
         loginData = getSharedPreferences("loginData", MODE_PRIVATE);
@@ -203,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 광고 배너 페이저 초기화
         bannerPager = findViewById(R.id.main_pager);
         ConstraintLayout.LayoutParams viewPagerParams = new ConstraintLayout.LayoutParams(deviceWidth, (int)Math.round(deviceWidth / 1.7));
-        viewPagerParams.topToBottom = R.id.main_toolbar;
+        viewPagerParams.topToBottom = R.id.main_title_bar;
         bannerPager.setLayoutParams(viewPagerParams);
 
         // 상단 광고 배너(ViewPager)에 넣을 이미지가 몇개인지 개수를 알아와서 그 개수로 초기화
@@ -586,6 +589,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()) {
             case R.id.main_footer_up_btn:
                 mainScrollView.fullScroll(ScrollView.FOCUS_UP);
+                break;
+            case R.id.main_title_search_btn:
+                // 디버깅용 코드들 -- 삭제 필요
+                DBHelper dbHelper = new DBHelper(this, DBNames.CONTENTS_DB, null, 1);
+                dbHelper.dropTable("recent_view"); // 디버깅을 위한 테이블 드랍
+                dbHelper.createRecentViewTable(); // 디버깅을 위한 테이블 생성
+                break;
         }
     }
 

@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -31,13 +32,31 @@ public class Fragment1RecentViewWorks extends Fragment {
         recyclerView.setLayoutManager(recyclerViewManager);
 
         adapter = new Fragment1RecyclerAdapter();
-        DBHelper dbHelper = new DBHelper(getActivity(), DBNames.RECENT_VIEW_DB, null, 1);
-        ArrayList<RecentViewPair> datas = dbHelper.getAllRecentViewData();
+        DBHelper dbHelper = new DBHelper(getActivity(), DBNames.CONTENTS_DB, null, 1);
+        ArrayList<RecentViewPair> data = dbHelper.getAllRecentViewData();
 
-        for (int i = 0; i < datas.size(); i++) {
-            adapter.addItem(null, datas.get(i).getDate(), datas.get(i).getContents_name(), datas.get(i).getContents_num());
+        for (int i = 0; i < data.size(); i++) {
+            adapter.addItem(null, data.get(i).getContents_pk(), data.get(i).getDate(), data.get(i).getContents_name(), data.get(i).getContents_num());
         }
         recyclerView.setAdapter(adapter);
+        recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+                if (e.getAction() == MotionEvent.ACTION_UP) {
+
+                }
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+            }
+        });
         return view;
     }
 }

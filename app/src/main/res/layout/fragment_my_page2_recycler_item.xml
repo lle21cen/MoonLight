@@ -36,13 +36,11 @@
     </RelativeLayout>
 
     <Button
-        android:id="@+id/my_page_fragment2_alarm"
+        android:id="@+id/my_page_fragment2_pick"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_alignParentRight="true"
         android:layout_centerInParent="true"
-        android:background="@drawable/alarm_1">
-
-    </Button>
+        android:background="@drawable/pick_2"/>
 
 </RelativeLayout>

@@ -27,7 +27,7 @@ public class NoticeActivity extends AppCompatActivity implements View.OnClickLis
 
     RecyclerView noticeRecyclerView;
     NoticeRecyclerViewAdapter adapter;
-    static final String GetBoardURL = "http://lle21cen.cafe24.com/GetBoard.php";
+    static final String GetBoardURL = ActivityCodes.DATABASE_IP + "/platform/GetBoard";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +74,6 @@ public class NoticeActivity extends AppCompatActivity implements View.OnClickLis
                     }
                     noticeRecyclerView.setAdapter(adapter);
                 }
-
             } catch (JSONException e) {
                 Log.e("공지사항리스너", e.getMessage());
             }

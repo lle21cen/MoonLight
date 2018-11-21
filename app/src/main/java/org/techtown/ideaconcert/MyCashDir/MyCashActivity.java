@@ -25,7 +25,7 @@ public class MyCashActivity extends AppCompatActivity implements View.OnClickLis
         cashChargeFragment = new CashChargeFragment();
         getSupportFragmentManager().beginTransaction().add(R.id.cash_container, cashChargeFragment).commit();
 
-        Button back_btn = findViewById(R.id.cash_back);
+        Button back_btn = findViewById(R.id.cash_back_btn);
         back_btn.setOnClickListener(this);
 
         cash_charge_btn = findViewById(R.id.cash_cash_charge_btn);
@@ -53,7 +53,7 @@ public class MyCashActivity extends AppCompatActivity implements View.OnClickLis
                 getSupportFragmentManager().beginTransaction().replace(R.id.cash_container, cashHistoryFragment).commit();
                 break;
 
-            case R.id.cash_back :
+            case R.id.cash_back_btn :
                 setResult(ActivityCodes.MYCASH_SUCCESS);
                 finish();
                 break;

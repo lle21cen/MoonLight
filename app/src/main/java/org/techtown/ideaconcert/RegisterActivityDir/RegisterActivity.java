@@ -1,16 +1,21 @@
 package org.techtown.ideaconcert.RegisterActivityDir;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -25,6 +30,7 @@ import org.json.JSONObject;
 import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.DeleteRequest;
 import org.techtown.ideaconcert.ForceQuitManageService;
+import org.techtown.ideaconcert.MainActivityDir.MainActivity;
 import org.techtown.ideaconcert.R;
 import org.techtown.ideaconcert.ShowProgressDialog;
 
@@ -111,18 +117,45 @@ public class RegisterActivity extends AppCompatActivity {
                 if (exist) {
                     builder.setMessage("이메일이 이미 사용중입니다.").create().show();
                 } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                    builder.setMessage("회원가입에 성공했습니다. 이메일을 확인해 주세요.").setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            setResult(ActivityCodes.REGISTER_SUCCESS);
-                            finish();
-                        }
-                    }).show();
+                    CustomRegisterDialog dialog = new CustomRegisterDialog(RegisterActivity.this);
+                    dialog.show();
                 }
             } catch (Exception e) {
                 Log.e("Email check error", e.getMessage());
             }
         }
     };
+
+    public class CustomRegisterDialog extends Dialog {
+
+        public CustomRegisterDialog(@NonNull Context context) {
+            super(context);
+        }
+
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            requestWindowFeature(Window.FEATURE_NO_TITLE); //타이틀 바 삭제
+            setContentView(R.layout.sign_up_dialog_layout);
+
+            Button toMainButton = findViewById(R.id.sign_up_dialog_to_main);
+            Button toLoginButton =findViewById(R.id.sign_up_dialog_to_login);
+
+            toMainButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                }
+            });
+
+            toLoginButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
+        }
+    }
 }

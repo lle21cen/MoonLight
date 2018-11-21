@@ -4,42 +4,38 @@
     android:background="#ffffff"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/cash_toolbar"
+    <LinearLayout
+        android:id="@+id/cash_title_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="50dp"
+        android:background="#ffffff"
+        android:paddingLeft="15dp"
+        android:orientation="horizontal">
 
-        <RelativeLayout
-            android:id="@+id/my_page_title_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/cash_back_btn"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_gravity="center"
+            android:background="@drawable/back" />
 
-            <Button
-                android:id="@+id/cash_back"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center"
-                android:background="@drawable/ic_keyboard_arrow_left_black_24dp" />
+        <TextView
+            android:id="@+id/cash_title_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:text="내 캐시"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/cash_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@id/cash_back"
-                android:text="내 캐시"
-                android:textColor="#000000"
-                android:textSize="17sp" />
-        </RelativeLayout>
+    </LinearLayout>
 
-    </android.support.v7.widget.Toolbar>
 
     <View
         android:id="@+id/cash_toolbar_underline"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@+id/cash_toolbar"
+        android:layout_below="@+id/cash_title_layout"
         android:background="#c0c0c0" />
 
     <LinearLayout
