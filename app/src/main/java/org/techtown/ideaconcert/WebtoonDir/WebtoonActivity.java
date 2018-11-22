@@ -21,6 +21,7 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.CommentDir.CommentActivity;
@@ -44,8 +45,9 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
     private final String getContentsItemImageURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsItemImage";
     private final String getContentsLIkeCountURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsLikeCount";
     private final String insertDeleteContentsItemLikeDataURL = ActivityCodes.DATABASE_IP + "/platform/InsertDeleteContentsItemLikeData";
+    private final String PlusViewCountURL = "http://lle21cen.cafe24.com/PlusViewCount.php";
 
-    int user_pk, item_pk, item_comments_count, contents_num, contents_pk;
+    int user_pk, contents_item_pk, item_comments_count, contents_num, contents_pk;
     String item_title;
     int item_position;
 
@@ -79,7 +81,7 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
         items = ContentsMainActivity.itemList;
         Intent intent = getIntent();
         item_position = intent.getIntExtra("position", 0); // 0일 경우 오류 처리 - 귀찮
-        item_pk = items.get(item_position).getContentsItemPk(); // 0일 경우 오류 처리 - 귀찮
+        contents_item_pk = items.get(item_position).getContentsItemPk(); // 0일 경우 오류 처리 - 귀찮
         item_title = items.get(item_position).getWorksTitle();
         item_comments_count = items.get(item_position).getCommentCount();
         contents_num = items.get(item_position).getContentsNum();
@@ -98,7 +100,7 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
         contents_listView.setAdapter(adapter); // 숫자를 누르면 작품 회차 목록이 나오도록 하는 listview와 adapter
 
         ContentsItemImageRequest contentsItemImageRequest
-                = new ContentsItemImageRequest(getContentsItemImageURL, getItemImageListener, item_pk);
+                = new ContentsItemImageRequest(getContentsItemImageURL, getItemImageListener, contents_item_pk);
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(contentsItemImageRequest);
 
@@ -144,11 +146,41 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
         if (user_pk == 0)
             user_pk = 1;
 
-        ContentsItemLikeDBRequest contentsItemLikeDBRequest = new ContentsItemLikeDBRequest(getContentsLIkeCountURL, getContentsItemLikeCountListener, item_pk, user_pk, 2);
+        ContentsItemLikeDBRequest contentsItemLikeDBRequest = new ContentsItemLikeDBRequest(getContentsLIkeCountURL, getContentsItemLikeCountListener, contents_item_pk, user_pk, 2);
         requestQueue.add(contentsItemLikeDBRequest);
-
         addRecentViewDataToSqlite();
+
+        // 웹툰 뷰 카운트 증가 시키기
+        plusViewCount();
     }
+
+    private void plusViewCount() {
+        PlusViewCountRequest request = new PlusViewCountRequest(PlusViewCountURL, plusViewCountListener, contents_item_pk);
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(request);
+    }
+
+    private Response.Listener<String> plusViewCountListener = new Response.Listener<String>() {
+        // 사용자가 웹튼을 보려고 할 경우 웹툰의 뷰카운트를 1증가 시키는 리스너
+        // 실패시 로그에 오류 메시지를 출력하고 종료
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                boolean success = jsonObject.getBoolean("success");
+                if (success) {
+
+                }
+                else {
+                    Log.e("뷰카운트증가실패", ""+jsonObject.getString("errmsg"));
+                }
+            } catch (JSONException je) {
+                Log.e("뷰카운트증가리스너 1", ""+je.getMessage());
+            } catch (Exception e) {
+                Log.e("뷰카운트증가리스너 2", ""+e.getMessage());
+            }
+        }
+    };
 
     private Response.Listener<String> getContentsItemLikeCountListener = new Response.Listener<String>() {
         @Override
@@ -265,10 +297,10 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
                 RequestQueue requestQueue = Volley.newRequestQueue(this);
                 if (!is_like_clicked) {
                     insertDeleteContentsLikeRequest
-                            = new InsertDeleteContentsLikeRequest(insertDeleteContentsItemLikeDataURL, successCheckListener, item_pk, user_pk, 1); // 1 : INSERT
+                            = new InsertDeleteContentsLikeRequest(insertDeleteContentsItemLikeDataURL, successCheckListener, contents_item_pk, user_pk, 1); // 1 : INSERT
                 } else {
                     insertDeleteContentsLikeRequest
-                            = new InsertDeleteContentsLikeRequest(insertDeleteContentsItemLikeDataURL, successCheckListener, item_pk, user_pk, 2); // 2 : DELETE
+                            = new InsertDeleteContentsLikeRequest(insertDeleteContentsItemLikeDataURL, successCheckListener, contents_item_pk, user_pk, 2); // 2 : DELETE
                 }
                 requestQueue.add(insertDeleteContentsLikeRequest);
                 break;
@@ -276,7 +308,7 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.webtoon_comments_btn:
             case R.id.webtoon_comments_count:
                 Intent intent = new Intent(WebtoonActivity.this, CommentActivity.class);
-                intent.putExtra("item_pk", item_pk);
+                intent.putExtra("item_pk", contents_item_pk);
                 intent.putExtra("item_title", item_title);
                 intent.putExtra("contents_num", contents_num);
                 startActivityForResult(intent, ActivityCodes.COMMENT_REQUEST);
@@ -337,6 +369,6 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
         SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd kk:mm"); // 초단위로 저장하여 가장 최근에 본 작품을 갱신.
         DBHelper dbHelper = new DBHelper(this, DBNames.CONTENTS_DB, null, 1);
 
-        dbHelper.addOrUpdateRecentViewData(contents_pk, item_title, date.format(today), String.valueOf(today), String.valueOf(contents_num));
+        dbHelper.addOrUpdateRecentViewData(contents_pk, item_title, date.format(today), String.valueOf(today), contents_num);
     }
 }

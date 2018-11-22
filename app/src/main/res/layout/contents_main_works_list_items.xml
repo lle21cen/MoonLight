@@ -26,8 +26,8 @@
         android:layout_width="100dp"
         android:layout_height="20dp"
         android:layout_marginTop="7dp"
-        android:visibility="gone"
-        android:layout_toLeftOf="@+id/contents_main_layout2" />
+        android:layout_toLeftOf="@+id/contents_main_layout2"
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/contents_main__layout1"
@@ -72,7 +72,7 @@
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_gravity="right"
-                android:src="@drawable/ic_eye_black_24dp" />
+                android:src="@drawable/view" />
 
             <TextView
                 android:id="@+id/contents_main_item_watch"
@@ -108,14 +108,26 @@
         android:layout_alignParentRight="true"
         android:background="#786aaa">
 
-        <TextView
-            android:id="@+id/contents_main_item_cash"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:drawableTop="@drawable/coin"
-            android:text="0"
-            android:textAlignment="center"
-            android:textColor="#ffffff" />
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_gravity="center"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/coin" />
+
+            <TextView
+                android:layout_gravity="center"
+                android:id="@+id/contents_main_item_cash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textAlignment="center"
+                android:textColor="#ffffff" />
+        </LinearLayout>
     </RelativeLayout>
 </RelativeLayout>

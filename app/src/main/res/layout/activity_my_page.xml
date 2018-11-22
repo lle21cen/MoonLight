@@ -72,25 +72,10 @@
             android:background="@drawable/setting" />
     </RelativeLayout>
 
-    <Button
-        android:id="@+id/my_page_management_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/my_page_title_layout"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/black_stroke"
-        android:text="내 작품 관리"
-        android:textColor="#8170dc"
-        android:visibility="gone" />
-
     <android.support.design.widget.TabLayout
         android:id="@+id/my_page_tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/my_page_management_btn"
         android:minHeight="?attr/actionBarSize"
         app:tabGravity="center"
         app:tabIndicatorColor="#e90005"
@@ -101,5 +86,21 @@
         android:id="@+id/my_page_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@id/my_page_management_btn"
         android:layout_below="@id/my_page_tab_layout" />
+
+    <Button
+        android:id="@+id/my_page_management_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/black_stroke"
+        android:text="내 작품 관리"
+        android:textColor="#8170dc"
+        android:visibility="visible" />
+
 </RelativeLayout>

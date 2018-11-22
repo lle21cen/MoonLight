@@ -43,14 +43,16 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
     // 이미지만 따로 동적으로 설정하도록 바꾸어서 컨텐츠 로딩에 걸리는 시간을 단축할 필요가 있음
     // 변수명 통일 시키기 ... 귀찮
 
-    private final String getContentsItemURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsItem";
+//    private final String getContentsItemURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsItem";
+    private final String getContentsItemURL = "http://lle21cen.cafe24.com/GetContentsItem.php";
+
     private final String getContentsLIkeCountURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsLikeCount";
     private final String insertDeleteContentsLikeDataURL = ActivityCodes.DATABASE_IP + "/platform/InsertDeleteContentsLikeData";
 
     private int selected_contents_pk;
     private boolean is_like_clicked = false, is_summary_opened = false;
 
-    private Button first_episode_btn, contents_like_btn, summary_btn;
+    private Button first_episode_btn, contents_like_btn, summary_btn, follow_up_btn;
     private ListView listView;
     private TextView totalText, readingText, cashText, titlebar_title, info_title, info_writer, info_painter,
             info_view_count, contents_like_count, summary_text, list_total_txt;
@@ -60,6 +62,23 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
 
     public static ArrayList<WorksListViewItem> itemList; // WebtonActivity에서도 사용하기 위해 public static으로 선언
     private int user_pk;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ActivityCodes.WEBTOON_REQUEST) {
+            Intent intent = new Intent(ContentsMainActivity.this, ContentsMainActivity.class);
+            intent.putExtra("contents_pk", selected_contents_pk);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,11 +111,11 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
         first_episode_btn = findViewById(R.id.contents_main_first_episode); // 첫화보기 버튼
         contents_like_btn = findViewById(R.id.contents_main_like_btn);
         summary_btn = findViewById(R.id.contents_main_open_summary_btn);
+        follow_up_btn = findViewById(R.id.contents_main_follow_up_button);
         first_episode_btn.setOnClickListener(this);
         contents_like_btn.setOnClickListener(this);
         summary_btn.setOnClickListener(this);
-
-        readingText.setText(""+getReadContentsCount());
+        follow_up_btn.setOnClickListener(this);
 
         listView = findViewById(R.id.contents_main_list_works_list);
         adapter = new WorksListViewAdapter();
@@ -197,9 +216,9 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
                     if (!jsonResponse.getBoolean("result_exist")) return;
 
                     JSONArray result = jsonResponse.getJSONArray("result");
-                    int num_category_contents_data = jsonResponse.getInt("num_result");
+                    int num_result = jsonResponse.getInt("num_result");
 
-                    for (int i = 0; i < num_category_contents_data; i++) {
+                    for (int i = 0; i < num_result; i++) {
                         // 데이터베이스에 들어있는 콘텐츠의 수만큼 for문을 돌려 layout에 image추가
                         try {
                             JSONObject temp = result.getJSONObject(i);
@@ -229,8 +248,8 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
                     listView.setAdapter(adapter);
 
                     // 전체 작품 수와 열람 작품 수, 캐시 보유량 textview를 설정.
-                    totalText.setText(String.valueOf(num_category_contents_data));
-                    list_total_txt.setText("전체 (" + num_category_contents_data + "화)");
+                    totalText.setText(String.valueOf(num_result));
+                    list_total_txt.setText("전체 (" + num_result + "화)");
                 } else {
                     Log.e("No Data", "데이터가 없습니다.");
                 }
@@ -250,10 +269,12 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
                     if (is_like_clicked) {
                         is_like_clicked = false;
                         Toast.makeText(ContentsMainActivity.this, "취소되었습니다.", Toast.LENGTH_SHORT).show();
+                        contents_like_count.setText(String.valueOf(Integer.parseInt(contents_like_count.getText().toString())-1));
                         contents_like_btn.setBackgroundDrawable(ContextCompat.getDrawable(ContentsMainActivity.this, R.drawable.ic_favorite_border_black_24dp));
                     } else {
                         is_like_clicked = true;
                         Toast.makeText(ContentsMainActivity.this, "관심목록에 담겼습니다.", Toast.LENGTH_SHORT).show();
+                        contents_like_count.setText(String.valueOf(Integer.parseInt(contents_like_count.getText().toString())+1));
                         contents_like_btn.setBackgroundDrawable(ContextCompat.getDrawable(ContentsMainActivity.this, R.drawable.pick_2));
                     }
                 } else {
@@ -267,15 +288,17 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onClick(View view) {
+        ArrayList<WorksListViewItem> items;
+        int position = 0;
+        Intent intent;
         switch (view.getId()) {
             case R.id.contents_main_first_episode:
-                ArrayList<WorksListViewItem> items = adapter.getWorksListViewItems();
-                int position;
+                items = adapter.getWorksListViewItems();
                 if (sortSpinner.getSelectedItemPosition() == 0)
                     position = items.size() - 1;
                 else
                     position = 0;
-                Intent intent = new Intent(ContentsMainActivity.this, WebtoonActivity.class);
+                intent = new Intent(ContentsMainActivity.this, WebtoonActivity.class);
                 putExtraData(intent, position);
                 startActivityForResult(intent, ActivityCodes.WEBTOON_REQUEST);
                 break;
@@ -307,6 +330,19 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
                     summary_btn.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.ic_keyboard_arrow_up_black_24dp));
                 }
                 break;
+            case R.id.contents_main_follow_up_button :
+                int last_view_contents_num = getLastViewContentsNum();
+                items = adapter.getWorksListViewItems();
+                for (int i=0; i<items.size(); i++) {
+                    if (items.get(i).getContentsNum() == last_view_contents_num) {
+                        position = i;
+                        break;
+                    }
+                }
+                intent = new Intent(ContentsMainActivity.this, WebtoonActivity.class);
+                putExtraData(intent, position);
+                startActivityForResult(intent, ActivityCodes.WEBTOON_REQUEST);
+                break;
         }
     }
 
@@ -319,5 +355,10 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
     protected int getReadContentsCount() {
         DBHelper dbHelper = new DBHelper(this, DBNames.CONTENTS_DB, null, 1);
         return dbHelper.getReadContentsCount(selected_contents_pk);
+    }
+
+    protected int getLastViewContentsNum() {
+        DBHelper dbHelper = new DBHelper(this, DBNames.CONTENTS_DB, null, 1);
+        return dbHelper.getLastViewContentsNum(selected_contents_pk);
     }
 }

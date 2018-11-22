@@ -38,10 +38,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        final TextView toRegistActivity = findViewById(R.id.login_regist_btn);
+        final TextView toRegisterActivity = findViewById(R.id.login_regist_btn);
         final Button backBtn = findViewById(R.id.login_back_btn);
 
-        toRegistActivity.setOnClickListener(this);
+        toRegisterActivity.setOnClickListener(this);
         backBtn.setOnClickListener(this);
 
         // 인터넷 연결 상태 확인하는 코드 추가하기.

@@ -4,9 +4,9 @@ public class RecentViewPair {
     private int contents_pk;
     private String contents_name;
     private String date;
-    private String contents_num;
+    private int contents_num;
 
-    public RecentViewPair(int contents_pk, String contents_name, String date, String contents_num) {
+    public RecentViewPair(int contents_pk, String contents_name, String date, int contents_num) {
         this.contents_pk = contents_pk;
         this.contents_name = contents_name;
         this.date = date;
@@ -25,7 +25,7 @@ public class RecentViewPair {
         return date;
     }
 
-    public String getContents_num() {
+    public int getContents_num() {
         return contents_num;
     }
 }

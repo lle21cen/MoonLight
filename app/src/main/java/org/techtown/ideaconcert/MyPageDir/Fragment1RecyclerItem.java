@@ -4,8 +4,8 @@ import android.graphics.Bitmap;
 
 public class Fragment1RecyclerItem {
     private Bitmap thumbnail;
-    private String date, contents_name, contents_num;
-    private int contents_pk;
+    private String date, contents_name;
+    private int contents_pk, contents_num;
 
     public Bitmap getThumbnail() {
         return thumbnail;
@@ -31,11 +31,11 @@ public class Fragment1RecyclerItem {
         this.contents_name = contents_name;
     }
 
-    public String getContents_num() {
+    public int getContents_num() {
         return contents_num;
     }
 
-    public void setContents_num(String contents_num) {
+    public void setContents_num(int contents_num) {
         this.contents_num = contents_num;
     }
 

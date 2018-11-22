@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -36,6 +37,9 @@ public class MyPageActivity extends AppCompatActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_page);
+
+        userInformation = (UserInformation) getApplication();
+        Toast.makeText(this, "role = " + userInformation.getRole(), Toast.LENGTH_SHORT).show();
 
         Button back_btn = findViewById(R.id.my_page_back);
         back_btn.setOnClickListener(this);
@@ -131,7 +135,6 @@ public class MyPageActivity extends AppCompatActivity implements View.OnClickLis
         // 1. SNS 로그인으로 얻어온 email이 데이터베이스에 존재하는지 확인한다.
         // 2. 존재한다면 user_pk를 얻어온다.
         // 3. 존재하지 않는다면 SNS 로그인으로 얻어온 이메일, 이름 정보를 이용하여 데이터베이스에 저장한다. 그 후에 user_pk를 가져온다.
-        userInformation = (UserInformation) getApplication();
         String email = userInformation.getUserEmail();
         String name = userInformation.getUser_name();
         String login_method = userInformation.getLogin_method();

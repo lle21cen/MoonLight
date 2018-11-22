@@ -63,7 +63,8 @@
         <activity android:name=".ConsultDir.ConsultActivity" />
         <activity android:name=".noticeDir.NoticeActivity" />
         <activity android:name=".SettingsDir.TermsAndConditionActivity" />
-        <activity android:name=".FAQDir.FAQActivity"></activity>
+        <activity android:name=".FAQDir.FAQActivity" />
+        <activity android:name=".ManageMyWorksDir.ManageMyWorksActivity"></activity>
     </application>
 
 </manifest>
