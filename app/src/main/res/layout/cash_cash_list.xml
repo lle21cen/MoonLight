@@ -10,7 +10,7 @@
         android:orientation="vertical">
 
         <RelativeLayout
-            android:background="@drawable/round_border_black_no_solid"
+            android:background="@drawable/round_border_gray_no_solid"
             android:id="@+id/cash_1_layout"
             android:layout_width="150dp"
             android:layout_height="30dp">
@@ -37,7 +37,7 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:background="@drawable/round_border_black_no_solid"
+            android:background="@drawable/round_border_gray_no_solid"
             android:id="@+id/cash_50_layout"
             android:layout_marginTop="5dp"
             android:layout_width="150dp"
@@ -65,7 +65,7 @@
 
         </RelativeLayout>
         <RelativeLayout
-            android:background="@drawable/round_border_black_no_solid"
+            android:background="@drawable/round_border_gray_no_solid"
             android:id="@+id/cash_200_layout"
             android:layout_marginTop="5dp"
             android:layout_width="150dp"
@@ -93,7 +93,7 @@
 
         </RelativeLayout>
         <RelativeLayout
-            android:background="@drawable/round_border_black_no_solid"
+            android:background="@drawable/round_border_gray_no_solid"
             android:id="@+id/cash_1000_layout"
             android:layout_width="150dp"
             android:layout_marginTop="5dp"
@@ -130,7 +130,7 @@
         android:orientation="vertical">
 
         <RelativeLayout
-            android:background="@drawable/round_border_black_no_solid"
+            android:background="@drawable/round_border_gray_no_solid"
             android:id="@+id/cash_10_layout"
             android:layout_width="150dp"
             android:layout_height="30dp">
@@ -157,7 +157,7 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:background="@drawable/round_border_black_no_solid"
+            android:background="@drawable/round_border_gray_no_solid"
             android:id="@+id/cash_100_layout"
             android:layout_marginTop="5dp"
             android:layout_width="150dp"
@@ -185,7 +185,7 @@
 
         </RelativeLayout>
         <RelativeLayout
-            android:background="@drawable/round_border_black_no_solid"
+            android:background="@drawable/round_border_gray_no_solid"
             android:id="@+id/cash_500_layout"
             android:layout_marginTop="5dp"
             android:layout_width="150dp"

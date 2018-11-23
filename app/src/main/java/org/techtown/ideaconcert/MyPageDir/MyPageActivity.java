@@ -20,6 +20,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONObject;
 import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.DatabaseRequest;
+import org.techtown.ideaconcert.ManageMyWorksDir.ManageMyWorksActivity;
 import org.techtown.ideaconcert.MyCashDir.MyCashActivity;
 import org.techtown.ideaconcert.R;
 import org.techtown.ideaconcert.SettingsDir.SettingsActivity;
@@ -39,7 +40,7 @@ public class MyPageActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_my_page);
 
         userInformation = (UserInformation) getApplication();
-        Toast.makeText(this, "role = " + userInformation.getRole(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "role = " + userInformation.getRole(), Toast.LENGTH_SHORT).show();
 
         Button back_btn = findViewById(R.id.my_page_back);
         back_btn.setOnClickListener(this);
@@ -67,7 +68,6 @@ public class MyPageActivity extends AppCompatActivity implements View.OnClickLis
         TabPagerAdapter pagerAdapter = new TabPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(pagerAdapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -87,6 +87,19 @@ public class MyPageActivity extends AppCompatActivity implements View.OnClickLis
 
         final Button settings_btn = findViewById(R.id.my_page_title_setting_btn);
         settings_btn.setOnClickListener(this);
+
+        // 현재 테스트를 위해 기본으로 작가 사용자라고 가정
+        setAuthorMode();
+//        if (userInformation.getRole() == ActivityCodes.ROLE_AUTHOR) {
+//            // 사용자가 작가일 경우 내 작품 관리 버튼 VISIBLE
+//            setAuthorMode();
+//        }
+    }
+
+    protected void setAuthorMode() {
+        Button managementButton = findViewById(R.id.my_page_management_btn);
+        managementButton.setVisibility(View.VISIBLE);
+        managementButton.setOnClickListener(this);
     }
 
     @Override
@@ -106,6 +119,11 @@ public class MyPageActivity extends AppCompatActivity implements View.OnClickLis
             case R.id.my_page_my_cash_img:
                 intent = new Intent(this, MyCashActivity.class);
                 startActivityForResult(intent, ActivityCodes.MYCASH_REQUEST);
+                break;
+
+            case R.id.my_page_management_btn :
+                intent = new Intent(this, ManageMyWorksActivity.class);
+                startActivityForResult(intent, ActivityCodes.MANAGE_MY_WORKS_REQUEST);
                 break;
         }
     }

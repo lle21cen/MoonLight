@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/manage_underline2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/manage_inquiry_button"
+        android:layout_marginTop="10dp"
+        android:background="#c0c0c0" />
+
+    <LinearLayout
+        android:id="@+id/manage_selected_date_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/manage_underline2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/manage_month_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="2018년 10월"
+            android:textColor="#000000" />
+
+        <TextView
+            android:id="@+id/manage_month_period_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="2018/10/01 - 2018/10/31"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/manage_underline3"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/manage_selected_date_layout"
+        android:background="#c0c0c0" />
+
+    <LinearLayout
+        android:id="@+id/manage_profit_category_layout"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:layout_below="@id/manage_underline3"
+        android:background="#efefef"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="타이틀"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="12sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="조회수"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="12sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="판매 캐시"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="12sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="판매 수익"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/manage_profit_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/manage_profit_category_layout"
+        android:orientation="vertical" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/manage_profit_layout"
+        android:background="#efefef"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="당월 수익 합계"
+            android:textAlignment="center"
+            android:textColor="#000000" />
+
+        <TextView
+            android:id="@+id/manage_dummy_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text=""
+            android:textAlignment="center"
+            android:textColor="#000000" />
+
+        <TextView
+            android:id="@+id/manage_cash_sum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text=" 캐시"
+            android:textAlignment="center"
+            android:textColor="#000000" />
+
+
+        <TextView
+            android:id="@+id/manage_won_sum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text=" 원"
+            android:textAlignment="center"
+            android:textColor="#000000" />
+
+    </LinearLayout>
+</RelativeLayout>

@@ -32,7 +32,7 @@ public class Fragment1RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         Fragment1Holder(View view) {
             super(view);
             thumbnail = view.findViewById(R.id.my_page_fragment1_thumbnail);
-            date_text = view.findViewById(R.id.my_page_fragment1_date);
+            date_text = view.findViewById(R.id.my_page_fragment1_date );
             contents_name_text = view.findViewById(R.id.my_page_fragment1_contents_name);
             contents_num = view.findViewById(R.id.my_page_fragment1_contents_num);
             continue_layout = view.findViewById(R.id.my_page_fragment1_continue_layout);
