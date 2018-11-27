@@ -13,7 +13,7 @@
         android:layout_weight="1"
         android:textSize="10sp"
         android:text="용비불패(웹툰무비)"
-        android:gravity="right"
+        android:gravity="center"
         />
 
     <TextView
@@ -23,7 +23,7 @@
         android:textSize="10sp"
         android:layout_weight="1"
         android:text="test"
-        android:gravity="right" />
+        android:gravity="center" />
 
     <TextView
         android:id="@+id/manage_profit_selling_cash"
@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="test"
-        android:gravity="right" />
+        android:gravity="center" />
 
     <TextView
         android:id="@+id/manage_profit_selling_profit"
@@ -41,5 +41,5 @@
         android:textSize="10sp"
         android:layout_weight="1"
         android:text="test"
-        android:gravity="right" />
+        android:gravity="center" />
 </LinearLayout>

@@ -27,6 +27,7 @@ public class Fragment1ProfitLayout extends RelativeLayout {
 
     int currentYear, whatMonth, endDayOfMonth, user_pk;
     LinearLayout profitLayout;
+    TextView cashSumTextView, profitSumTextView;
 
     public Fragment1ProfitLayout(Context context, int currentYear, int whatMonth, int user_pk) {
         super(context);
@@ -47,6 +48,9 @@ public class Fragment1ProfitLayout extends RelativeLayout {
     private void init(Context context) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.myworks_fragment1_month_data_layout, this, true);
+
+        cashSumTextView = view.findViewById(R.id.manage_cash_sum);
+        profitSumTextView = view.findViewById(R.id.manage_profit_sum);
 
         TextView monthText = view.findViewById(R.id.manage_month_text);
         monthText.setText(currentYear + "년 " + whatMonth + "월");
@@ -73,6 +77,7 @@ public class Fragment1ProfitLayout extends RelativeLayout {
                 if (exist) {
                     int num_result = jsonObject.getInt("num_result");
                     JSONArray result = jsonObject.getJSONArray("result");
+                    int cashSum = 0, profitSum = 0;
                     for (int i = 0; i < num_result; i++) {
                         JSONObject temp = result.getJSONObject(i);
 
@@ -82,9 +87,14 @@ public class Fragment1ProfitLayout extends RelativeLayout {
                         int cash = temp.getInt("cash");
                         int profit = temp.getInt("profit");
 
+                        cashSum += cash;
+                        profitSum += profit;
+
                         Fragment1ProfitLayoutItem profitItemLayout = new Fragment1ProfitLayoutItem(getContext(), contents_name, view_count, cash, profit);
                         profitLayout.addView(profitItemLayout);
                     }
+                    cashSumTextView.setText(cashSum + "캐시");
+                    profitSumTextView.setText(profitSum + "원");
                 } else {
 //                    int user_pk = jsonObject.getInt("user_pk");
 //                    int month = jsonObject.getInt("month");

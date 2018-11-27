@@ -55,7 +55,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="타이틀"
@@ -64,7 +64,7 @@
             android:textSize="12sp" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="조회수"
@@ -73,7 +73,7 @@
             android:textSize="12sp" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="판매 캐시"
@@ -82,7 +82,7 @@
             android:textSize="12sp" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="판매 수익"
@@ -128,17 +128,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text=" 캐시"
+            android:text="0캐시"
             android:textAlignment="center"
             android:textColor="#000000" />
 
 
         <TextView
-            android:id="@+id/manage_won_sum"
+            android:id="@+id/manage_profit_sum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text=" 원"
+            android:text="0원"
             android:textAlignment="center"
             android:textColor="#000000" />
 

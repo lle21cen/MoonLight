@@ -24,23 +24,24 @@
                     android:id="@+id/calculate_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="11월 정산금액"
+                    android:text="정산금액"
                     android:textColor="#ffffff"
                     android:textSize="12sp" />
 
                 <TextView
-                    android:id="@+id/calculate_total_cash"
+                    android:id="@+id/calculate_total_amount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="5,200,00원"
+                    android:text="0"
                     android:textColor="#ffffff"
                     android:textSize="25sp" />
 
                 <TextView
+                    android:id="@+id/calculate_summary_period"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="정산대상기간:2018/10/01 ~ 2018/10/31"
+                    android:text="정산대상기간을 설정해 주세요"
                     android:textColor="#ffffff"
                     android:textSize="10sp" />
             </LinearLayout>
@@ -147,7 +148,7 @@
                 <Button
                     android:id="@+id/calculate_inquiry_button"
                     android:layout_width="match_parent"
-                    android:layout_height="30dp"
+                    android:layout_height="40dp"
                     android:layout_below="@+id/calculate_month_layout"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"

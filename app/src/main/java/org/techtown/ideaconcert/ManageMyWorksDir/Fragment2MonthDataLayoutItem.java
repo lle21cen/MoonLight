@@ -8,23 +8,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.techtown.ideaconcert.R;
 
 public class Fragment2MonthDataLayoutItem extends LinearLayout {
 
     String due_date; // 정산 예정일
-    int profit, deduction, cal_state, user_pk, year, month; // cal_state : 정산 상태(1=미정산 2=정산완료)
+    int profit, deduction, cal_state; // cal_state : 정산 상태(1=미정산 2=정산완료)
 
-    public Fragment2MonthDataLayoutItem(Context context, int profit, int deduction, String due_date, int cal_state, int user_pk, int year, int month) {
+    public Fragment2MonthDataLayoutItem(Context context, int profit, int deduction, String due_date, int cal_state) {
         super(context);
         this.due_date = due_date;
         this.profit = profit;
         this.deduction = deduction;
         this.cal_state = cal_state;
-        this.user_pk = user_pk;
-        this.year = year;
-        this.month = month;
+        init(context);
     }
 
     private void init(Context context) {
@@ -42,10 +41,10 @@ public class Fragment2MonthDataLayoutItem extends LinearLayout {
         amountView.setText((profit - deduction) + "원");
         dueDateView.setText(due_date);
         if (cal_state == 1) {
-            calStateView.setTextColor(Color.rgb(233,0,5));
+            calStateView.setTextColor(Color.rgb(233, 0, 5));
             calStateView.setText("미정산");
         } else if (cal_state == 2) {
-            calStateView.setTextColor(Color.rgb(120,106,170));
+            calStateView.setTextColor(Color.rgb(120, 106, 170));
             calStateView.setText("정산완료");
         }
     }

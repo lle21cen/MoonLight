@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -26,13 +27,15 @@ public class Fragment2MonthDataLayout extends RelativeLayout {
     private final String GetProfitDataURL = "http://lle21cen.cafe24.com/GetCalculationData.php";
 
     int currentYear, whatMonth, endDayOfMonth, user_pk;
+    TextView totalAmountView;
     LinearLayout calLayout;
 
-    public Fragment2MonthDataLayout(Context context, int currentYear, int whatMonth, int user_pk) {
+    public Fragment2MonthDataLayout(Context context, int currentYear, int whatMonth, int user_pk, TextView totalAmountView) {
         super(context);
         this.whatMonth = whatMonth;
         this.currentYear = currentYear;
         this.user_pk = user_pk;
+        this.totalAmountView = totalAmountView;
         init(context);
     }
 
@@ -64,7 +67,7 @@ public class Fragment2MonthDataLayout extends RelativeLayout {
         queue.add(request);
     }
 
-    private Response.Listener<String > getCalculationDataListener = new Response.Listener<String>() {
+    private Response.Listener<String> getCalculationDataListener = new Response.Listener<String>() {
         @Override
         public void onResponse(String response) {
             try {
@@ -82,21 +85,24 @@ public class Fragment2MonthDataLayout extends RelativeLayout {
                         String due_date = temp.getString("due_date");
                         int cal_state = temp.getInt("cal_state");
 
-                        Fragment2MonthDataLayoutItem monthDataItemLayout = new Fragment2MonthDataLayoutItem(getContext(), profit,  deduction, due_date, cal_state, user_pk, currentYear, whatMonth);
-                        //Context context, int profit, int deduction, String due_date, int cal_state, int user_pk, int year, int month
+                        if (cal_state == 1) {
+                            Fragment2CalculateAccountManagement.totalAmount += (profit - deduction);
+                        }
+                        Fragment2MonthDataLayoutItem monthDataItemLayout = new Fragment2MonthDataLayoutItem(getContext(), profit, deduction, due_date, cal_state);
                         calLayout.addView(monthDataItemLayout);
                     }
+                    totalAmountView.setText(Fragment2CalculateAccountManagement.totalAmount + "원");
                 } else {
 //                    int user_pk = jsonObject.getInt("user_pk");
 //                    int month = jsonObject.getInt("month");
 //                    Toast.makeText(getContext(), "user_pk = " + user_pk + " month = " + month, Toast.LENGTH_SHORT).show();
-                    Fragment1ProfitLayoutItem profitItemLayout = new Fragment1ProfitLayoutItem(getContext(), "수익이 없습니다.", 0, 0, 0);
-                    calLayout.addView(profitItemLayout);
+                    Fragment2MonthDataLayoutItem monthDataItemLayout = new Fragment2MonthDataLayoutItem(getContext(), 0, 0, "정산내용없음.", 0);
+                    calLayout.addView(monthDataItemLayout);
                 }
             } catch (JSONException je) {
-                Log.e("수익관리정보불러오기에러", je.getMessage());
+                Log.e("정산관리정보불러오기에러", je.getMessage());
             } catch (Exception e) {
-                Log.e("수익관리정보불러오기에러", e.getMessage());
+                Log.e("정산관리정보불러오기에러", e.getMessage());
             }
         }
     };

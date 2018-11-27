@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/dialog_year_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal">
+
+
+        <ImageView
+            android:id="@+id/myworks_dialog_prev_year"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_gravity="center"
+            android:src="@drawable/back" />
+
+        <TextView
+            android:id="@+id/myworks_dialog_year"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="2018"
+            android:textColor="#000000" />
+
+        <TextView
+            android:id="@+id/myworks_dialog_year_nyeon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:text="년"
+            android:textColor="#000000" />
+
+
+        <ImageView
+            android:id="@+id/myworks_dialog_next_year"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_keyboard_arrow_right_black_24dp" />
+    </LinearLayout>
+
+    <TableLayout
+        android:id="@+id/myworks_dialog_table_layout"
+        android:layout_width="match_parent"
+        android:layout_height="101dp"
+        android:layout_below="@id/dialog_year_layout"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="10dp"
+        android:background="#ffffff">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/dialog_month_1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="3dp"
+                android:layout_weight="1"
+                android:background="@drawable/round_border_gray_no_solid"
+                android:gravity="center"
+                android:text="1월"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/dialog_month_2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginRight="3dp"
+                android:background="@drawable/round_border_gray_no_solid"
+                android:gravity="center"
+                android:text="2월"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/dialog_month_3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginRight="3dp"
+                android:background="@drawable/round_border_gray_no_solid"
+                android:gravity="center"
+                android:text="3월"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/dialog_month_4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/round_border_gray_no_solid"
+                android:gravity="center"
+                android:text="4월"
+                android:textAlignment="center" />
+
+        </TableRow>
+
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/dialog_month_5"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp"
+                android:layout_marginRight="3dp"
+                android:background="@drawable/round_border_gray_no_solid"
+                android:gravity="center"
+                android:text="5월"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/dialog_month_6"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp"
+                android:layout_marginRight="3dp"
+                android:background="@drawable/round_border_gray_no_solid"
+                android:gravity="center"
+                android:text="6월"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/dialog_month_7"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp"
+                android:layout_marginRight="3dp"
+                android:background="@drawable/round_border_gray_no_solid"
+                android:gravity="center"
+                android:text="7월"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/dialog_month_8"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp"
+                android:background="@drawable/round_border_gray_no_solid"
+                android:gravity="center"
+                android:text="8월"
+                android:textAlignment="center" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/dialog_month_9"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp"
+                android:layout_marginRight="3dp"
+                android:background="@drawable/round_border_gray_no_solid"
+                android:gravity="center"
+                android:text="9월"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/dialog_month_10"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp"
+                android:layout_marginRight="3dp"
+                android:layout_weight="1"
+                android:background="@drawable/round_border_gray_no_solid"
+                android:gravity="center"
+                android:text="10월"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/dialog_month_11"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp"
+                android:layout_marginRight="3dp"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/round_border_gray_no_solid"
+                android:gravity="center"
+                android:text="11월"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/dialog_month_12"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp"
+                android:layout_weight="1"
+                android:background="@drawable/round_border_gray_no_solid"
+                android:gravity="center"
+                android:text="12월"
+                android:textAlignment="center" />
+
+        </TableRow>
+
+
+    </TableLayout>
+
+</RelativeLayout>
