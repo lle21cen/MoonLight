@@ -375,9 +375,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         // 데이터베이스에 들어있는 배너의 수만큼 for문을 돌려 url을 배열에 저장
                         JSONObject temp = result.getJSONObject(i);
                         String url = temp.getString("url");
-
                         int contents_pk = temp.getInt("contents_pk");
-
                         eventRecyclerAdapter.addItem(contents_pk, url);
                     }
                     eventBannerRecycler.setAdapter(eventRecyclerAdapter);

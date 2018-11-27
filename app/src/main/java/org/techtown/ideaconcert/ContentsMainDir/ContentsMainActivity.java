@@ -43,8 +43,8 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
     // 이미지만 따로 동적으로 설정하도록 바꾸어서 컨텐츠 로딩에 걸리는 시간을 단축할 필요가 있음
     // 변수명 통일 시키기 ... 귀찮
 
-//    private final String getContentsItemURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsItem";
-    private final String getContentsItemURL = "http://lle21cen.cafe24.com/GetContentsItem.php";
+    private final String getContentsItemURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsItem";
+//    private final String getContentsItemURL = "http://lle21cen.cafe24.com/GetContentsItem.php";
 
     private final String getContentsLIkeCountURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsLikeCount";
     private final String insertDeleteContentsLikeDataURL = ActivityCodes.DATABASE_IP + "/platform/InsertDeleteContentsLikeData";
@@ -163,6 +163,9 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
             user_pk = 1;
         ContentsLikeDBRequest contentsItemLikeDBRequest = new ContentsLikeDBRequest(getContentsLIkeCountURL, getContentsLikeCountListener, selected_contents_pk, user_pk, 1);
         requestQueue.add(contentsItemLikeDBRequest);
+
+        int readCount = getReadContentsCount();
+        readingText.setText(""+readCount);
     }
 
     private Response.Listener<String> getContentsLikeCountListener = new Response.Listener<String>() {
@@ -250,6 +253,7 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
                     // 전체 작품 수와 열람 작품 수, 캐시 보유량 textview를 설정.
                     totalText.setText(String.valueOf(num_result));
                     list_total_txt.setText("전체 (" + num_result + "화)");
+                    follow_up_btn.setText("이어보기 (" + getReadContentsCount() + "화)");
                 } else {
                     Log.e("No Data", "데이터가 없습니다.");
                 }

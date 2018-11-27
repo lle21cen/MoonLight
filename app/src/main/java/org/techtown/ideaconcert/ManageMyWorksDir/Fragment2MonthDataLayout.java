@@ -21,14 +21,14 @@ import org.techtown.ideaconcert.R;
 import java.util.Calendar;
 
 
-public class Fragment1ProfitLayout extends RelativeLayout {
+public class Fragment2MonthDataLayout extends RelativeLayout {
 
-    private final String GetProfitDataURL = "http://lle21cen.cafe24.com/GetProfitData.php";
+    private final String GetProfitDataURL = "http://lle21cen.cafe24.com/GetCalculationData.php";
 
     int currentYear, whatMonth, endDayOfMonth, user_pk;
-    LinearLayout profitLayout;
+    LinearLayout calLayout;
 
-    public Fragment1ProfitLayout(Context context, int currentYear, int whatMonth, int user_pk) {
+    public Fragment2MonthDataLayout(Context context, int currentYear, int whatMonth, int user_pk) {
         super(context);
         this.whatMonth = whatMonth;
         this.currentYear = currentYear;
@@ -36,7 +36,7 @@ public class Fragment1ProfitLayout extends RelativeLayout {
         init(context);
     }
 
-    public Fragment1ProfitLayout(Context context, AttributeSet attrs, int currentYear, int whatMonth, int user_pk) {
+    public Fragment2MonthDataLayout(Context context, AttributeSet attrs, int currentYear, int whatMonth, int user_pk) {
         super(context, attrs);
         this.whatMonth = whatMonth;
         this.currentYear = currentYear;
@@ -46,25 +46,25 @@ public class Fragment1ProfitLayout extends RelativeLayout {
 
     private void init(Context context) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.myworks_fragment1_month_data_layout, this, true);
+        View view = inflater.inflate(R.layout.myworks_fragment2_month_data_layout, this, true);
 
-        TextView monthText = view.findViewById(R.id.manage_month_text);
+        TextView monthText = view.findViewById(R.id.calculate_month_text);
         monthText.setText(currentYear + "년 " + whatMonth + "월");
 
-        TextView monthPeriodText = view.findViewById(R.id.manage_month_period_text);
+        TextView monthPeriodText = view.findViewById(R.id.calculate_month_period_text);
         Calendar calendar = Calendar.getInstance();
         calendar.set(currentYear, whatMonth, 1);
         endDayOfMonth = calendar.getActualMaximum(Calendar.DATE);
         String periodText = currentYear + "/" + whatMonth + "/01 ~ " + currentYear + "/" + whatMonth + "/" + endDayOfMonth;
         monthPeriodText.setText(periodText);
 
-        profitLayout = view.findViewById(R.id.manage_profit_layout);
-        GetFragmentDataRequest request = new GetFragmentDataRequest(GetProfitDataURL, getProfitDataListener, user_pk, currentYear, whatMonth);
+        calLayout = view.findViewById(R.id.calculate_layout);
+        GetFragmentDataRequest request = new GetFragmentDataRequest(GetProfitDataURL, getCalculationDataListener, user_pk, currentYear, whatMonth);
         RequestQueue queue = Volley.newRequestQueue(getContext());
         queue.add(request);
     }
 
-    private Response.Listener<String > getProfitDataListener = new Response.Listener<String>() {
+    private Response.Listener<String > getCalculationDataListener = new Response.Listener<String>() {
         @Override
         public void onResponse(String response) {
             try {
@@ -76,21 +76,22 @@ public class Fragment1ProfitLayout extends RelativeLayout {
                     for (int i = 0; i < num_result; i++) {
                         JSONObject temp = result.getJSONObject(i);
 
-                        int profit_pk = temp.getInt("profit_pk");
-                        String contents_name = temp.getString("contents_name");
-                        int view_count = temp.getInt("view_count");
-                        int cash = temp.getInt("cash");
+                        int cal_pk = temp.getInt("cal_pk");
                         int profit = temp.getInt("profit");
+                        int deduction = temp.getInt("deduction");
+                        String due_date = temp.getString("due_date");
+                        int cal_state = temp.getInt("cal_state");
 
-                        Fragment1ProfitLayoutItem profitItemLayout = new Fragment1ProfitLayoutItem(getContext(), contents_name, view_count, cash, profit);
-                        profitLayout.addView(profitItemLayout);
+                        Fragment2MonthDataLayoutItem monthDataItemLayout = new Fragment2MonthDataLayoutItem(getContext(), profit,  deduction, due_date, cal_state, user_pk, currentYear, whatMonth);
+                        //Context context, int profit, int deduction, String due_date, int cal_state, int user_pk, int year, int month
+                        calLayout.addView(monthDataItemLayout);
                     }
                 } else {
 //                    int user_pk = jsonObject.getInt("user_pk");
 //                    int month = jsonObject.getInt("month");
 //                    Toast.makeText(getContext(), "user_pk = " + user_pk + " month = " + month, Toast.LENGTH_SHORT).show();
                     Fragment1ProfitLayoutItem profitItemLayout = new Fragment1ProfitLayoutItem(getContext(), "수익이 없습니다.", 0, 0, 0);
-                    profitLayout.addView(profitItemLayout);
+                    calLayout.addView(profitItemLayout);
                 }
             } catch (JSONException je) {
                 Log.e("수익관리정보불러오기에러", je.getMessage());

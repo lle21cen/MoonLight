@@ -11,10 +11,11 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import org.techtown.ideaconcert.R;
+import org.techtown.ideaconcert.UserInformation;
 
 import java.util.Calendar;
 
-public class Fragment1ProfitManagement extends Fragment implements View.OnClickListener {
+public class Fragment1ProfitManagementLayout extends Fragment implements View.OnClickListener {
 
     View view;
     int currentYear, currentMonth;
@@ -24,7 +25,7 @@ public class Fragment1ProfitManagement extends Fragment implements View.OnClickL
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.manage_fragment1_profit_management, container, false);
+        view = inflater.inflate(R.layout.myworks_fragment1_profit_layout, container, false);
         oneMonthButton = view.findViewById(R.id.manage_one_month);
         threeMonthButton = view.findViewById(R.id.manage_three_month);
         sixMonthButton = view.findViewById(R.id.manage_six_month);
@@ -59,12 +60,14 @@ public class Fragment1ProfitManagement extends Fragment implements View.OnClickL
 
     private void addProfitLayoutToContainer(int howMany) {
         profitLayoutContainer.removeAllViews();
+        UserInformation userInformation = (UserInformation) getActivity().getApplication();
+        int user_pk = userInformation.getUser_pk();
         for (int i = 0; i < howMany; i++) {
             Fragment1ProfitLayout profitLayout;
             if (currentMonth - i > 0) {
-                profitLayout = new Fragment1ProfitLayout(getActivity(), currentYear, currentMonth - i);
+                profitLayout = new Fragment1ProfitLayout(getActivity(), currentYear, currentMonth - i, user_pk);
             } else {
-                profitLayout = new Fragment1ProfitLayout(getActivity(), currentYear - 1, currentMonth + 12 - i); // 월이 0월 이하이면 전년도 12월부터 다시 줄여나감
+                profitLayout = new Fragment1ProfitLayout(getActivity(), currentYear - 1, currentMonth + 12 - i, user_pk); // 월이 0월 이하이면 전년도 12월부터 다시 줄여나감
             }
             profitLayoutContainer.addView(profitLayout);
 

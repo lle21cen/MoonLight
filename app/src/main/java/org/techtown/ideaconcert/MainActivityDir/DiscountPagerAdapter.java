@@ -39,7 +39,6 @@ public class DiscountPagerAdapter extends PagerAdapter {
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, final int position) {
-
         View view = inflater.inflate(R.layout.main_discount_contetns_item, null);
         final Context context = view.getContext();
 

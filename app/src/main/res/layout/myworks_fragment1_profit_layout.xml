@@ -76,7 +76,7 @@
                     android:layout_width="0dp"
                     android:layout_height="30dp"
                     android:layout_weight="1"
-                    android:background="#ffffff"
+                    android:background="@drawable/round_border_gray_no_solid"
                     android:text="1개월"
                     android:textSize="12sp" />
 
@@ -85,7 +85,7 @@
                     android:layout_width="0dp"
                     android:layout_height="30dp"
                     android:layout_weight="1"
-                    android:background="#ffffff"
+                    android:background="@drawable/round_border_gray_no_solid"
                     android:text="3개월"
                     android:textSize="12sp" />
 
@@ -94,7 +94,7 @@
                     android:layout_width="0dp"
                     android:layout_height="30dp"
                     android:layout_weight="1"
-                    android:background="#ffffff"
+                    android:background="@drawable/round_border_gray_no_solid"
                     android:text="6개월"
                     android:textSize="12sp" />
 
@@ -103,7 +103,7 @@
                     android:layout_width="0dp"
                     android:layout_height="30dp"
                     android:layout_weight="1"
-                    android:background="#ffffff"
+                    android:background="@drawable/round_border_gray_no_solid"
                     android:text="1년"
                     android:textSize="12sp" />
             </LinearLayout>

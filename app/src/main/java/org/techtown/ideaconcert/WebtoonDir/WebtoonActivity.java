@@ -45,7 +45,8 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
     private final String getContentsItemImageURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsItemImage";
     private final String getContentsLIkeCountURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsLikeCount";
     private final String insertDeleteContentsItemLikeDataURL = ActivityCodes.DATABASE_IP + "/platform/InsertDeleteContentsItemLikeData";
-    private final String PlusViewCountURL = "http://lle21cen.cafe24.com/PlusViewCount.php";
+    private final String PlusViewCountURL = ActivityCodes.DATABASE_IP + "/platform/PlusViewCount";
+//    private final String PlusViewCountURL = "http://lle21cen.cafe24.com/PlusViewCount.php";
 
     int user_pk, contents_item_pk, item_comments_count, contents_num, contents_pk;
     String item_title;

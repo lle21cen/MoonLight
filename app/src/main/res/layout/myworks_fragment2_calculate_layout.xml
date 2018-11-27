@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/calculate_summary_layout"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:background="#786aaa"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/calculate_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="11월 정산금액"
+                    android:textColor="#ffffff"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/calculate_total_cash"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="5,200,00원"
+                    android:textColor="#ffffff"
+                    android:textSize="25sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="정산대상기간:2018/10/01 ~ 2018/10/31"
+                    android:textColor="#ffffff"
+                    android:textSize="10sp" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/calculate_scroll_relative_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/calculate_summary_layout">
+
+                <TextView
+                    android:id="@+id/calculate_period_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="기간조회설정" />
+
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/calculate_date_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/calculate_period_text"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp">
+
+                    <TextView
+                        android:id="@+id/calculate_period_from_text"
+                        android:layout_width="150dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/round_border_gray_no_solid"
+                        android:gravity="center"
+                        android:text="2018/10/01"
+                        android:textAlignment="center"
+                        android:textSize="12sp" />
+
+                    <View
+                        android:layout_width="5dp"
+                        android:layout_height="1dp"
+                        android:layout_gravity="center"
+                        android:background="#000000"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toRightOf="@id/calculate_period_from_text"
+                        app:layout_constraintRight_toLeftOf="@+id/calculate_period_to_text"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/calculate_period_to_text"
+                        android:layout_width="150dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/round_border_gray_no_solid"
+                        android:gravity="center"
+                        android:text="2018/10/31"
+                        android:textAlignment="center"
+                        android:textSize="12sp"
+                        app:layout_constraintRight_toRightOf="parent" />
+
+                </android.support.constraint.ConstraintLayout>
+
+                <LinearLayout
+                    android:id="@+id/calculate_month_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/calculate_date_layout"
+                    android:layout_margin="10dp">
+
+                    <Button
+                        android:id="@+id/calculate_one_month"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/round_border_gray_no_solid"
+                        android:text="1개월"
+                        android:textSize="12sp" />
+
+                    <Button
+                        android:id="@+id/calculate_three_month"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/round_border_gray_no_solid"
+                        android:text="3개월"
+                        android:textSize="12sp" />
+
+                    <Button
+                        android:id="@+id/calculate_six_month"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/round_border_gray_no_solid"
+                        android:text="6개월"
+                        android:textSize="12sp" />
+
+                    <Button
+                        android:id="@+id/calculate_one_year"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/round_border_gray_no_solid"
+                        android:text="1년"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/calculate_inquiry_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_below="@+id/calculate_month_layout"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="#786aaa"
+                    android:text="조회"
+                    android:textColor="#ffffff" />
+
+                <View
+                    android:id="@+id/calculate_underline"
+                    android:layout_below="@id/calculate_inquiry_button"
+                    android:layout_width="match_parent"
+                    android:layout_margin="10dp"
+                    android:layout_height="1dp"
+                    android:background="#000000"/>
+
+                <LinearLayout
+                    android:id="@+id/calculate_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/calculate_underline"
+                    android:orientation="vertical" />
+
+            </RelativeLayout>
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>
