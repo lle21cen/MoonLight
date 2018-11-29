@@ -89,11 +89,11 @@ public class MyPageActivity extends AppCompatActivity implements View.OnClickLis
         settings_btn.setOnClickListener(this);
 
         // 현재 테스트를 위해 기본으로 작가 사용자라고 가정
-        setAuthorMode();
-//        if (userInformation.getRole() == ActivityCodes.ROLE_AUTHOR) {
-//            // 사용자가 작가일 경우 내 작품 관리 버튼 VISIBLE
-//            setAuthorMode();
-//        }
+//        setAuthorMode();
+        if (userInformation.getRole() == ActivityCodes.ROLE_AUTHOR) {
+            // 사용자가 작가일 경우 내 작품 관리 버튼 VISIBLE
+            setAuthorMode();
+        }
     }
 
     protected void setAuthorMode() {

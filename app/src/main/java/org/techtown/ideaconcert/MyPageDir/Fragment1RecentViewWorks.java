@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -12,7 +13,7 @@ import android.view.ViewGroup;
 import org.techtown.ideaconcert.R;
 import org.techtown.ideaconcert.SQLiteDir.DBHelper;
 import org.techtown.ideaconcert.SQLiteDir.DBNames;
-import org.techtown.ideaconcert.SQLiteDir.RecentViewPair;
+import org.techtown.ideaconcert.SQLiteDir.RecentViewData;
 
 import java.util.ArrayList;
 
@@ -33,10 +34,11 @@ public class Fragment1RecentViewWorks extends Fragment {
 
         adapter = new Fragment1RecyclerAdapter();
         DBHelper dbHelper = new DBHelper(getActivity(), DBNames.CONTENTS_DB, null, 1);
-        ArrayList<RecentViewPair> data = dbHelper.getAllRecentViewData();
+        ArrayList<RecentViewData> data = dbHelper.getAllRecentViewData();
 
         for (int i = 0; i < data.size(); i++) {
-            adapter.addItem(null, data.get(i).getContents_pk(), data.get(i).getDate(), data.get(i).getContents_name(), data.get(i).getContents_num());
+            adapter.addItem(data.get(i).getUrl(), data.get(i).getContents_pk(), data.get(i).getDate(), data.get(i).getContents_name(), data.get(i).getContents_num());
+            Log.i("마이페이지 thumbnail url", data.get(i).getUrl());
         }
         recyclerView.setAdapter(adapter);
         recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {

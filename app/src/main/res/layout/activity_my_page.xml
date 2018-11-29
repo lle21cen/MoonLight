@@ -98,6 +98,6 @@
         android:background="@drawable/black_stroke"
         android:text="내 작품 관리"
         android:textColor="#8170dc"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
 </RelativeLayout>

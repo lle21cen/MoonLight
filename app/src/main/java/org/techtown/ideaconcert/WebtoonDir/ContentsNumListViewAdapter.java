@@ -46,7 +46,6 @@ public class ContentsNumListViewAdapter extends BaseAdapter {
         final ContentsNumListViewItem listViewItem = contentsNumListViewItems.get(position);
         contentsNumView.setText("" + listViewItem.getContents_num());
 
-        // 위젯에 대한 이벤트 리스너 작성
         return convertView;
     }
 

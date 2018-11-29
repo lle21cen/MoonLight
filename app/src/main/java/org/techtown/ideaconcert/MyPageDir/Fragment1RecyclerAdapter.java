@@ -2,8 +2,8 @@ package org.techtown.ideaconcert.MyPageDir;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.support.v4.content.ContextCompat;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +14,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.techtown.ideaconcert.ContentsMainDir.ContentsMainActivity;
-import org.techtown.ideaconcert.ContentsMainDir.WorksListViewItem;
+import org.techtown.ideaconcert.MainActivityDir.SetBitmapImageFromUrlTask;
 import org.techtown.ideaconcert.R;
+import org.techtown.ideaconcert.UserInformation;
 
 import java.util.ArrayList;
 
@@ -36,6 +37,9 @@ public class Fragment1RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
             contents_name_text = view.findViewById(R.id.my_page_fragment1_contents_name);
             contents_num = view.findViewById(R.id.my_page_fragment1_contents_num);
             continue_layout = view.findViewById(R.id.my_page_fragment1_continue_layout);
+            SharedPreferences preferences = view.getContext().getSharedPreferences("loginData", Context.MODE_PRIVATE);
+            int role = preferences.getInt("userRole", 2);
+//            Toast.makeText(view.getContext(), "" + role, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -50,10 +54,12 @@ public class Fragment1RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         Fragment1RecyclerAdapter.Fragment1Holder fragment1Holder = (Fragment1RecyclerAdapter.Fragment1Holder) holder;
         final Fragment1RecyclerItem item = items.get(position);
 
-        // fragment1Holder.thumbnail.setImageBitmap(); // 효과적인 thumbnail 설정 방법 알아오기
         fragment1Holder.date_text.setText(item.getDate());
         fragment1Holder.contents_name_text.setText(item.getContents_name());
         fragment1Holder.contents_num.setText(String.valueOf(item.getContents_num()));
+
+//        SetBitmapImageFromUrlTask task = new SetBitmapImageFromUrlTask(fragment1Holder.thumbnail, 80, 60);
+//        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, item.getThumbnail_url());
 
         fragment1Holder.continue_layout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,9 +76,9 @@ public class Fragment1RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         return items.size();
     }
 
-    protected void addItem(Bitmap thumbnail, int contents_pk, String date, String contents_name, int contents_num) {
+    protected void addItem(String thumbnail, int contents_pk, String date, String contents_name, int contents_num) {
         Fragment1RecyclerItem item = new Fragment1RecyclerItem();
-        item.setThumbnail(thumbnail);
+        item.setThumbnail_url(thumbnail);
         item.setDate(date);
         item.setContents_name(contents_name);
         item.setContents_num(contents_num);

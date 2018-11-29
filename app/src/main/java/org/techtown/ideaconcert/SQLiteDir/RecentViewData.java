@@ -1,13 +1,13 @@
 package org.techtown.ideaconcert.SQLiteDir;
 
-public class RecentViewPair {
+public class RecentViewData {
     private int contents_pk;
     private String contents_name;
     private String date;
     private int contents_num;
     private String url;
 
-    public RecentViewPair(int contents_pk, String contents_name, String date, int contents_num, String url) {
+    public RecentViewData(int contents_pk, String contents_name, String date, int contents_num, String url) {
         this.contents_pk = contents_pk;
         this.contents_name = contents_name;
         this.date = date;

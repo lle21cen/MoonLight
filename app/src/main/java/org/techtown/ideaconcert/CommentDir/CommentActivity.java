@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +24,7 @@ import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.DatabaseRequest;
 import org.techtown.ideaconcert.R;
 import org.techtown.ideaconcert.UserInformation;
+import org.techtown.ideaconcert.WebtoonDir.WebtoonActivity;
 
 public class CommentActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -68,6 +70,9 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
 
         Intent intent = getIntent();
         int contents_num = intent.getIntExtra("contents_num", 0);
+        boolean isRefresh = intent.getBooleanExtra("isRefresh", false);
+        if (isRefresh)
+            commentPager.setCurrentItem(1, true);
 
         String item_title = intent.getStringExtra("item_title");
         TextView workNameView = findViewById(R.id.comment_work_name_txt);
@@ -129,11 +134,17 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
                 boolean success = jsonResponse.getBoolean("success");
                 if (success) {
                     Toast.makeText(CommentActivity.this, "댓글이 달렸습니다.", Toast.LENGTH_SHORT).show();
-                    commentPager.setCurrentItem(1, true);
+                    Intent intent = getIntent();
+                    intent.putExtra("isRefresh", true);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    startActivityForResult(intent, ActivityCodes.COMMENT_REQUEST);
+                    finish();
+//                    commentEditText.setText("");
+//                    commentPager.setCurrentItem(1, true);
                 } else {
                     Toast.makeText(CommentActivity.this, "댓글 달기에 실패했습니다.", Toast.LENGTH_SHORT).show();
                     String errmsg = jsonResponse.getString("errmsg");
-                    Log.e("댓글달기실패이유", ""+errmsg);
+                    Log.e("댓글달기실패이유", "" + errmsg);
                 }
             } catch (Exception e) {
                 Log.e("댓글 삽입 삭제 리스너", e.getMessage());

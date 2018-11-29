@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,12 +28,11 @@ import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.CommentDir.CommentActivity;
 import org.techtown.ideaconcert.ContentsMainDir.ContentsMainActivity;
 import org.techtown.ideaconcert.ContentsMainDir.WorksListViewItem;
-import org.techtown.ideaconcert.MainActivityDir.GetBitmapImageFromURL;
+import org.techtown.ideaconcert.MainActivityDir.SetBitmapImageFromUrlTask;
 import org.techtown.ideaconcert.R;
 import org.techtown.ideaconcert.SQLiteDir.DBHelper;
 import org.techtown.ideaconcert.SQLiteDir.DBNames;
 
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -56,10 +56,17 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
     ListView contents_listView;
     ArrayList<WorksListViewItem> items;
 
+    private int deviceWidth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webtoon);
+
+        DisplayMetrics dm = getApplicationContext().getResources().getDisplayMetrics();
+        deviceWidth = dm.widthPixels;
+        if (deviceWidth > 1000) {
+            deviceWidth /= 2;
+        }
 
         LinearLayout commentLayout = findViewById(R.id.webtoon_comment_layout);
         headerLayout = findViewById(R.id.webtoon_header_layout);
@@ -149,7 +156,9 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
 
         ContentsItemLikeDBRequest contentsItemLikeDBRequest = new ContentsItemLikeDBRequest(getContentsLIkeCountURL, getContentsItemLikeCountListener, contents_item_pk, user_pk, 2);
         requestQueue.add(contentsItemLikeDBRequest);
+
         addRecentViewDataToSqlite();
+        insertContentsUrlToSqlite(contents_pk, items.get(item_position).getThumbnail_url());
 
         // 웹툰 뷰 카운트 증가 시키기
         plusViewCount();
@@ -228,14 +237,14 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
                             webtoon.setAdjustViewBounds(true); // 이미지의 가로를 화면 전체 크기에 맞춤
                             webtoon.setLayoutParams(lp);
 
-//                            SetBitmapImageFromUrlTask task = new SetBitmapImageFromUrlTask(webtoon, 500, 2000);
-//                            task.execute(url_str);
+                            SetBitmapImageFromUrlTask task = new SetBitmapImageFromUrlTask(webtoon, deviceWidth, 0);
+                            task.execute(url_str);
 
-                            URL url = new URL(ActivityCodes.DATABASE_IP + temp.getString("image_url"));
-                            GetBitmapImageFromURL getBitmapImageFromURL = new GetBitmapImageFromURL(url);
-                            getBitmapImageFromURL.start();
-                            getBitmapImageFromURL.join();
-                            webtoon.setImageBitmap(getBitmapImageFromURL.getBitmap());
+//                            URL url = new URL(ActivityCodes.DATABASE_IP + temp.getString("image_url"));
+//                            GetBitmapImageFromURL getBitmapImageFromURL = new GetBitmapImageFromURL(url);
+//                            getBitmapImageFromURL.start();
+//                            getBitmapImageFromURL.join();
+//                            webtoon.setImageBitmap(getBitmapImageFromURL.getBitmap());
 
                             webtoonLayout.addView(webtoon);
                         } catch (Exception e) {
@@ -369,7 +378,11 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
         Date today = new Date();
         SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd kk:mm"); // 초단위로 저장하여 가장 최근에 본 작품을 갱신.
         DBHelper dbHelper = new DBHelper(this, DBNames.CONTENTS_DB, null, 1);
+        dbHelper.insertOrUpdateRecentViewData(contents_pk, item_title, date.format(today), String.valueOf(today), contents_num);
+    }
 
-        dbHelper.addOrUpdateRecentViewData(contents_pk, item_title, date.format(today), String.valueOf(today), contents_num);
+    private void insertContentsUrlToSqlite(int contents_pk, String url) {
+        DBHelper dbHelper = new DBHelper(this, DBNames.CONTENTS_DB, null, 1);
+        dbHelper.insertContentsUrl(contents_pk, url);
     }
 }

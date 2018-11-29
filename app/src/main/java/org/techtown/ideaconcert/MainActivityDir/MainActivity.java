@@ -591,8 +591,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.main_title_search_btn:
                 // 디버깅용 코드들 -- 삭제 필요
                 DBHelper dbHelper = new DBHelper(this, DBNames.CONTENTS_DB, null, 1);
-                dbHelper.dropTable("recent_view"); // 디버깅을 위한 테이블 드랍
+                dbHelper.dropAllTables(); // 디버깅을 위한 테이블 드랍
                 dbHelper.createRecentViewTable(); // 디버깅을 위한 테이블 생성
+                dbHelper.createContentsUrlTable(); // 디버깅을 위한 테이블 생성
                 break;
         }
     }

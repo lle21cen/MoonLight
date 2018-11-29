@@ -3,16 +3,16 @@ package org.techtown.ideaconcert.MyPageDir;
 import android.graphics.Bitmap;
 
 public class Fragment1RecyclerItem {
-    private Bitmap thumbnail;
+    private String thumbnail_url;
     private String date, contents_name;
     private int contents_pk, contents_num;
 
-    public Bitmap getThumbnail() {
-        return thumbnail;
+    public String getThumbnail_url() {
+        return thumbnail_url;
     }
 
-    public void setThumbnail(Bitmap thumbnail) {
-        this.thumbnail = thumbnail;
+    public void setThumbnail_url(String thumbnail_url) {
+        this.thumbnail_url = thumbnail_url;
     }
 
     public String getDate() {

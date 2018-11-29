@@ -27,12 +27,6 @@ public class Fragment3LikeAuthor extends Fragment {
 
         adapter.addItem(null, "문정후 작가", 1);
         adapter.addItem(null, "문정후 작가", 1);
-        adapter.addItem(null, "문정후 작가", 1);
-        adapter.addItem(null, "문정후 작가", 1);
-        adapter.addItem(null, "문정후 작가", 1);
-        adapter.addItem(null, "문정후 작가", 1);
-        adapter.addItem(null, "문정후 작가", 1);
-        adapter.addItem(null, "문정후 작가", 1);
 
         recyclerView.setAdapter(adapter);
         return view;

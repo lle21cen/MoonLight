@@ -70,8 +70,9 @@ public class Fragment2LikeWorks extends Fragment {
                         String date = temp.getString("date");
                         String contents_name = temp.getString("contents_name");
                         int alarm = temp.getInt("alarm");
+                        String url = temp.getString("url");
 
-                        adapter.addItem(null, date, contents_name, contents_pk, alarm);
+                        adapter.addItem(null, date, contents_name, contents_pk, alarm, url);
                     }
                     recycler.setAdapter(adapter);
                 }

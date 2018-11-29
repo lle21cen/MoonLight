@@ -2,6 +2,7 @@ package org.techtown.ideaconcert.MyPageDir;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,6 +21,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONObject;
 import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.ContentsMainDir.ContentsLikeDBRequest;
+import org.techtown.ideaconcert.MainActivityDir.SetBitmapImageFromUrlTask;
 import org.techtown.ideaconcert.R;
 
 import java.util.ArrayList;
@@ -65,6 +67,9 @@ public class Fragment2RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         // fragment1Holder.thumbnail.setImageBitmap(); // 효과적인 thumbnail 설정 방법 알아오기
         fragment2Holder.date_text.setText(item.getDate());
         fragment2Holder.contents_name_text.setText(item.getContents_name());
+        SetBitmapImageFromUrlTask task = new SetBitmapImageFromUrlTask(fragment2Holder.thumbnail, 80, 60);
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, item.getUrl());
+
         fragment2Holder.pick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -123,13 +128,14 @@ public class Fragment2RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         return items.size();
     }
 
-    protected void addItem(Bitmap thumbnail, String date, String contents_name, int contents_pk, int alarm) {
+    protected void addItem(Bitmap thumbnail, String date, String contents_name, int contents_pk, int alarm, String url) {
         Fragment2RecyclerItem item = new Fragment2RecyclerItem();
         item.setThumbnail(thumbnail);
         item.setDate(date);
         item.setContents_name(contents_name);
         item.setContents_pk(contents_pk);
         item.setAlarm(alarm);
+        item.setUrl(url);
         items.add(item);
     }
 }

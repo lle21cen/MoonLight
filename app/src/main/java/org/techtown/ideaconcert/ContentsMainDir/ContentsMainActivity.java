@@ -64,12 +64,6 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
     private int user_pk;
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ActivityCodes.WEBTOON_REQUEST) {
@@ -118,7 +112,7 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
         follow_up_btn.setOnClickListener(this);
 
         listView = findViewById(R.id.contents_main_list_works_list);
-        adapter = new WorksListViewAdapter();
+        adapter = new WorksListViewAdapter(selected_contents_pk, this);
 
         WorksDBRequest worksDBRequest = new WorksDBRequest(getContentsItemURL, getContentsItemListener, selected_contents_pk);
         RequestQueue requestQueue = Volley.newRequestQueue(this);
@@ -164,8 +158,12 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
         ContentsLikeDBRequest contentsItemLikeDBRequest = new ContentsLikeDBRequest(getContentsLIkeCountURL, getContentsLikeCountListener, selected_contents_pk, user_pk, 1);
         requestQueue.add(contentsItemLikeDBRequest);
 
-        int readCount = getReadContentsCount();
-        readingText.setText(""+readCount);
+        int lastViewContentsNum = getLastViewContentsNum();
+        follow_up_btn.setText("이어보기 (" + lastViewContentsNum + "화)");
+
+        ArrayList<Integer> data = getReadContentsNumArray();
+        int readCount = data.size();
+        readingText.setText("" + readCount); // 열람 목록 개수
     }
 
     private Response.Listener<String> getContentsLikeCountListener = new Response.Listener<String>() {
@@ -253,7 +251,6 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
                     // 전체 작품 수와 열람 작품 수, 캐시 보유량 textview를 설정.
                     totalText.setText(String.valueOf(num_result));
                     list_total_txt.setText("전체 (" + num_result + "화)");
-                    follow_up_btn.setText("이어보기 (" + getReadContentsCount() + "화)");
                 } else {
                     Log.e("No Data", "데이터가 없습니다.");
                 }
@@ -273,12 +270,12 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
                     if (is_like_clicked) {
                         is_like_clicked = false;
                         Toast.makeText(ContentsMainActivity.this, "취소되었습니다.", Toast.LENGTH_SHORT).show();
-                        contents_like_count.setText(String.valueOf(Integer.parseInt(contents_like_count.getText().toString())-1));
+                        contents_like_count.setText(String.valueOf(Integer.parseInt(contents_like_count.getText().toString()) - 1));
                         contents_like_btn.setBackgroundDrawable(ContextCompat.getDrawable(ContentsMainActivity.this, R.drawable.ic_favorite_border_black_24dp));
                     } else {
                         is_like_clicked = true;
                         Toast.makeText(ContentsMainActivity.this, "관심목록에 담겼습니다.", Toast.LENGTH_SHORT).show();
-                        contents_like_count.setText(String.valueOf(Integer.parseInt(contents_like_count.getText().toString())+1));
+                        contents_like_count.setText(String.valueOf(Integer.parseInt(contents_like_count.getText().toString()) + 1));
                         contents_like_btn.setBackgroundDrawable(ContextCompat.getDrawable(ContentsMainActivity.this, R.drawable.pick_2));
                     }
                 } else {
@@ -334,10 +331,10 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
                     summary_btn.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.ic_keyboard_arrow_up_black_24dp));
                 }
                 break;
-            case R.id.contents_main_follow_up_button :
+            case R.id.contents_main_follow_up_button:
                 int last_view_contents_num = getLastViewContentsNum();
                 items = adapter.getWorksListViewItems();
-                for (int i=0; i<items.size(); i++) {
+                for (int i = 0; i < items.size(); i++) {
                     if (items.get(i).getContentsNum() == last_view_contents_num) {
                         position = i;
                         break;
@@ -356,12 +353,12 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
         intent.putExtra("contents_pk", selected_contents_pk);
     }
 
-    protected int getReadContentsCount() {
+    private ArrayList<Integer> getReadContentsNumArray() {
         DBHelper dbHelper = new DBHelper(this, DBNames.CONTENTS_DB, null, 1);
-        return dbHelper.getReadContentsCount(selected_contents_pk);
+        return dbHelper.getReadContentsNum(selected_contents_pk);
     }
 
-    protected int getLastViewContentsNum() {
+    private int getLastViewContentsNum() {
         DBHelper dbHelper = new DBHelper(this, DBNames.CONTENTS_DB, null, 1);
         return dbHelper.getLastViewContentsNum(selected_contents_pk);
     }

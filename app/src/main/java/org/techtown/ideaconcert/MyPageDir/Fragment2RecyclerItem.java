@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 
 public class Fragment2RecyclerItem {
     private Bitmap thumbnail;
-    private String date, contents_name;
+    private String date, contents_name, url;
     private int contents_pk;
     private int alarm;
 
@@ -46,5 +46,13 @@ public class Fragment2RecyclerItem {
 
     public void setAlarm(int alarm) {
         this.alarm = alarm;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

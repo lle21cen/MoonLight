@@ -3,9 +3,11 @@ package org.techtown.ideaconcert.ContentsMainDir;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,8 @@ import android.widget.Toast;
 
 import org.techtown.ideaconcert.MainActivityDir.SetBitmapImageFromUrlTask;
 import org.techtown.ideaconcert.R;
+import org.techtown.ideaconcert.SQLiteDir.DBHelper;
+import org.techtown.ideaconcert.SQLiteDir.DBNames;
 import org.techtown.ideaconcert.WebtoonMovieDir.WebtoonMovieActivity;
 
 import java.util.ArrayList;
@@ -24,6 +28,13 @@ import java.util.ArrayList;
 public class WorksListViewAdapter extends BaseAdapter {
 
     private ArrayList<WorksListViewItem> worksListViewItems = new ArrayList<>();
+    private Context context;
+    private ArrayList<Integer> data;
+
+    public WorksListViewAdapter(int contents_pk, Context context) {
+        this.context = context;
+        data = getReadContentsNumArray(contents_pk, context);
+    }
 
     @Override
     public int getCount() {
@@ -42,14 +53,13 @@ public class WorksListViewAdapter extends BaseAdapter {
 
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        final Context context = parent.getContext();
+    public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.contents_main_works_list_items, parent, false);
         }
-
+        final RelativeLayout itemLayout = convertView.findViewById(R.id.contents_main_item_layout);
         final ImageView worksImageView = convertView.findViewById(R.id.contents_main_item_image);
         TextView titleView = convertView.findViewById(R.id.contents_main_item_title);
         TextView watchView = convertView.findViewById(R.id.contents_main_item_watch);
@@ -58,6 +68,13 @@ public class WorksListViewAdapter extends BaseAdapter {
         ImageView watchImageView = convertView.findViewById(R.id.contents_main_watch_img);
 
         final WorksListViewItem listViewItem = worksListViewItems.get(position);
+//        for (int i=0; i<data.size(); i++) {                                                                        // 왜 안돼 으ㅡㄴㅇ란ㅇ라ㅣ 아나진짜장나ㅣㅁ릐ㅏㅁㄴㅇ
+//            Log.i("c_num", "data = " + data.get(i) + "item = " + worksListViewItems.get(position).getContentsNum());
+//            if (data.get(i) == worksListViewItems.get(position).getContentsNum()) {
+//                itemLayout.setBackgroundColor(Color.rgb(192,192,192));
+//                break;
+//            }
+//        }
 
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) worksImageView.getLayoutParams();
 
@@ -102,5 +119,9 @@ public class WorksListViewAdapter extends BaseAdapter {
 
     public ArrayList<WorksListViewItem> getWorksListViewItems() {
         return worksListViewItems;
+    }
+    private ArrayList<Integer> getReadContentsNumArray(int contents_pk, Context context) {
+        DBHelper dbHelper = new DBHelper(context, DBNames.CONTENTS_DB, null, 1);
+        return dbHelper.getReadContentsNum(contents_pk);
     }
 }
