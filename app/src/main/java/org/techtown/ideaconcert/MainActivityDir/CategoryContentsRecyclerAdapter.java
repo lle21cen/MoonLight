@@ -2,15 +2,16 @@ package org.techtown.ideaconcert.MainActivityDir;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.ContentsMainDir.ContentsMainActivity;
 import org.techtown.ideaconcert.R;
 
@@ -21,13 +22,19 @@ public class CategoryContentsRecyclerAdapter extends RecyclerView.Adapter<Recycl
     private ArrayList<CategoryContentsItem> items = new ArrayList<>();
 
     public static class CategoryViewHolder extends RecyclerView.ViewHolder {
+        RelativeLayout itemLayout, itemInfoLayout;
         ImageView worksImageView, movieImageView;
         TextView contents_name_view;
         TextView author_name_view;
         TextView view_count_view;
+        Context context;
 
         CategoryViewHolder(View view) {
             super(view);
+            context = view.getContext();
+            itemLayout = view.findViewById(R.id.main_category_item_layout);
+            itemInfoLayout = view.findViewById(R.id.main_category_item_info_layout);
+
             worksImageView = view.findViewById(R.id.main_category_item_img);
             movieImageView = view.findViewById(R.id.main_category_movie_img);
             contents_name_view = view.findViewById(R.id.main_category_item_name);
@@ -47,7 +54,22 @@ public class CategoryContentsRecyclerAdapter extends RecyclerView.Adapter<Recycl
         CategoryViewHolder categoryViewHolder = (CategoryViewHolder) holder;
         final CategoryContentsItem item = items.get(position);
 
-        SetBitmapImageFromUrlTask task = new SetBitmapImageFromUrlTask(categoryViewHolder.worksImageView, 100, 140);
+        if (item.getWork_name().isEmpty()) {
+            ContentsRecyclerItemViewAll viewAll = new ContentsRecyclerItemViewAll(categoryViewHolder.context);
+            categoryViewHolder.itemInfoLayout.setVisibility(View.INVISIBLE);
+            categoryViewHolder.itemLayout.addView(viewAll);
+            categoryViewHolder.itemLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Context context = view.getContext();
+                    Intent intent = new Intent(context, ExpandedContentsActivity.class);
+                    intent.putExtra("category", item.getMovie()); // movie 에 카테고리 번호 저장했던 것 사용
+                    context.startActivity(intent);
+                }
+            });
+            return;
+        }
+        SetBitmapImageFromUrlTask task = new SetBitmapImageFromUrlTask(categoryViewHolder.worksImageView, ActivityCodes.CONTENTS_WIDTH, ActivityCodes.CONTENTS_HEIGHT);
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, item.getThumbnailUrl());
 
         categoryViewHolder.author_name_view.setText(item.getPainter_name());
@@ -61,7 +83,7 @@ public class CategoryContentsRecyclerAdapter extends RecyclerView.Adapter<Recycl
         } else {
             viewCountText = viewCount + "";
         }
-        if (item.getMovie()==1) {
+        if (item.getMovie() == 1) {
             categoryViewHolder.movieImageView.setVisibility(View.VISIBLE);
         }
 
@@ -92,8 +114,5 @@ public class CategoryContentsRecyclerAdapter extends RecyclerView.Adapter<Recycl
         item.setContents_pk(contents_pk);
         item.setMovie(movie);
         items.add(item);
-    }
-    void clearItem() {
-        items.clear();
     }
 }

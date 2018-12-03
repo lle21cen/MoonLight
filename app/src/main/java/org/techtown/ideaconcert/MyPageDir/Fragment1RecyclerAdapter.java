@@ -58,8 +58,8 @@ public class Fragment1RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         fragment1Holder.contents_name_text.setText(item.getContents_name());
         fragment1Holder.contents_num.setText(String.valueOf(item.getContents_num()));
 
-//        SetBitmapImageFromUrlTask task = new SetBitmapImageFromUrlTask(fragment1Holder.thumbnail, 80, 60);
-//        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, item.getThumbnail_url());
+        SetBitmapImageFromUrlTask task = new SetBitmapImageFromUrlTask(fragment1Holder.thumbnail, 80, 60);
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, item.getThumbnail_url());
 
         fragment1Holder.continue_layout.setOnClickListener(new View.OnClickListener() {
             @Override

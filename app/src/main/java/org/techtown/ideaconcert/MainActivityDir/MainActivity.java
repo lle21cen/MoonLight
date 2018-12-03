@@ -14,9 +14,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +30,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.techtown.ideaconcert.ActivityCodes;
+import org.techtown.ideaconcert.ContentsMainDir.ContentsMainActivity;
 import org.techtown.ideaconcert.MyPageDir.MyPageActivity;
 import org.techtown.ideaconcert.R;
 import org.techtown.ideaconcert.SQLiteDir.DBHelper;
@@ -44,9 +47,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //        final private String getBannerInfoURL = "http://lle21cen.cafe24.com/GetBannerInfo.php";
     final private String getBannerInfoURL = ActivityCodes.DATABASE_IP + "/platform/GetBannerInfo";
     final private String categoryContentsURL = ActivityCodes.DATABASE_IP + "/platform/GetCategoryContents";
-//    final private String selectedContentsURL = "http://lle21cen.cafe24.com/GetSelectedContents.php";
+//        final private String selectedContentsURL = "http://lle21cen.cafe24.com/GetSelectedContents.php";
     final private String selectedContentsURL = ActivityCodes.DATABASE_IP + "/platform/GetSelectedContents";
 //    final private String discountContentsURL = "http://lle21cen.cafe24.com/GetDiscountContents.php";
+    final private int MAX_CONTENTS_NUM = 3; // 10으로 변경 필.
 
     ScrollView mainScrollView; // 메인 액태비티 최상위 레이아웃 ScrollView
 
@@ -93,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     CategoryContentsListener categoryContentsListener;
 
     private int deviceWidth;
+
     @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,7 +125,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         category_tab_layout.addTab(category_tab_layout.newTab().setText("무협"));
         category_tab_layout.addTab(category_tab_layout.newTab().setText("액션"));
         category_tab_layout.addTab(category_tab_layout.newTab().setText("코믹"));
-//        category_tab_layout.addTab(category_tab_layout.newTab().setIcon(R.drawable.option));
         category_tab_layout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         footer_up_btn = findViewById(R.id.main_footer_up_btn);
@@ -177,25 +181,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         eventBannerRecycler = findViewById(R.id.main_event_recycler);
         eventRecyclerManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         eventBannerRecycler.setLayoutManager(eventRecyclerManager);
-        eventRecyclerAdapter = new EventRecyclerAdapter(deviceWidth, (int)Math.round(deviceWidth/2.6));
+        eventRecyclerAdapter = new EventRecyclerAdapter(deviceWidth, (int) Math.round(deviceWidth / 2.6));
         eventBannerRecycler.addItemDecoration(new RecyclerViewDecoration(10));
 
-        // 이건 왜 여기???
         mypage_btn = findViewById(R.id.title_mypage_btn);
-        mypage_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (info.getUser_pk() == 0) {
-                    Intent intent;
-                    intent = new Intent(getApplicationContext(), SettingsActivity.class);
-                    startActivity(intent);
-                } else {
-                    Intent intent = new Intent(getApplicationContext(), MyPageActivity.class);
-                    intent.putExtra("user_pk", info.getUser_pk());
-                    startActivity(intent);
-                }
-            }
-        });
+        mypage_btn.setOnClickListener(this);
         ImageView searchButton = findViewById(R.id.main_title_search_btn);
         searchButton.setOnClickListener(this);
 
@@ -205,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // 광고 배너 페이저 초기화
         bannerPager = findViewById(R.id.main_pager);
-        ConstraintLayout.LayoutParams viewPagerParams = new ConstraintLayout.LayoutParams(deviceWidth, (int)Math.round(deviceWidth / 1.7));
+        ConstraintLayout.LayoutParams viewPagerParams = new ConstraintLayout.LayoutParams(deviceWidth, (int) Math.round(deviceWidth / 1.7));
         viewPagerParams.topToBottom = R.id.main_title_bar;
         bannerPager.setLayoutParams(viewPagerParams);
 
@@ -237,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 int position = tab.getPosition() + 1;
                 CategoryContentsRecyclerAdapter adapter = getCategoryAdapterByPosition(position);
                 if (adapter.getItemCount() == 0) {
-                    categoryContentsListener = new CategoryContentsListener(adapter);
+                    categoryContentsListener = new CategoryContentsListener(adapter, position);
                     ContentsDBRequest contentsDBRequest = new ContentsDBRequest(categoryContentsListener, categoryContentsURL, 0, position); // tag 필요 없음
                     requestQueue.add(contentsDBRequest);
                 } else {
@@ -262,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int position = category_tab_layout.getSelectedTabPosition() + 1;
         CategoryContentsRecyclerAdapter adapter = getCategoryAdapterByPosition(position);
         if (adapter.getItemCount() == 0) {
-            categoryContentsListener = new CategoryContentsListener(adapter);
+            categoryContentsListener = new CategoryContentsListener(adapter, position);
             contentsDBRequest = new ContentsDBRequest(categoryContentsListener, categoryContentsURL, 0, position); // tag 필요 없음
             requestQueue.add(contentsDBRequest);
         } else {
@@ -284,6 +274,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //  작품 정보를 데이터베이스에서 얻어와서 recycler view에 설정
         contentsDBRequest = new ContentsDBRequest(newArrivalListener, selectedContentsURL, 4); // 4 : 추천 작품
         requestQueue.add(contentsDBRequest);
+
     }
 
     // Indicator 초기화
@@ -349,7 +340,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     // 광고 배너 ViewPager 관련 변수 선언, 초기화
                     banner_data_num = num_result;
-                    BannerPagerAdapter adapter = new BannerPagerAdapter(getLayoutInflater(), num_result, items, deviceWidth, (int)Math.round(deviceWidth/1.7));
+                    BannerPagerAdapter adapter = new BannerPagerAdapter(getLayoutInflater(), num_result, items, deviceWidth, (int) Math.round(deviceWidth / 1.7));
                     bannerPager.setAdapter(adapter);
                     bannerThread.start(); // 최상단 배너에 대한 adater가 설정되면 자동으로 넘어가는 Thread가 실행되도록 설정
                 } else {
@@ -443,23 +434,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     };
 
     class CategoryContentsListener implements Response.Listener<String> {
-
         CategoryContentsRecyclerAdapter adapter;
-
-        public CategoryContentsListener(CategoryContentsRecyclerAdapter adapter) {
+        int position;
+        public CategoryContentsListener(CategoryContentsRecyclerAdapter adapter, int position) {
             this.adapter = adapter;
+            this.position = position;
         }
-
         @Override
         public void onResponse(String response) {
+            int num_category_contents_data = 0;
             try {
                 JSONObject jsonResponse = new JSONObject(response);
                 // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
                 boolean exist = jsonResponse.getBoolean("exist");
                 if (exist) {
                     JSONArray result = jsonResponse.getJSONArray("result");
-                    int num_category_contents_data = jsonResponse.getInt("num_result");
-                    for (int i = 0; i < num_category_contents_data; i++) {
+                    num_category_contents_data = jsonResponse.getInt("num_result");
+                    for (int i = 0; i < Math.min(num_category_contents_data, MAX_CONTENTS_NUM); i++) {
                         // 데이터베이스에 들어있는 콘텐츠의 수만큼 for문을 돌려 layout에 image추가
                         try {
                             JSONObject temp = result.getJSONObject(i);
@@ -470,20 +461,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                            String writer_name = temp.getString("writer_name"); // 글 작가 이름 추가?
                             int view_count = temp.getInt("view_count");
                             int movie = temp.getInt("movie");
-
                             adapter.addItem(url, contents_name, painter_name, view_count, contents_pk, movie);
                         } catch (Exception e) {
                             Log.e("카테고리아이템에러", e.getMessage());
                         }
                     }
                 } else {
-                    Log.e("No Contents", "표시 할 컨텐츠가 없습니다.");
+                    Log.e("메인페이지컨텐츠리스너클래스", "표시 할 컨텐츠가 없습니다.");
                 }
             } catch (Exception e) {
                 Log.e("카테고리리스너에러", "리스너에러");
-            } finally {
-                categoryRecycler.swapAdapter(adapter, true);
             }
+            if (num_category_contents_data > MAX_CONTENTS_NUM) {
+                adapter.addItem("CategoryContents", "", "", 0, 0, position); // movie에 카테고리 번호 저장
+            }
+            categoryRecycler.swapAdapter(adapter, true);
         }
     }
 
@@ -594,6 +586,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 dbHelper.dropAllTables(); // 디버깅을 위한 테이블 드랍
                 dbHelper.createRecentViewTable(); // 디버깅을 위한 테이블 생성
                 dbHelper.createContentsUrlTable(); // 디버깅을 위한 테이블 생성
+                break;
+            case R.id.title_mypage_btn:
+                if (info.getUser_pk() == 0) {
+                    Intent intent;
+                    intent = new Intent(getApplicationContext(), SettingsActivity.class);
+                    startActivity(intent);
+                } else {
+                    Intent intent = new Intent(getApplicationContext(), MyPageActivity.class);
+                    intent.putExtra("user_pk", info.getUser_pk());
+                    startActivity(intent);
+                }
                 break;
         }
     }

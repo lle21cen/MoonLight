@@ -18,6 +18,7 @@ public class ManageMyWorksActivity extends AppCompatActivity {
         tabLayout.addTab(tabLayout.newTab().setText("수익 관리"));
         tabLayout.addTab(tabLayout.newTab().setText("정산 관리"));
         tabLayout.addTab(tabLayout.newTab().setText("내 작품"));
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         final ViewPager viewPager = findViewById(R.id.manage_pager);
         ManageTabPagerAdapter pagerAdapter = new ManageTabPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());

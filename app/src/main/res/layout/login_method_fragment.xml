@@ -6,36 +6,82 @@
     android:orientation="vertical"
     tools:context=".SettingsDir.SettingsActivity">
 
+    <LinearLayout
+        android:id="@+id/login_method_title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#ffffff"
+        android:orientation="horizontal"
+        android:paddingLeft="15dp">
+
+        <Button
+            android:id="@+id/login_method_title_back_btn"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_gravity="center"
+            android:background="@drawable/back" />
+
+        <TextView
+            android:id="@+id/login_method_title_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:text="로그인"
+            android:textStyle="bold" />
+    </LinearLayout>
+
     <com.facebook.login.widget.LoginButton
         android:id="@+id/login_method_facebook"
         android:layout_width="match_parent"
-        android:layout_marginTop="10dp"
-        android:layout_height="50dp"/>
-
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/login_method_google"
-        android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="10dp"
-        android:layout_gravity="center"/>
+        android:visibility="gone" />
 
     <Button
-        android:id="@+id/login_method_moonlight"
+        android:id="@+id/login_method_custom_facebook"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="#7f66a7"
-        android:textColor="#ffffff"
+        android:layout_height="45dp"
+        android:layout_marginLeft="15dp"
         android:layout_marginTop="10dp"
-        android:text="Moonlight Login" />
+        android:layout_marginRight="15dp"
+        android:background="@drawable/facebook_login_btn" />
+
+    <Button
+        android:id="@+id/login_method_custom_google"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/google_login_btn" />
+
+    <Button
+        android:id="@+id/login_method_moonright"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/moonright_login_btn" />
+
+    <TextView
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:textSize="12sp"
+        android:text="다른 계정으로 로그인시 기존 로그인 정보는 자동 로그아웃 됩니다"
+        android:textColor="#1d68bf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/login_method_sign_out"
-        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_gravity="center"
+        android:layout_marginTop="10dp"
         android:background="#7f66a7"
         android:text="Sign Out"
-        android:textColor="#ffffff"/>
+        android:textColor="#ffffff" />
 
 </LinearLayout>

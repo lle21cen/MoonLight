@@ -11,9 +11,9 @@
         android:allowBackup="true"
         android:icon="@drawable/moonlight_small_icon"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:largeHeap="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivityDir.MainActivity">
             <intent-filter>
@@ -65,7 +65,8 @@
         <activity android:name=".noticeDir.NoticeActivity" />
         <activity android:name=".SettingsDir.TermsAndConditionActivity" />
         <activity android:name=".FAQDir.FAQActivity" />
-        <activity android:name=".ManageMyWorksDir.ManageMyWorksActivity"></activity>
+        <activity android:name=".ManageMyWorksDir.ManageMyWorksActivity" />
+        <activity android:name=".MainActivityDir.ExpandedContentsActivity"></activity>
     </application>
 
 </manifest>

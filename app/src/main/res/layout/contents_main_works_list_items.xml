@@ -7,8 +7,7 @@
     <ImageView
         android:id="@+id/contents_main_item_image"
         android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:src="@drawable/dummy_cate_cont" />
+        android:layout_height="70dp" />
 
     <TextView
         android:id="@+id/contents_main_item_title"

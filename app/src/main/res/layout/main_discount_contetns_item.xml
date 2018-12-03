@@ -14,7 +14,6 @@
             android:id="@+id/discount_item_img1"
             android:layout_width="70dp"
             android:layout_height="98dp"
-            android:src="@drawable/dummy_100x140"
             android:layout_alignParentLeft="true" />
 
         <LinearLayout
@@ -134,7 +133,6 @@
             android:id="@+id/discount_item_img2"
             android:layout_width="70dp"
             android:layout_height="98dp"
-            android:src="@drawable/dummy_100x140"
             android:layout_alignParentLeft="true" />
 
         <LinearLayout
@@ -256,7 +254,6 @@
             android:id="@+id/discount_item_img3"
             android:layout_width="70dp"
             android:layout_height="98dp"
-            android:src="@drawable/dummy_100x140"
             android:layout_alignParentLeft="true" />
 
         <LinearLayout

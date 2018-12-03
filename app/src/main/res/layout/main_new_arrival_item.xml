@@ -6,14 +6,13 @@
     <ImageView
         android:id="@+id/main_arrival_item_image"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/dummy_100x140" />
+        android:layout_height="match_parent" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_alignParentBottom="true"
-            android:background="#a0000000">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="#a0000000">
 
         <TextView
             android:id="@+id/main_arrival_item_name"

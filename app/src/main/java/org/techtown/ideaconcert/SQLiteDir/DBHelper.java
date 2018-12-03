@@ -141,7 +141,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 String date = cursor.getString(2);
                 int num = cursor.getInt(4);
                 String url = cursor.getString(5);
-                Log.e("name = " + name + " num = " + num + "url= ", url);
+                Log.e("name = " + name + " num = " + num + " url = ", url);
                 data.add(new RecentViewData(contents_pk, name, date, num, url));
             }
             return data;

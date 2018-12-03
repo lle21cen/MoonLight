@@ -38,7 +38,7 @@ public class Fragment1RecentViewWorks extends Fragment {
 
         for (int i = 0; i < data.size(); i++) {
             adapter.addItem(data.get(i).getUrl(), data.get(i).getContents_pk(), data.get(i).getDate(), data.get(i).getContents_name(), data.get(i).getContents_num());
-            Log.i("마이페이지 thumbnail url", data.get(i).getUrl());
+            Log.e("마이페이지 thumbnail url", data.get(i).getUrl());
         }
         recyclerView.setAdapter(adapter);
         recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {

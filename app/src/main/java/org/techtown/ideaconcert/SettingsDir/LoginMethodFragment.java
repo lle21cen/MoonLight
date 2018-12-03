@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -52,7 +53,6 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
     private String email, name, login_method; // user's email and name
 
     // For google
-    private SignInButton google_login_btn;
     private GoogleApiClient googleApiClient;
     private FirebaseAuth auth;
     final int GOOGLE_SIGN_IN = 2001;
@@ -62,6 +62,7 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
     LoginButton facebook_login;
     String TAG = "myTag";
     ProfileTracker mProfileTracker;
+    private Button fbCustomBtn, googleCustomBtn;
 
     UserInformation userInformation;
     RequestQueue mRequestQueue;
@@ -71,11 +72,16 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.login_method_fragment, container, false);
         mRequestQueue = Volley.newRequestQueue(getActivity());
-        Button moonlight_login_btn = view.findViewById(R.id.login_method_moonlight);
+        Button moonlight_login_btn = view.findViewById(R.id.login_method_moonright);
         moonlight_login_btn.setOnClickListener(this);
         Button sign_out_btn = view.findViewById(R.id.login_method_sign_out);
         sign_out_btn.setOnClickListener(this);
         userInformation = (UserInformation) getActivity().getApplication();
+
+        Button backBtn = view.findViewById(R.id.login_method_title_back_btn);
+        TextView titleText = view.findViewById(R.id.login_method_title_txt);
+        backBtn.setOnClickListener(this);
+        titleText.setOnClickListener(this);
 
         // 페이스북과 구글 로그인 API 연동
         // -------------------------------------------------------------------------- //
@@ -112,6 +118,13 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
             }
         });
 
+        fbCustomBtn = view.findViewById(R.id.login_method_custom_facebook);
+        fbCustomBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                facebook_login.performClick();
+            }
+        });
 
         // -------------------------------------------------------------------------- //
         //                               GOOGLE LOGIN                               //
@@ -129,22 +142,21 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
                     }
                 }).addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-        google_login_btn = view.findViewById(R.id.login_method_google);
-        google_login_btn.setOnClickListener(this);
         // -------------------------------------------------------------------------- //
-
+        googleCustomBtn = view.findViewById(R.id.login_method_custom_google);
+        googleCustomBtn.setOnClickListener(this);
         return view;
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.login_method_moonlight:
+            case R.id.login_method_moonright:
                 userInformation.logoutSession();
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivityForResult(intent, ActivityCodes.LOGIN_REQUEST);
                 break;
-            case R.id.login_method_google:
+            case R.id.login_method_custom_google :
                 userInformation.logoutSession();
                 Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
                 startActivityForResult(signInIntent, GOOGLE_SIGN_IN);
@@ -152,6 +164,11 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
             case R.id.login_method_sign_out:
                 userInformation.logoutSession();
                 replaceFragment(new SettingsPreferenceFragment());
+                break;
+            case R.id.login_back_btn:
+            case R.id.login_method_title_txt:
+                replaceFragment(new SettingsPreferenceFragment());
+                break;
         }
     }
 
@@ -231,6 +248,7 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
         startActivity(intent);
         getActivity().finish();
     }
+
     @Override
     public void onResume() {
         super.onResume();

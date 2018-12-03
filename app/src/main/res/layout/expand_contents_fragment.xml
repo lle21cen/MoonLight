@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_centerHorizontal="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/expand_tab">
+
+        <!--<GridLayout-->
+            <!--android:id="@+id/expand_grid_layout"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:columnCount="3"-->
+            <!--android:orientation="horizontal">-->
+
+            <!--<Button-->
+                <!--android:layout_columnWeight="1"-->
+                <!--android:text="버튼 테스트"-->
+                <!--/>-->
+            <!--<Button-->
+                <!--android:layout_columnWeight="1"-->
+                <!--android:text="버튼 테스트"-->
+                <!--/>-->
+            <!--<Button-->
+                <!--android:layout_columnWeight="1"-->
+                <!--android:text="버튼 테스트"-->
+                <!--/>-->
+            <!--<Button-->
+                <!--android:layout_columnWeight="1"-->
+                <!--android:text="버튼 테스트"-->
+                <!--/>-->
+            <!--<Button-->
+                <!--android:layout_columnWeight="1"-->
+                <!--android:text="버튼 테스트"-->
+                <!--/>-->
+            <!--<Button-->
+                <!--android:layout_columnWeight="1"-->
+                <!--android:text="버튼 테스트"-->
+                <!--/>-->
+            <!--<Button-->
+                <!--android:layout_columnWeight="1"-->
+                <!--android:text="버튼 테스트"-->
+                <!--/>-->
+            <!--<Button-->
+                <!--android:layout_columnWeight="1"-->
+                <!--android:text="버튼 테스트"-->
+                <!--/>-->
+
+        <!--</GridLayout>-->
+
+        <GridLayout
+        android:id="@+id/expand_grid_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:columnCount="3"
+        android:orientation="horizontal"/>
+    </ScrollView>
+
+</RelativeLayout>

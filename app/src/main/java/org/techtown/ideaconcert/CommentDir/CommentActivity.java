@@ -103,8 +103,6 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
                 Intent intent = getIntent();
                 int item_pk = intent.getIntExtra("item_pk", 0);
 
-                Toast.makeText(this, "" + email + " " + item_pk, Toast.LENGTH_SHORT).show();
-
                 CommentInsertDeleteRequest request = new CommentInsertDeleteRequest(insertDeleteCommentURL, commentInsertDeleteListener, 1, email, comment, item_pk);
                 RequestQueue requestQueue = Volley.newRequestQueue(this);
                 requestQueue.add(request);

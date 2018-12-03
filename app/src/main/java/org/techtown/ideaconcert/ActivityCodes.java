@@ -18,4 +18,6 @@ public class ActivityCodes extends Application {
     public static final String DATABASE_IP = "http://58.77.182.75:8090";
 
     public static final int ROLE_AUTHOR = 1, ROLE_NORMAL = 2;
+
+    public static final int CONTENTS_WIDTH = 100, CONTENTS_HEIGHT = 140;
 }

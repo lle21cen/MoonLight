@@ -7,8 +7,7 @@
     <ImageView
         android:id="@+id/my_page_fragment3_thumbnail"
         android:layout_width="80dp"
-        android:layout_height="60dp"
-        android:src="@drawable/dummy_100x80" />
+        android:layout_height="60dp" />
 
     <RelativeLayout
         android:id="@+id/my_page_fragment3_layout2"
