@@ -56,7 +56,7 @@ public class SetBitmapImageFromUrlTask extends AsyncTask<String, Void, Bitmap> {
             }
 
             if (!src.isRecycled()) {
-                src.recycle();
+//                src.recycle();
             }
 
             connection.disconnect();

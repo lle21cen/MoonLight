@@ -7,6 +7,7 @@
         android:id="@+id/main_best_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
         android:text="이달의 "
         android:textSize="20dp"
         android:textStyle="bold" />
@@ -31,23 +32,24 @@
         android:textStyle="bold" />
 
     <LinearLayout
-        android:gravity="center"
-        android:layout_marginTop="5dp"
-        android:layout_alignParentRight="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/main_best_date"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:gravity="center">
 
         <TextView
-            android:id="@+id/main_best_view_all_text"
+            android:id="@+id/main_best_expand_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="전체보기" />
 
         <ImageView
-            android:id="@+id/main_best_view_all_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_keyboard_arrow_right_black_24dp" />
+            android:id="@+id/main_best_expand_image"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/more" />
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
@@ -55,6 +57,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/main_best_date"
-        android:orientation="horizontal"
-        android:layout_margin="5dp" />
+        android:layout_margin="5dp"
+        android:orientation="horizontal" />
 </RelativeLayout>

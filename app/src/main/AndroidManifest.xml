@@ -66,7 +66,9 @@
         <activity android:name=".SettingsDir.TermsAndConditionActivity" />
         <activity android:name=".FAQDir.FAQActivity" />
         <activity android:name=".ManageMyWorksDir.ManageMyWorksActivity" />
-        <activity android:name=".MainActivityDir.ExpandedContentsActivity"></activity>
+        <activity android:name=".MainActivityDir.ExpandedContentsActivity" />
+        <activity android:name=".MainActivityDir.SelectedContetnsExpandActivity" />
+        <activity android:name=".SearchDir.SearchActivity"></activity>
     </application>
 
 </manifest>

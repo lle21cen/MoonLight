@@ -7,6 +7,7 @@
         android:id="@+id/main_discount_first_title_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
         android:text="주말특가"
         android:textSize="20dp" />
 
@@ -32,23 +33,23 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/main_discount_first_third_text"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="5dp"
-        android:gravity="center">
+        android:layout_marginRight="10dp">
 
         <TextView
-            android:id="@+id/main_discount_view_all_text"
+            android:id="@+id/main_discount_expand_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/main_discount_first_third_text"
             android:text="전체보기" />
 
         <ImageView
-            android:id="@+id/main_discount_view_all"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/main_discount_view_all_text"
-            android:src="@drawable/ic_keyboard_arrow_right_black_24dp" />
+            android:id="@+id/main_discount_expand_image"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_toRightOf="@id/main_discount_expand_text"
+            android:src="@drawable/more" />
     </LinearLayout>
 
     <android.support.v4.view.ViewPager

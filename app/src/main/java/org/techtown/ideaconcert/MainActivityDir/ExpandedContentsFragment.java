@@ -74,6 +74,7 @@ public class ExpandedContentsFragment extends Fragment {
                             ExpandedContentsItemLayout itemLayout = new ExpandedContentsItemLayout(context, url, contents_name, painter_name, view_count, contents_pk, movie);
                             gridLayout.addView(itemLayout);
                             gridLayout.setUseDefaultMargins(true);
+                            gridLayout.setAlignmentMode(GridLayout.ALIGN_BOUNDS);
                         } catch (Exception e) {
                             Log.e("펼쳐보기컨텐츠정보가져오기", e.getMessage());
                         }

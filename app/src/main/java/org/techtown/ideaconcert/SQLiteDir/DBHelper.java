@@ -28,6 +28,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         createRecentViewTable();
         createContentsUrlTable();
+        createRecentSearchTable();
         Log.e("onCreate", "테이블 생성 완료");
     }
 
@@ -38,7 +39,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public void insertOrUpdateRecentViewData(int contents_pk, String contents_name, String date, String date_for_compare, int contents_num) {
         try {
-            String sql = "SELECT contents_pk FROM recent_view WHERE contents_pk = " + contents_pk + " AND contents_num = " + contents_num +";";
+            String sql = "SELECT contents_pk FROM recent_view WHERE contents_pk = " + contents_pk + " AND contents_num = " + contents_num + ";";
             SQLiteDatabase db = getReadableDatabase();
             Cursor cursor = db.rawQuery(sql, null);
             cursor.moveToNext();
@@ -59,10 +60,9 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void insertContentsUrl (int contents_pk, String url) {
+    public void insertContentsUrl(int contents_pk, String url) {
         try {
-
-            String sql = "SELECT contents_pk FROM contents_url WHERE contents_pk = " + contents_pk + " AND url = '" + url +"';";
+            String sql = "SELECT contents_pk FROM contents_url WHERE contents_pk = " + contents_pk + " AND url = '" + url + "';";
             SQLiteDatabase db = getReadableDatabase();
             Cursor cursor = db.rawQuery(sql, null);
             if (cursor.getCount() != 0) {
@@ -73,9 +73,9 @@ public class DBHelper extends SQLiteOpenHelper {
             } else {
                 db = getWritableDatabase();
                 sql = "INSERT INTO contents_url(contents_pk, url) VALUES(?, ?)";
-                db.execSQL(sql, new Object[] {
+                db.execSQL(sql, new Object[]{
                         contents_pk, url
-                } );
+                });
                 Log.e("insertContentUrl", "url 삽입 성공 " + contents_pk + " " + url);
                 db.close();
             }
@@ -83,6 +83,31 @@ public class DBHelper extends SQLiteOpenHelper {
             Log.e("insertUrlException", se.getMessage());
         }
     }
+
+    public void insertRecentSearchData(String contents_name, String view_date) {
+        try {
+            String sql = "SELECT contents_pk FROM recent_search WHERE contents_name = '" + contents_name + "';";
+            SQLiteDatabase db = getReadableDatabase();
+            Cursor cursor = db.rawQuery(sql, null);
+            if (cursor.getCount() != 0) {
+                db = getWritableDatabase();
+                sql = "UPDATE recent_search SET view_date = '" + view_date + "' WHERE contents_name = '" + contents_name + "';";
+                db.execSQL(sql);
+                Log.e("insertRecentSearchData", "view_date 업데이트 성공");
+            } else {
+                db = getWritableDatabase();
+                sql = "INSERT INTO recent_search(contents_name, view_date) VALUES(?, ?)";
+                db.execSQL(sql, new Object[]{
+                        contents_name, view_date
+                });
+                Log.e("insertRecentSearchData", "최근검색정보 삽입 성공 " + contents_name + " " + view_date);
+                db.close();
+            }
+        } catch (SQLException se) {
+            Log.e("RecentDataException", se.getMessage());
+        }
+    }
+
     public void createRecentViewTable() {
         SQLiteDatabase db = getWritableDatabase();
         String sql = "CREATE TABLE recent_view(contents_pk INTEGER, contents_name VARCHAR(20), view_date DATETIME, date_for_compare DATETIME, contents_num INTEGER, contents_url VARCHAR(100), PRIMARY KEY(contents_pk, contents_num));";
@@ -94,7 +119,14 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         String sql = "CREATE TABLE contents_url(contents_pk INTEGER, url VARCHAR(100), PRIMARY KEY(contents_pk, url));";
         db.execSQL(sql);
-        Log.e("createContentsUrlTable", "테이블 생성 완료");
+        Log.e("createContentsUrlTable", "컨텐츠URL 테이블 생성 완료");
+    }
+
+    public void createRecentSearchTable() {
+        SQLiteDatabase db = getWritableDatabase();
+        String sql = "CREATE TABLE recent_search(contents_name VARCHAR(20), search_date DATETIME, PRIMARY KEY(contents_name, search_date));";
+        db.execSQL(sql);
+        Log.e("createRecentSearchTable", "최근검색 테이블 생성 완료");
     }
 
     public void dropTable(String table_name) {
@@ -134,7 +166,7 @@ public class DBHelper extends SQLiteOpenHelper {
             Cursor cursor = db.rawQuery(sql, null);
 
             ArrayList<RecentViewData> data = new ArrayList<>();
-            Log.e("getAllRecentViewData", ""+cursor.getCount());
+            Log.e("getAllRecentViewData", "" + cursor.getCount());
             while (cursor.moveToNext()) {
                 int contents_pk = cursor.getInt(0);
                 String name = cursor.getString(1);
@@ -166,6 +198,22 @@ public class DBHelper extends SQLiteOpenHelper {
         } catch (SQLException se) {
             Log.e("마지막컨텐츠번호오류", se.getMessage());
             return 0;
+        }
+    }
+
+    public ArrayList<RecentSearchData> selectAllRecentSearchData() {
+        try {
+            ArrayList<RecentSearchData> data = new ArrayList<>();
+            String sql = "SELECT * FROM recent_search;";
+            SQLiteDatabase db = getReadableDatabase();
+            Cursor cursor = db.rawQuery(sql, null);
+            while (cursor.moveToNext()) {
+                data.add(new RecentSearchData(cursor.getString(0), cursor.getString(1)));
+            }
+            return data;
+        } catch (SQLException se) {
+            Log.e("최근검색작품가져오기오류", se.getMessage());
+            return new ArrayList<>();
         }
     }
 }

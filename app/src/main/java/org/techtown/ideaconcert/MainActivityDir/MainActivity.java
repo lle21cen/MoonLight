@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -35,6 +36,7 @@ import org.techtown.ideaconcert.MyPageDir.MyPageActivity;
 import org.techtown.ideaconcert.R;
 import org.techtown.ideaconcert.SQLiteDir.DBHelper;
 import org.techtown.ideaconcert.SQLiteDir.DBNames;
+import org.techtown.ideaconcert.SearchDir.SearchActivity;
 import org.techtown.ideaconcert.SettingsDir.SettingsActivity;
 import org.techtown.ideaconcert.UserInformation;
 
@@ -47,9 +49,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //        final private String getBannerInfoURL = "http://lle21cen.cafe24.com/GetBannerInfo.php";
     final private String getBannerInfoURL = ActivityCodes.DATABASE_IP + "/platform/GetBannerInfo";
     final private String categoryContentsURL = ActivityCodes.DATABASE_IP + "/platform/GetCategoryContents";
-//        final private String selectedContentsURL = "http://lle21cen.cafe24.com/GetSelectedContents.php";
+    //        final private String selectedContentsURL = "http://lle21cen.cafe24.com/GetSelectedContents.php";
     final private String selectedContentsURL = ActivityCodes.DATABASE_IP + "/platform/GetSelectedContents";
-//    final private String discountContentsURL = "http://lle21cen.cafe24.com/GetDiscountContents.php";
+    //    final private String discountContentsURL = "http://lle21cen.cafe24.com/GetDiscountContents.php";
     final private int MAX_CONTENTS_NUM = 3; // 10으로 변경 필.
 
     ScrollView mainScrollView; // 메인 액태비티 최상위 레이아웃 ScrollView
@@ -89,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private NewArrivalRecyclerAdapter recommendRecyclerAdapter;
     private RecyclerView recommendRecycler;
 
-    // 추천 메뉴에 필요한 변수들
+    // 이벤트 배너에 필요한 변수들
     private EventRecyclerAdapter eventRecyclerAdapter;
     private RecyclerView eventBannerRecycler;
 
@@ -260,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         // 신작 콘텐츠 정보를 데이터베이스에서 얻어와서 recycler view에 설정
-        contentsDBRequest = new ContentsDBRequest(newArrivalListener, selectedContentsURL, 1); // 1 : 신작 작품
+        contentsDBRequest = new ContentsDBRequest(selectedContentsListener, selectedContentsURL, 1); // 1 : 신작 작품
         requestQueue.add(contentsDBRequest);
 
         // 할인 작품 정보를 데이터베이스에서 얻어와서 recycler view에 설정
@@ -268,13 +270,47 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         requestQueue.add(contentsDBRequest);
 
         // 베스트 작품 정보를 데이터베이스에서 얻어와서 recycler view에 설정
-        contentsDBRequest = new ContentsDBRequest(newArrivalListener, selectedContentsURL, 3); // 3 : 베스트 작품
+        contentsDBRequest = new ContentsDBRequest(selectedContentsListener, selectedContentsURL, 3); // 3 : 베스트 작품
         requestQueue.add(contentsDBRequest);
 
         //  작품 정보를 데이터베이스에서 얻어와서 recycler view에 설정
-        contentsDBRequest = new ContentsDBRequest(newArrivalListener, selectedContentsURL, 4); // 4 : 추천 작품
+        contentsDBRequest = new ContentsDBRequest(selectedContentsListener, selectedContentsURL, 4); // 4 : 추천 작품
         requestQueue.add(contentsDBRequest);
 
+
+        // 펼쳐보기 버튼들 리스너 등록
+        TextView newArrivalExpandText = findViewById(R.id.main_arrival_expand_text);
+        ImageView newArrivalExpandImage = findViewById(R.id.main_arrival_expand_image); // 신작 펼쳐보기
+
+        TextView discountExpandText = findViewById(R.id.main_discount_expand_text);
+        ImageView discountExpandImage = findViewById(R.id.main_discount_expand_image); // 할인작품 펼쳐보기
+
+        TextView bestExpandText = findViewById(R.id.main_best_expand_text);
+        ImageView bestExpandImage = findViewById(R.id.main_best_expand_image); // 베스트작품 펼쳐보기
+
+        TextView recommendExpandText = findViewById(R.id.main_recommend_expand_text);
+        ImageView recommendExpandImage = findViewById(R.id.main_recommend_expand_image); // 추천작품 펼쳐보기
+
+        newArrivalExpandText.setOnClickListener(this);
+        newArrivalExpandImage.setOnClickListener(this);
+
+        discountExpandText.setOnClickListener(this);
+        discountExpandImage.setOnClickListener(this);
+
+        bestExpandText.setOnClickListener(this);
+        bestExpandImage.setOnClickListener(this);
+
+        recommendExpandText.setOnClickListener(this);
+        recommendExpandImage.setOnClickListener(this);
+
+        Button searchText = findViewById(R.id.title_search_text);
+        searchText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     // Indicator 초기화
@@ -357,7 +393,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void onResponse(String response) {
             try {
                 JSONObject jsonResponse = new JSONObject(response);
-                // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
                 JSONArray result = jsonResponse.getJSONArray("result");
                 boolean exist = jsonResponse.getBoolean("exist");
                 if (exist) {
@@ -380,12 +415,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     };
 
     // 선택된 메뉴 리스너
-    private Response.Listener<String> newArrivalListener = new Response.Listener<String>() {
+    private Response.Listener<String> selectedContentsListener = new Response.Listener<String>() {
         @Override
         public void onResponse(String response) {
             try {
                 JSONObject jsonResponse = new JSONObject(response);
-                // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
                 JSONArray result = jsonResponse.getJSONArray("result");
                 boolean exist = jsonResponse.getBoolean("exist");
                 int tag = jsonResponse.getInt("tag");
@@ -404,10 +438,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Log.e("tag error", "tag" + tag);
                     return;
                 }
+                // tag 1 : 신작 2 : 베스트작 3 : 추천작
 
                 if (exist) {
-                    int num_category_contents_data = jsonResponse.getInt("num_result");
-                    for (int i = 0; i < num_category_contents_data; i++) {
+                    int num_result = jsonResponse.getInt("num_result");
+                    for (int i = 0; i < num_result; i++) {
                         // 데이터베이스에 들어있는 콘텐츠의 수만큼 for문을 돌려 layout에 image추가
                         try {
                             JSONObject temp = result.getJSONObject(i);
@@ -436,10 +471,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     class CategoryContentsListener implements Response.Listener<String> {
         CategoryContentsRecyclerAdapter adapter;
         int position;
+
         public CategoryContentsListener(CategoryContentsRecyclerAdapter adapter, int position) {
             this.adapter = adapter;
             this.position = position;
         }
+
         @Override
         public void onResponse(String response) {
             int num_category_contents_data = 0;
@@ -586,17 +623,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 dbHelper.dropAllTables(); // 디버깅을 위한 테이블 드랍
                 dbHelper.createRecentViewTable(); // 디버깅을 위한 테이블 생성
                 dbHelper.createContentsUrlTable(); // 디버깅을 위한 테이블 생성
+                dbHelper.createRecentSearchTable(); // 디버깅을 위한 테이블 생성
                 break;
             case R.id.title_mypage_btn:
                 if (info.getUser_pk() == 0) {
-                    Intent intent;
-                    intent = new Intent(getApplicationContext(), SettingsActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
                     startActivity(intent);
                 } else {
                     Intent intent = new Intent(getApplicationContext(), MyPageActivity.class);
                     intent.putExtra("user_pk", info.getUser_pk());
                     startActivity(intent);
                 }
+                break;
+            // tag 1 :신작, 2 :할인작 3 :베스트작, 4 :추천작
+            case R.id.main_arrival_expand_image:
+            case R.id.main_arrival_expand_text:
+                Intent intent = new Intent(getApplicationContext(), SelectedContetnsExpandActivity.class);
+                intent.putExtra("tag", 1);
+                startActivity(intent);
+                break;
+            case R.id.main_discount_expand_image:
+            case R.id.main_discount_expand_text:
+                intent = new Intent(getApplicationContext(), SelectedContetnsExpandActivity.class);
+                intent.putExtra("tag", 2);
+                startActivity(intent);
+                break;
+            case R.id.main_best_expand_image:
+            case R.id.main_best_expand_text:
+                intent = new Intent(getApplicationContext(), SelectedContetnsExpandActivity.class);
+                intent.putExtra("tag", 3);
+                startActivity(intent);
+                break;
+            case R.id.main_recommend_expand_image:
+            case R.id.main_recommend_expand_text:
+                intent = new Intent(getApplicationContext(), SelectedContetnsExpandActivity.class);
+                intent.putExtra("tag", 4);
+                startActivity(intent);
+
                 break;
         }
     }

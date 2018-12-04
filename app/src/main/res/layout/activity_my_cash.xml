@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="#ffffff"
-            android:text="캐시  충전"
+            android:text="캐시 충전"
             android:textColor="#786aaa" />
 
         <Button
