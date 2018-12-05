@@ -84,23 +84,23 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void insertRecentSearchData(String contents_name, String view_date) {
+    public void insertRecentSearchData(String contents_name, String search_date) {
         try {
-            String sql = "SELECT contents_pk FROM recent_search WHERE contents_name = '" + contents_name + "';";
+            String sql = "SELECT contents_name FROM recent_search WHERE contents_name = '" + contents_name + "';";
             SQLiteDatabase db = getReadableDatabase();
             Cursor cursor = db.rawQuery(sql, null);
             if (cursor.getCount() != 0) {
                 db = getWritableDatabase();
-                sql = "UPDATE recent_search SET view_date = '" + view_date + "' WHERE contents_name = '" + contents_name + "';";
+                sql = "UPDATE recent_search SET search_date = '" + search_date + "' WHERE contents_name = '" + contents_name + "';";
                 db.execSQL(sql);
                 Log.e("insertRecentSearchData", "view_date 업데이트 성공");
             } else {
                 db = getWritableDatabase();
-                sql = "INSERT INTO recent_search(contents_name, view_date) VALUES(?, ?)";
+                sql = "INSERT INTO recent_search(contents_name, search_date) VALUES(?, ?)";
                 db.execSQL(sql, new Object[]{
-                        contents_name, view_date
+                        contents_name, search_date
                 });
-                Log.e("insertRecentSearchData", "최근검색정보 삽입 성공 " + contents_name + " " + view_date);
+                Log.e("insertRecentSearchData", "최근검색정보 삽입 성공 " + contents_name + " " + search_date);
                 db.close();
             }
         } catch (SQLException se) {
@@ -139,6 +139,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void dropAllTables() {
         dropTable("recent_view");
         dropTable("contents_url");
+        dropTable("recent_search");
     }
 
     public ArrayList<Integer> getReadContentsNum(int contents_pk) {
@@ -214,6 +215,19 @@ public class DBHelper extends SQLiteOpenHelper {
         } catch (SQLException se) {
             Log.e("최근검색작품가져오기오류", se.getMessage());
             return new ArrayList<>();
+        }
+    }
+
+    public void deleteRecentSearchData(String contents_name) {
+        try {
+            String sql = "DELETE FROM recent_search WHERE contents_name = '" + contents_name + "';";
+            SQLiteDatabase db = getWritableDatabase();
+            db.execSQL(sql);
+            Log.e("검색기록삭제성공", contents_name);
+        } catch (SQLException se) {
+            Log.e("최근검색기록삭제오류", se.getMessage());
+        } catch (Exception e) {
+            Log.e("최근검색기록삭제오류", e.getMessage());
         }
     }
 }

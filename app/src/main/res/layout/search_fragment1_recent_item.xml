@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/search_item_parent_layout"
+    android:layout_marginRight="15dp"
+    android:layout_marginLeft="15dp"
+    android:layout_marginTop="10dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -8,6 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="열혈강호"
+        android:textSize="15sp"
         android:textColor="#000000" />
 
     <LinearLayout
@@ -21,12 +26,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="09.07"
+            android:textSize="15sp"
             android:textColor="#000000" />
 
         <ImageView
             android:id="@+id/search_cancel_image"
-            android:layout_width="10dp"
-            android:layout_height="10dp"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="10dp"
