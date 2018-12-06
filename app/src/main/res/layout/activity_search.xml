@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ffffff"
     tools:context=".SearchDir.SearchActivity">
 
     <RelativeLayout
@@ -17,38 +18,40 @@
 
         <Button
             android:id="@+id/search_back_btn"
-            android:layout_centerVertical="true"
-            android:background="@drawable/back"
             android:layout_width="15dp"
-            android:layout_height="15dp" />
+            android:layout_height="15dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/back" />
 
         <EditText
             android:id="@+id/search_keyword"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
+            android:layout_gravity="center"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:layout_gravity="center"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:hint="@string/title_search"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
             android:textAlignment="center"
             android:textSize="12sp" />
 
         <Button
             android:id="@+id/search_search_btn"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/search"
             android:layout_width="15dp"
-            android:layout_height="15dp"/>
+            android:layout_height="15dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/search" />
     </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/search_fragment_container"
-        android:layout_below="@+id/title_search_layout"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_below="@+id/title_search_layout"
+        android:orientation="vertical" />
 
 </RelativeLayout>

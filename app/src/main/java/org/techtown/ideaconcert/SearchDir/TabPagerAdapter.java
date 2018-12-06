@@ -4,11 +4,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import org.techtown.ideaconcert.MyPageDir.Fragment1RecentViewWorks;
-import org.techtown.ideaconcert.MyPageDir.Fragment2LikeWorks;
-import org.techtown.ideaconcert.MyPageDir.Fragment3LikeAuthor;
-import org.techtown.ideaconcert.MyPageDir.Fragment4NoticeList;
-
 public class TabPagerAdapter extends FragmentStatePagerAdapter {
 
     private int tabCount;
@@ -23,9 +18,9 @@ public class TabPagerAdapter extends FragmentStatePagerAdapter {
         // Returning the current tabs
         switch (position) {
             case 0:
-                return new Fragment1RecentSearch();
+                return new ChildFragment1RecentSearch();
             case 1:
-                return new Fragment2PopSearch();
+                return new ChildFragment2PopSearch();
             default:
                 return null;
         }

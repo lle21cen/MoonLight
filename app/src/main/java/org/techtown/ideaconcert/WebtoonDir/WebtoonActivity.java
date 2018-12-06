@@ -269,13 +269,16 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
                 JSONObject jsonObject = new JSONObject(response);
                 boolean success = jsonObject.getBoolean("success");
                 if (success) {
+                    int likeCount = Integer.parseInt(like_count_text.getText().toString());
                     if (!is_like_clicked) {
                         is_like_clicked = true;
                         Toast.makeText(WebtoonActivity.this, "이 작품을 좋아합니다.", Toast.LENGTH_SHORT).show();
                         like_btn.setBackgroundDrawable(ContextCompat.getDrawable(WebtoonActivity.this, R.drawable.pick_2));
+                        like_count_text.setText(String.valueOf(likeCount + 1));
                     } else {
                         Toast.makeText(WebtoonActivity.this, "취소되었습니다.", Toast.LENGTH_SHORT).show();
                         is_like_clicked = false;
+                        like_count_text.setText(String.valueOf(likeCount - 1));
                         like_btn.setBackgroundDrawable(ContextCompat.getDrawable(WebtoonActivity.this, R.drawable.ic_favorite_border_white_24dp));
                     }
                 } else {

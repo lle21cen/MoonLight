@@ -23,7 +23,7 @@ import java.util.Calendar;
 
 public class Fragment1ProfitLayout extends RelativeLayout {
 
-    private final String GetProfitDataURL = "http://lle21cen.cafe24.com/GetProfitData.php";
+    private final String GetProfitDataURL = "http://lle21cen.cafe24.com/GetProfitData.php"; // 추후 수정 필요
 
     int currentYear, whatMonth, endDayOfMonth, user_pk;
     LinearLayout profitLayout;

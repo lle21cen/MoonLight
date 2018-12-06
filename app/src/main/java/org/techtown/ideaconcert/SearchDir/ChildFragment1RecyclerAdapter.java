@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.techtown.ideaconcert.R;
@@ -20,12 +19,12 @@ import org.techtown.ideaconcert.SQLiteDir.RecentSearchData;
 
 import java.util.ArrayList;
 
-public class Fragment1RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    Context context;
-    ArrayList<RecentSearchData> items;
-    Handler cancelHandler, autoSearchHandler;
+public class ChildFragment1RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private Context context;
+    private ArrayList<RecentSearchData> items;
+    private Handler cancelHandler, autoSearchHandler;
 
-    public Fragment1RecyclerAdapter(ArrayList<RecentSearchData> items, Handler cancelHandler, Handler autoSearchHandler) {
+    public ChildFragment1RecyclerAdapter(ArrayList<RecentSearchData> items, Handler cancelHandler, Handler autoSearchHandler) {
         this.items = items;
         this.cancelHandler = cancelHandler;
         this.autoSearchHandler = autoSearchHandler;
@@ -50,13 +49,13 @@ public class Fragment1RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_fragment1_recent_item, parent, false);
-        return new Fragment1RecyclerAdapter.Fragment1ViewHolder(v);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_child_fragment1_recent_item, parent, false);
+        return new ChildFragment1RecyclerAdapter.Fragment1ViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        final Fragment1RecyclerAdapter.Fragment1ViewHolder fragment1ViewHolder = (Fragment1ViewHolder) holder;
+        final ChildFragment1RecyclerAdapter.Fragment1ViewHolder fragment1ViewHolder = (Fragment1ViewHolder) holder;
         RecentSearchData data = items.get(position);
         fragment1ViewHolder.contentsNameView.setText(data.getContents_name());
         fragment1ViewHolder.dateView.setText(data.getSearch_date());

@@ -20,7 +20,7 @@ import android.widget.VideoView;
 import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.R;
 
-public class WebtoonMovieActivity extends AppCompatActivity {
+public class WebtoonMovieActivity extends AppCompatActivity implements View.OnClickListener{
 
     MediaController mc;
 
@@ -75,5 +75,12 @@ public class WebtoonMovieActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+
+        }
     }
 }

@@ -24,7 +24,7 @@ import java.util.Calendar;
 
 public class Fragment2MonthDataLayout extends RelativeLayout {
 
-    private final String GetProfitDataURL = "http://lle21cen.cafe24.com/GetCalculationData.php";
+    private final String GetProfitDataURL = "http://lle21cen.cafe24.com/GetCalculationData.php"; // 추후 수정 필요
 
     int currentYear, whatMonth, endDayOfMonth, user_pk;
     TextView totalAmountView;

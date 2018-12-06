@@ -22,18 +22,18 @@ import org.techtown.ideaconcert.SQLiteDir.RecentSearchData;
 
 import java.util.ArrayList;
 
-public class Fragment1RecentSearch extends Fragment {
+public class ChildFragment1RecentSearch extends Fragment {
 
     View view;
     RecyclerView recyclerView;
-    Fragment1RecyclerAdapter adapter;
+    ChildFragment1RecyclerAdapter adapter;
     TextView searchText;
     Button searchButton;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.search_fragment1_recent, container, false);
+        view = inflater.inflate(R.layout.search_child_fragment_recycler_view, container, false);
         recyclerView = view.findViewById(R.id.search_recent_recycler);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
@@ -41,14 +41,14 @@ public class Fragment1RecentSearch extends Fragment {
         DBHelper dbHelper = new DBHelper(getContext(), DBNames.CONTENTS_DB, null, 1);
         ArrayList<RecentSearchData> data = dbHelper.selectAllRecentSearchData();
 
-        adapter = new Fragment1RecyclerAdapter(data, cancelHandler, autoSearchHandler);
+        adapter = new ChildFragment1RecyclerAdapter(data, cancelHandler, autoSearchHandler);
         recyclerView.setAdapter(adapter);
 
         try {
             searchText = getParentFragment().getActivity().findViewById(R.id.search_keyword);
             searchButton = getParentFragment().getActivity().findViewById(R.id.search_search_btn);
         } catch (NullPointerException ne) {
-            Log.e("버튼 초기화 오류", ne.getMessage());
+            Log.e("최근검색 버튼 초기화 오류", ne.getMessage());
         }
         return view;
     }

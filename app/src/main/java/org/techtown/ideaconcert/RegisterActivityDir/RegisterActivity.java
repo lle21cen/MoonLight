@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,9 +33,10 @@ import org.techtown.ideaconcert.DeleteRequest;
 import org.techtown.ideaconcert.ForceQuitManageService;
 import org.techtown.ideaconcert.MainActivityDir.MainActivity;
 import org.techtown.ideaconcert.R;
+import org.techtown.ideaconcert.SettingsDir.TermsAndConditionActivity;
 import org.techtown.ideaconcert.ShowProgressDialog;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity implements View.OnClickListener{
 
     /*
     사용자 회원가입 화면
@@ -47,6 +49,7 @@ public class RegisterActivity extends AppCompatActivity {
     AlertDialog.Builder builder;
     EditText nameText, emailText, pwdText, pwdConfirmText;
     TextView infoText;
+    private CheckBox checkBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,48 +66,15 @@ public class RegisterActivity extends AppCompatActivity {
         builder = new AlertDialog.Builder(RegisterActivity.this);
         builder.setCancelable(false).setPositiveButton("확인", null);
 
+        checkBox = findViewById(R.id.register_checkbox);
+        TextView tacView = findViewById(R.id.register_terms_and_condition); // tac == terms and condition
+        tacView.setOnClickListener(this);
+
         final Button cancelBtn = findViewById(R.id.register_cancel_btn);
-        cancelBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(RegisterActivity.this, "회원가입이 취소 되었습니다.", Toast.LENGTH_SHORT).show();
-                setResult(ActivityCodes.LOGIN_FAIL);
-                finish();
-            }
-        });
+        cancelBtn.setOnClickListener(this);
 
         final Button registerBtn = findViewById(R.id.register_join_btn);
-        registerBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String email = emailText.getText().toString();
-                String pw = pwdText.getText().toString();
-                String pw_confirm = pwdConfirmText.getText().toString();
-                String name = nameText.getText().toString();
-
-                boolean isTwoPasswordAccord = pw.equals(pw_confirm); // 비밀번호와 비밀번호 확인이 일치하는지 검사
-                boolean isEmailAvailable = ValidatePwdEmail.validateEmail(email); // 이메일 형식 검사
-                boolean isPasswordAvailable = ValidatePwdEmail.validatePwd(pw); // 비밀번호 형식 검사
-
-                if (isTwoPasswordAccord && isPasswordAvailable && isEmailAvailable) {
-                    EmailCheckAndRegister emailCheckAndRegister = new EmailCheckAndRegister(Request.Method.POST, emailVerifyAndRegisterURL, registerListener, null);
-                    emailCheckAndRegister.doRegister(email, pw, name);
-                    RequestQueue requestQueue = Volley.newRequestQueue(RegisterActivity.this);
-                    requestQueue.add(emailCheckAndRegister);
-                    ShowProgressDialog.showProgressDialog(RegisterActivity.this);
-                } else if (!isTwoPasswordAccord) {
-                    infoText.setText("비밀번호 확인과 일치하지 않습니다.");
-                    pwdText.requestFocus();
-                } else if (!isPasswordAvailable) {
-                    infoText.setText("비밀번호는 8~16 자리, 영문 숫자 혼용입니다.");
-                    pwdText.requestFocus();
-
-                } else {
-                    infoText.setText("이메일 형식이 잘못 되었습니다.");
-                    emailText.requestFocus();
-                }
-            }
-        });
+        registerBtn.setOnClickListener(this);
     }
 
     private Response.Listener<String> registerListener = new Response.Listener<String>() {
@@ -156,6 +126,55 @@ public class RegisterActivity extends AppCompatActivity {
 
                 }
             });
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.register_terms_and_condition :
+                Intent intent = new Intent(RegisterActivity.this, TermsAndConditionActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.register_cancel_btn :
+                Toast.makeText(RegisterActivity.this, "회원가입이 취소 되었습니다.", Toast.LENGTH_SHORT).show();
+                setResult(ActivityCodes.LOGIN_FAIL);
+                finish();
+                break;
+            case R.id.register_join_btn :
+                String email = emailText.getText().toString();
+                String pw = pwdText.getText().toString();
+                String pw_confirm = pwdConfirmText.getText().toString();
+                String name = nameText.getText().toString();
+
+                boolean isTwoPasswordAccord = pw.equals(pw_confirm); // 비밀번호와 비밀번호 확인이 일치하는지 검사
+                boolean isEmailAvailable = ValidatePwdEmail.validateEmail(email); // 이메일 형식 검사
+                boolean isPasswordAvailable = ValidatePwdEmail.validatePwd(pw); // 비밀번호 형식 검사
+
+                if (checkBox.isChecked() && isTwoPasswordAccord && isPasswordAvailable && isEmailAvailable) {
+                    EmailCheckAndRegister emailCheckAndRegister = new EmailCheckAndRegister(Request.Method.POST, emailVerifyAndRegisterURL, registerListener, null);
+                    emailCheckAndRegister.doRegister(email, pw, name);
+                    RequestQueue requestQueue = Volley.newRequestQueue(RegisterActivity.this);
+                    requestQueue.add(emailCheckAndRegister);
+                    ShowProgressDialog.showProgressDialog(RegisterActivity.this);
+                } else if (!isTwoPasswordAccord) {
+                    infoText.setText("비밀번호 확인과 일치하지 않습니다");
+                    pwdText.requestFocus();
+                } else if (!isPasswordAvailable) {
+                    infoText.setText("비밀번호는 8~16 자리, 영문 숫자 혼용입니다");
+                    pwdText.requestFocus();
+                } else if (!checkBox.isChecked()) {
+                    infoText.setText("약관 및 이용안내에 동의해 주십시오");
+                }
+                else {
+                    infoText.setText("이메일 형식이 잘못 되었습니다");
+                    emailText.requestFocus();
+                }
+                break;
+            case R.id.register_back_btn :
+            case R.id.register_back_txt :
+                setResult(ActivityCodes.REGISTER_FAIL);
+                finish();
         }
     }
 }

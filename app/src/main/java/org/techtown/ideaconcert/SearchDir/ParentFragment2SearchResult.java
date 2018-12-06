@@ -1,8 +1,6 @@
 package org.techtown.ideaconcert.SearchDir;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
@@ -22,18 +19,19 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.R;
 
 public class ParentFragment2SearchResult extends Fragment {
 
-    View view;
-    TextView resultNumberView, searchText;
-    Button searchButton;
-    String keyword;
-    RecyclerView resultList;
-    ParentFragment2RecyclerAdapter adapter;
+    private View view;
+    private TextView resultNumberView, searchText;
+    private String keyword;
+    private RecyclerView resultList;
+    private ParentFragment2RecyclerAdapter adapter;
 
-    private final String GetContentsByKeywordURL = "http://lle21cen.cafe24.com/GetContentsByKeyword.php";
+    private final String GetContentsByKeywordURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsByKeyword";
+//    private final String GetContentsByKeywordURL = "http://lle21cen.cafe24.com/GetContentsByKeyword.php";
 
     @Nullable
     @Override
@@ -45,13 +43,13 @@ public class ParentFragment2SearchResult extends Fragment {
         resultList.setLayoutManager(manager);
 
         searchText = getActivity().findViewById(R.id.search_keyword);
-        keyword = searchText.getText().toString();
-        searchButton = getActivity().findViewById(R.id.search_search_btn);
+        keyword = searchText.getText().toString().trim();
 
         adapter = new ParentFragment2RecyclerAdapter();
         GetContentsByKeywordRequest request = new GetContentsByKeywordRequest(GetContentsByKeywordURL, getContentsByKeywordListener, keyword);
         RequestQueue queue = Volley.newRequestQueue(getActivity());
         queue.add(request);
+
         return view;
     }
 
@@ -85,6 +83,7 @@ public class ParentFragment2SearchResult extends Fragment {
                     resultList.setAdapter(adapter);
                 } else {
                     Log.e("No Data", "데이터가 없습니다.");
+                    resultNumberView.setText("0");
                 }
             } catch (JSONException je) {
                 Log.e("키워드로컨텐츠정보받기오류", je.getMessage());

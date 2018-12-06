@@ -10,6 +10,11 @@ public class GetContentsByKeywordRequest extends StringRequest {
 
     Map<String, String> parameters;
 
+    public GetContentsByKeywordRequest(String url, Response.Listener<String> listener) {
+        super(Method.POST, url, listener, null);
+        parameters = new HashMap<>();
+    }
+
     public GetContentsByKeywordRequest(String url, Response.Listener<String> listener, String keyword) {
         super(Method.POST, url, listener, null);
         parameters = new HashMap<>();

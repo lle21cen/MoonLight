@@ -11,7 +11,7 @@
         android:id="@+id/search_item_contents_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="열혈강호"
+        android:text=""
         android:textSize="15sp"
         android:textColor="#000000" />
 
@@ -25,7 +25,7 @@
             android:id="@+id/search_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="09.07"
+            android:text=""
             android:textSize="15sp"
             android:textColor="#000000" />
 

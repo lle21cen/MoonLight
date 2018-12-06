@@ -24,6 +24,8 @@ public class ParentFragment1Search extends Fragment implements View.OnClickListe
         view = inflater.inflate(R.layout.search_parent_fragment1_search, container, false);
         recentBtn = view.findViewById(R.id.search_recent_btn);
         popBtn = view.findViewById(R.id.search_pop_btn);
+        recentBtn.setOnClickListener(this);
+        popBtn.setOnClickListener(this);
 
         viewPager = view.findViewById(R.id.search_pager);
         TabPagerAdapter pagerAdapter = new TabPagerAdapter(getChildFragmentManager(), 2);

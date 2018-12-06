@@ -14,6 +14,14 @@ public class ParentFragment2SearchResultItem {
         this.movie = movie;
     }
 
+    public int getContents_pk() {
+        return contents_pk;
+    }
+
+    public void setContents_pk(int contents_pk) {
+        this.contents_pk = contents_pk;
+    }
+
     public String getThumbnail_url() {
         return thumbnail_url;
     }

@@ -15,6 +15,6 @@
     <string name="title_activity_my_page">MyPageActivity</string>
     <string name="personal_information_agreement">수집된 개인정보(이메일 등)는 문의내용처리 및 고객불만의 해결을 위해 사용되며, 개인 정보수집 및 이용동의 거부 시, 1:1문의가 제한될 수 있습니다.</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="underlined_terms_and_condition"><u>약관 및 이용안내</u></string>
+
 </resources>

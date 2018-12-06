@@ -40,9 +40,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
         final TextView toRegisterActivity = findViewById(R.id.login_regist_btn);
         final Button backBtn = findViewById(R.id.login_back_btn);
+        final TextView backText = findViewById(R.id.login_login_txt);
 
         toRegisterActivity.setOnClickListener(this);
         backBtn.setOnClickListener(this);
+        backText.setOnClickListener(this);
 
         // 인터넷 연결 상태 확인하는 코드 추가하기.
 
