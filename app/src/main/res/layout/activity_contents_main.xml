@@ -4,94 +4,101 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ContentsMainDir.ContentsMainActivity">
+    <!--
 
-    <include
-        android:id="@+id/contents_main_title_bar"
-        layout="@layout/contents_main_custom_title_bar"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentTop="true" />
+        <include
+            android:id="@+id/contents_main_title_bar"
+            layout="@layout/contents_main_custom_title_bar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentTop="true" />
 
-    <include
-        android:id="@+id/contents_main_info"
-        layout="@layout/contents_main_contents_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/contents_main_title_bar"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp" />
+        <include
+            android:id="@+id/contents_main_info"
+            layout="@layout/contents_main_contents_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/contents_main_title_bar"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp" />
 
-    <TextView
-        android:id="@+id/contents_main_summary"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/contents_main_info"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:ellipsize="end"
-        android:maxLines="3"
-        android:textSize="14.74dp" />
-
-    <Button
-        android:id="@+id/contents_main_open_summary_btn"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_below="@id/contents_main_summary"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/ic_keyboard_arrow_down_black_24dp" />
-
-    <LinearLayout
-        android:id="@+id/contents_main_2btn_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/contents_main_open_summary_btn"
-        android:background="#efefef"
-        android:orientation="horizontal"
-        android:paddingLeft="10dp"
-        android:paddingTop="5dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="5dp">
+        <TextView
+            android:id="@+id/contents_main_summary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/contents_main_info"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:textSize="14.74dp" />
 
         <Button
-            android:id="@+id/contents_main_first_episode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="#786aaa"
-            android:background="#ffffff"
-            android:text="첫화보기" />
+            android:id="@+id/contents_main_open_summary_btn"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_below="@id/contents_main_summary"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/ic_keyboard_arrow_down_black_24dp" />
 
-        <Button
-            android:id="@+id/contents_main_follow_up_button"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/contents_main_2btn_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="#fefefe"
-            android:background="#786aaa"
-            android:text="이어보기" />
-    </LinearLayout>
+            android:layout_below="@id/contents_main_open_summary_btn"
+            android:background="#efefef"
+            android:orientation="horizontal"
+            android:paddingLeft="10dp"
+            android:paddingTop="5dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="5dp">
 
-    <include
-        android:id="@+id/contents_main_usage"
-        layout="@layout/contents_main_usage_status"
+            <Button
+                android:id="@+id/contents_main_first_episode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="#786aaa"
+                android:background="#ffffff"
+                android:text="첫화보기" />
+
+            <Button
+                android:id="@+id/contents_main_follow_up_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="#fefefe"
+                android:background="#786aaa"
+                android:text="이어보기" />
+        </LinearLayout>
+
+        <include
+            android:id="@+id/contents_main_usage"
+            layout="@layout/contents_main_usage_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/contents_main_2btn_layout" />
+    -->
+
+    <RelativeLayout
+        android:id="@+id/contents_main_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/contents_main_2btn_layout" />
+        android:layout_height="wrap_content" />
 
     <View
         android:id="@+id/contents_main_dummy_view"
         android:layout_width="match_parent"
         android:layout_height="5dp"
-        android:layout_below="@id/contents_main_usage"
+        android:layout_below="@id/contents_main_container"
         android:background="#efefef" />
 
     <include
         android:id="@+id/contents_main_works_list"
         layout="@layout/contents_main_works_list"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/contents_main_dummy_view" />
+        android:layout_below="@+id/contents_main_dummy_view"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp" />
 
 </RelativeLayout>

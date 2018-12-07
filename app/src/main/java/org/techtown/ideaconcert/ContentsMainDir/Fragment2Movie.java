@@ -1,54 +1,42 @@
-package org.techtown.ideaconcert.WebtoonMovieDir;
+package org.techtown.ideaconcert.ContentsMainDir;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.MediaController;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
-import android.widget.VideoView;
 
 import org.techtown.ideaconcert.ActivityCodes;
-import org.techtown.ideaconcert.ContentsMainDir.ContentsMainActivity;
-import org.techtown.ideaconcert.ContentsMainDir.WorksListViewAdapter;
-import org.techtown.ideaconcert.ContentsMainDir.WorksListViewItem;
 import org.techtown.ideaconcert.R;
+import org.techtown.ideaconcert.WebtoonMovieDir.CustomVideoView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-public class WebtoonMovieActivity extends AppCompatActivity implements View.OnClickListener{
-
+public class Fragment2Movie extends Fragment {
+    View view;
     MediaController mc;
-
-    // ContentsMainActivity 의 adapter를 가져오는 방법이 무엇이 있을까요....
-    // itemList를 가져와서 setAdapter를 다시할까 그냥...
-
     ArrayList<WorksListViewItem> items;
-    private ListView listView;
-    private WorksListViewAdapter adapter;
 
     @SuppressLint("ClickableViewAccessibility")
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_webtoon_movie);
-        items = ContentsMainActivity.itemList;
-        listView = findViewById(R.id.contents_main_list_works_list);
-        adapter = new WorksListViewAdapter(this, this);
-        listView.setAdapter(adapter);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.contents_main_fragment2_movie, container, false);
 
-        final CustomVideoView video = findViewById(R.id.webtoon_movie_video_view);
+        items = ContentsMainActivity.itemList;
+        final CustomVideoView video = view.findViewById(R.id.webtoon_movie_video_view);
 
         String video_url = ActivityCodes.DATABASE_IP + "/resources/platform/movie/360p.mp4";
 
@@ -56,9 +44,9 @@ public class WebtoonMovieActivity extends AppCompatActivity implements View.OnCl
         video.setVideoURI(uri);
 
         final ProgressDialog dialog;
-        mc = new MediaController(WebtoonMovieActivity.this);
+        mc = new MediaController(getActivity());
 
-        dialog = ProgressDialog.show(this, "잠시만 기다려주세요.", "동영상을 로딩중입니다......", true);
+        dialog = ProgressDialog.show(getActivity(), "잠시만 기다려주세요.", "동영상을 로딩중입니다......", true);
 
         video.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
@@ -66,7 +54,7 @@ public class WebtoonMovieActivity extends AppCompatActivity implements View.OnCl
                 Log.i("비디오 로딩", "완료");
                 dialog.dismiss();
                 ((ViewGroup) mc.getParent()).removeView(mc);
-                ((FrameLayout) findViewById(R.id.videoViewWrapper)).addView(mc);
+                ((FrameLayout) view.findViewById(R.id.videoViewWrapper)).addView(mc);
                 mc.setAnchorView(video);
                 video.setMediaController(mc);
                 video.start();
@@ -93,14 +81,6 @@ public class WebtoonMovieActivity extends AppCompatActivity implements View.OnCl
                 return true;
             }
         });
-
-
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-
-        }
+        return view;
     }
 }

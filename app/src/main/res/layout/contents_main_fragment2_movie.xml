@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".WebtoonMovieDir.WebtoonMovieActivity">
 
     <org.techtown.ideaconcert.WebtoonMovieDir.CustomVideoView
@@ -30,9 +30,4 @@
         android:layout_below="@id/movie_contents_info"
         android:background="#efefef" />
 
-    <include
-        layout="@layout/contents_main_works_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/movie_contents_info" />
 </RelativeLayout>
