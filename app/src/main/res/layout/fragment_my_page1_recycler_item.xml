@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_marginTop="5dp"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp">
 
     <ImageView
         android:id="@+id/my_page_fragment1_thumbnail"
@@ -21,17 +21,17 @@
             android:id="@+id/my_page_fragment1_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="9sp"
-            android:text="" />
+            android:text=""
+            android:textSize="9sp" />
 
         <TextView
             android:id="@+id/my_page_fragment1_contents_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/my_page_fragment1_date"
-            android:textSize="15sp"
+            android:text=""
             android:textColor="#000000"
-            android:text="" />
+            android:textSize="15sp" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -42,16 +42,16 @@
         android:background="#c1a0b3">
 
         <RelativeLayout
-            android:layout_centerInParent="true"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
 
             <TextView
                 android:id="@+id/my_page_fragment1_contents_num"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
                 android:layout_centerHorizontal="true"
+                android:text=""
                 android:textColor="#ffffff"
                 android:textSize="15sp" />
 

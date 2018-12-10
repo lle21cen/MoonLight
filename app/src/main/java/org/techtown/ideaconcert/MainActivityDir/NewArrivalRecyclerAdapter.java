@@ -2,7 +2,6 @@ package org.techtown.ideaconcert.MainActivityDir;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.techtown.ideaconcert.ContentsMainDir.ContentsMainActivity;
 import org.techtown.ideaconcert.R;
@@ -21,21 +19,6 @@ public class NewArrivalRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
 
     // 신작보기와 베트스9과 추천작품에서 사용
     private ArrayList<NewArrivalItem> items = new ArrayList<>();
-
-    public static class NewArrivalViewHolder extends RecyclerView.ViewHolder {
-        ImageView worksImageView;
-        TextView contents_name_view;
-        TextView star_rating_view;
-        TextView author_name_view;
-
-        NewArrivalViewHolder(View view) {
-            super(view);
-            worksImageView = view.findViewById(R.id.main_arrival_item_image);
-            contents_name_view = view.findViewById(R.id.main_arrival_item_name);
-            star_rating_view = view.findViewById(R.id.main_arrival_item_star_rating);
-            author_name_view = view.findViewById(R.id.main_arrival_item_author_name);
-        }
-    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -52,7 +35,7 @@ public class NewArrivalRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, item.getThumbnail_url());
         newArrivalViewHolder.author_name_view.setText(item.getPainter_name());
         newArrivalViewHolder.contents_name_view.setText(item.getWork_name());
-        newArrivalViewHolder.star_rating_view.setText(""+item.getStar_rating());
+        newArrivalViewHolder.star_rating_view.setText("" + item.getStar_rating());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,5 +61,20 @@ public class NewArrivalRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
         item.setPainter_name(painter_name);
         item.setStar_rating(star_rating);
         items.add(item);
+    }
+
+    public static class NewArrivalViewHolder extends RecyclerView.ViewHolder {
+        ImageView worksImageView;
+        TextView contents_name_view;
+        TextView star_rating_view;
+        TextView author_name_view;
+
+        NewArrivalViewHolder(View view) {
+            super(view);
+            worksImageView = view.findViewById(R.id.main_arrival_item_image);
+            contents_name_view = view.findViewById(R.id.main_arrival_item_name);
+            star_rating_view = view.findViewById(R.id.main_arrival_item_star_rating);
+            author_name_view = view.findViewById(R.id.main_arrival_item_author_name);
+        }
     }
 }

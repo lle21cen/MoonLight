@@ -66,13 +66,13 @@
         android:background="@drawable/moonright_login_btn" />
 
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
-        android:textSize="12sp"
         android:text="다른 계정으로 로그인시 기존 로그인 정보는 자동 로그아웃 됩니다"
         android:textColor="#1d68bf"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:textSize="12sp" />
 
     <Button
         android:id="@+id/login_method_sign_out"

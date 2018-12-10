@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/contents_main_info_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -81,7 +82,7 @@
         app:layout_constraintTop_toBottomOf="@id/contents_main_info_painter" />
 
     <Button
-        android:id="@+id/contents_main_like_btn"
+        android:id="@+id/contents_main_info_like_btn"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginRight="5dp"
@@ -94,6 +95,7 @@
         android:id="@+id/contents_main_info_like_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginRight="15dp"
         android:text="0"
         app:layout_constraintBottom_toBottomOf="@+id/contents_main_info_img"
         app:layout_constraintRight_toRightOf="parent"

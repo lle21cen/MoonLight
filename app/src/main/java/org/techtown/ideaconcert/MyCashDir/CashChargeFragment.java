@@ -9,11 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.techtown.ideaconcert.R;
 
-public class CashChargeFragment extends Fragment implements View.OnClickListener{
+public class CashChargeFragment extends Fragment implements View.OnClickListener {
     View view;
     TextView cash_sum, amount_payment;
 
@@ -49,45 +48,45 @@ public class CashChargeFragment extends Fragment implements View.OnClickListener
     public void onClick(View view) {
         int sumOfCash = Integer.valueOf(cash_sum.getText().toString());
         switch (view.getId()) {
-            case R.id.cash_1_layout :
+            case R.id.cash_1_layout:
                 sumOfCash += 1;
                 cash_sum.setText(String.valueOf(sumOfCash));
-                amount_payment.setText(String.valueOf(sumOfCash*100));
+                amount_payment.setText(String.valueOf(sumOfCash * 100));
                 break;
-            case R.id.cash_50_layout :
+            case R.id.cash_50_layout:
                 sumOfCash += 50;
                 cash_sum.setText(String.valueOf(sumOfCash));
-                amount_payment.setText(String.valueOf(sumOfCash*100));
+                amount_payment.setText(String.valueOf(sumOfCash * 100));
                 break;
-            case R.id.cash_200_layout :
+            case R.id.cash_200_layout:
                 sumOfCash += 200;
                 cash_sum.setText(String.valueOf(sumOfCash));
-                amount_payment.setText(String.valueOf(sumOfCash*100));
+                amount_payment.setText(String.valueOf(sumOfCash * 100));
                 break;
-            case R.id.cash_1000_layout :
+            case R.id.cash_1000_layout:
                 sumOfCash += 1000;
                 cash_sum.setText(String.valueOf(sumOfCash));
-                amount_payment.setText(String.valueOf(sumOfCash*100));
+                amount_payment.setText(String.valueOf(sumOfCash * 100));
                 break;
-            case R.id.cash_10_layout :
+            case R.id.cash_10_layout:
                 sumOfCash += 10;
                 cash_sum.setText(String.valueOf(sumOfCash));
-                amount_payment.setText(String.valueOf(sumOfCash*100));
+                amount_payment.setText(String.valueOf(sumOfCash * 100));
                 break;
-            case R.id.cash_100_layout :
+            case R.id.cash_100_layout:
                 sumOfCash += 100;
                 cash_sum.setText(String.valueOf(sumOfCash));
-                amount_payment.setText(String.valueOf(sumOfCash*100));
+                amount_payment.setText(String.valueOf(sumOfCash * 100));
                 break;
-            case R.id.cash_500_layout :
+            case R.id.cash_500_layout:
                 sumOfCash += 500;
                 cash_sum.setText(String.valueOf(sumOfCash));
-                amount_payment.setText(String.valueOf(sumOfCash*100));
+                amount_payment.setText(String.valueOf(sumOfCash * 100));
                 break;
-            case R.id.cash_reset :
+            case R.id.cash_reset:
                 sumOfCash = 0;
                 cash_sum.setText(String.valueOf(sumOfCash));
-                amount_payment.setText(String.valueOf(sumOfCash*100));
+                amount_payment.setText(String.valueOf(sumOfCash * 100));
                 break;
         }
     }

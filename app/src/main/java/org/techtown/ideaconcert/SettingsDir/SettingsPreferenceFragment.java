@@ -33,6 +33,65 @@ public class SettingsPreferenceFragment extends PreferenceFragment implements Pr
     LoginMethodFragment loginMethodFragment;
 
     ListPreference auto_movie_play;
+    private SharedPreferences.OnSharedPreferenceChangeListener prefListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            if (key.equals("auto_rotate")) {
+                if (prefs.getBoolean("auto_rotate", false)) {
+                    Log.i("prefs", "자동회전이 선택되었습니다.");
+                } else {
+                    Log.i("prefs", "자동회전이 해제되었습니다.");
+                }
+            }
+            if (key.equals("double_tab")) {
+                if (prefs.getBoolean("double_tab", false)) {
+                    Log.i("prefs", "더블탭이 선택되었습니다.");
+                } else {
+                    Log.i("prefs", "더블탭이 해제되었습니다.");
+                }
+            }
+            if (key.equals("use_mobile_network_notice")) {
+                if (prefs.getBoolean("use_mobile_network_notice", false)) {
+                    Log.i("prefs", "이동통신망알람이 선택되었습니다.");
+                } else {
+                    Log.i("prefs", "이동통신망알람이 해제되었습니다.");
+                }
+            }
+            if (key.equals("push_notice")) {
+                if (prefs.getBoolean("push_notice", false)) {
+                    Log.i("prefs", "푸시알림이 선택되었습니다.");
+                } else {
+                    Log.i("prefs", "푸시알림이 해제되었습니다.");
+                }
+            }
+
+            if (key.equals("auto_movie_play")) {
+                Log.i("prefs", "동영상 자동 재생 설정이 변경되었습니다..");
+                auto_movie_play.setSummary(prefs.getString("auto_movie_play", "사용안함"));
+            }
+        }
+    };
+    private Response.Listener<String> snsLoginProcessListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                int user_pk = jsonObject.getInt("user_pk");
+                int role = jsonObject.getInt("user_type_number");
+                userInformation.setUser_pk(user_pk);
+                userInformation.setRole(role);
+
+                ////////////////////////////// FOR DEBUGGING ////////////////////////////////////////
+                String email = userInformation.getUserEmail();
+                String name = userInformation.getUser_name();
+                int pk = userInformation.getUser_pk();
+//                Toast.makeText(getActivity(), "email= " + email + "name= " + name + "user_pk= " + pk + "role = " + role, Toast.LENGTH_SHORT).show();
+                /////////////////////////////////////////////////////////////////////////////////////
+            } catch (Exception e) {
+                Log.e("sns sign in error", "" + e.getMessage());
+            }
+        }
+    };
 
     public SettingsPreferenceFragment() {
     }
@@ -87,45 +146,6 @@ public class SettingsPreferenceFragment extends PreferenceFragment implements Pr
         auto_movie_play = (ListPreference) findPreference("auto_movie_play");
         auto_movie_play.setSummary(auto_movie_play.getValue());
     }
-
-    private SharedPreferences.OnSharedPreferenceChangeListener prefListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-        @Override
-        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-            if (key.equals("auto_rotate")) {
-                if (prefs.getBoolean("auto_rotate", false)) {
-                    Log.i("prefs", "자동회전이 선택되었습니다.");
-                } else {
-                    Log.i("prefs", "자동회전이 해제되었습니다.");
-                }
-            }
-            if (key.equals("double_tab")) {
-                if (prefs.getBoolean("double_tab", false)) {
-                    Log.i("prefs", "더블탭이 선택되었습니다.");
-                } else {
-                    Log.i("prefs", "더블탭이 해제되었습니다.");
-                }
-            }
-            if (key.equals("use_mobile_network_notice")) {
-                if (prefs.getBoolean("use_mobile_network_notice", false)) {
-                    Log.i("prefs", "이동통신망알람이 선택되었습니다.");
-                } else {
-                    Log.i("prefs", "이동통신망알람이 해제되었습니다.");
-                }
-            }
-            if (key.equals("push_notice")) {
-                if (prefs.getBoolean("push_notice", false)) {
-                    Log.i("prefs", "푸시알림이 선택되었습니다.");
-                } else {
-                    Log.i("prefs", "푸시알림이 해제되었습니다.");
-                }
-            }
-
-            if (key.equals("auto_movie_play")) {
-                Log.i("prefs", "동영상 자동 재생 설정이 변경되었습니다..");
-                auto_movie_play.setSummary(prefs.getString("auto_movie_play", "사용안함"));
-            }
-        }
-    };
 
     @Override
     public boolean onPreferenceClick(Preference preference) {
@@ -200,26 +220,4 @@ public class SettingsPreferenceFragment extends PreferenceFragment implements Pr
             requestQueue.add(databaseRequest);
         }
     }
-
-    private Response.Listener<String> snsLoginProcessListener = new Response.Listener<String>() {
-        @Override
-        public void onResponse(String response) {
-            try {
-                JSONObject jsonObject = new JSONObject(response);
-                int user_pk = jsonObject.getInt("user_pk");
-                int role = jsonObject.getInt("user_type_number");
-                userInformation.setUser_pk(user_pk);
-                userInformation.setRole(role);
-
-                ////////////////////////////// FOR DEBUGGING ////////////////////////////////////////
-                String email = userInformation.getUserEmail();
-                String name = userInformation.getUser_name();
-                int pk = userInformation.getUser_pk();
-//                Toast.makeText(getActivity(), "email= " + email + "name= " + name + "user_pk= " + pk + "role = " + role, Toast.LENGTH_SHORT).show();
-                /////////////////////////////////////////////////////////////////////////////////////
-            } catch (Exception e) {
-                Log.e("sns sign in error", "" + e.getMessage());
-            }
-        }
-    };
 }

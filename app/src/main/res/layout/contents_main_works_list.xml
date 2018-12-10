@@ -20,15 +20,15 @@
             android:id="@+id/contents_main_list_sort"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"/>
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true" />
 
         <View
             android:id="@+id/contents_main_list_underline"
             android:layout_width="match_parent"
-            android:layout_marginBottom="2dp"
             android:layout_height="1dp"
             android:layout_alignParentBottom="true"
+            android:layout_marginBottom="2dp"
             android:background="#cfcfcf" />
     </RelativeLayout>
 

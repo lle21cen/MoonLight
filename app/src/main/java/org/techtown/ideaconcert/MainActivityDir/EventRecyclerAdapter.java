@@ -15,22 +15,13 @@ import java.util.ArrayList;
 
 public class EventRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    int width, height;
     // 신작보기와 베트스9과 추천작품에서 사용
     private ArrayList<EventBannerRecyclerItem> items = new ArrayList<>();
-    int width, height;
 
     public EventRecyclerAdapter(int width, int height) {
         this.width = width;
         this.height = height;
-    }
-
-    public static class TodayEventViewHolder extends RecyclerView.ViewHolder {
-        ImageView bannerImageView;
-
-        TodayEventViewHolder(View view) {
-            super(view);
-            bannerImageView = view.findViewById(R.id.event_banner_image);
-        }
     }
 
     @Override
@@ -65,5 +56,14 @@ public class EventRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
         item.setContents_pk(contents_pk);
         item.setImage_url(url);
         items.add(item);
+    }
+
+    public static class TodayEventViewHolder extends RecyclerView.ViewHolder {
+        ImageView bannerImageView;
+
+        TodayEventViewHolder(View view) {
+            super(view);
+            bannerImageView = view.findViewById(R.id.event_banner_image);
+        }
     }
 }

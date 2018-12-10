@@ -29,7 +29,53 @@
         android:layout_marginTop="10dp"
         android:visibility="gone" />
 
-    <include layout="@layout/webtoon_header" />
+    <include
+        android:id="@+id/webtoon_header_include"
+        layout="@layout/webtoon_header" />
+
+    <RelativeLayout
+        android:id="@+id/ratingStar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/webtoon_header_include"
+        android:background="#a0000000"
+        android:paddingTop="30dp"
+        android:paddingBottom="20dp"
+        android:visibility="gone">
+
+        <RatingBar
+            android:id="@+id/ratingStar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:isIndicator="false"
+            android:max="10"
+            android:numStars="5"
+            android:progressTint="@color/colorStars"
+            android:rating="5"
+            android:stepSize="0.5" />
+
+        <TextView
+            android:id="@+id/rating_drag_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ratingStar"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:text="좌우로 드래그하세요"
+            android:textColor="#ffffff" />
+
+        <Button
+            android:id="@+id/rating_confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rating_drag_text"
+            android:layout_centerHorizontal="true"
+            android:background="#00000000"
+            android:text="확인"
+            android:textColor="#ffffff" />
+    </RelativeLayout>
 
     <include
         layout="@layout/webtoon_footer"
@@ -37,7 +83,6 @@
         android:layout_height="50dp"
         android:layout_alignParentBottom="true" />
 
-    <include
-        layout="@layout/webtoon_footer_listview"/>
+    <include layout="@layout/webtoon_footer_listview" />
 
 </RelativeLayout>

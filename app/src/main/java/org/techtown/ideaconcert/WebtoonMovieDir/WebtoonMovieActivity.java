@@ -4,9 +4,9 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,9 +14,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.MediaController;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
-import android.widget.VideoView;
 
 import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.ContentsMainDir.ContentsMainActivity;
@@ -24,10 +21,9 @@ import org.techtown.ideaconcert.ContentsMainDir.WorksListViewAdapter;
 import org.techtown.ideaconcert.ContentsMainDir.WorksListViewItem;
 import org.techtown.ideaconcert.R;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-public class WebtoonMovieActivity extends AppCompatActivity implements View.OnClickListener{
+public class WebtoonMovieActivity extends AppCompatActivity implements View.OnClickListener {
 
     MediaController mc;
 

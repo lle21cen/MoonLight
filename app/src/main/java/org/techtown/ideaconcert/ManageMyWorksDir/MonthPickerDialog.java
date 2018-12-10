@@ -62,7 +62,7 @@ public class MonthPickerDialog extends Dialog implements View.OnClickListener {
                     if (!isFromToText) {
                         dateTextView.setText(selectedYear + "/" + selectedMonth + "/1");
                     } else {
-                        dateTextView.setText(selectedYear + "/" + selectedMonth + "/"+getLastDayOfMonth(Integer.parseInt(selectedYear), selectedMonth));
+                        dateTextView.setText(selectedYear + "/" + selectedMonth + "/" + getLastDayOfMonth(Integer.parseInt(selectedYear), selectedMonth));
                     }
                     dismiss();
                 }

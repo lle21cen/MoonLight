@@ -43,7 +43,7 @@ public class Fragment1ProfitLayoutItem extends LinearLayout {
         TextView profit_view = view.findViewById(R.id.manage_profit_selling_profit);
 
         titleView.setText(contents_name);
-        view_count_view.setText(""+view_count);
+        view_count_view.setText("" + view_count);
         cash_view.setText(cash + " 캐시");
         profit_view.setText(profit + " 원");
     }

@@ -20,9 +20,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:textSize="10.5sp"
         android:layout_marginTop="4dp"
-        android:text="2018-09-05 13:03" />
+        android:text="2018-09-05 13:03"
+        android:textSize="10.5sp" />
 
 
     <ImageView
@@ -85,9 +85,9 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/comment_item_recycler_view"
-        android:orientation="vertical"
-        android:layout_below="@+id/comment_item_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/comment_item_layout"
+        android:orientation="vertical" />
 
 </RelativeLayout>

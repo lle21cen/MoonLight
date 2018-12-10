@@ -1,24 +1,15 @@
 package org.techtown.ideaconcert.ContentsMainDir;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -27,14 +18,9 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.techtown.ideaconcert.ActivityCodes;
-import org.techtown.ideaconcert.MainActivityDir.GetBitmapImageFromURL;
-import org.techtown.ideaconcert.MainActivityDir.SetBitmapImageFromUrlTask;
 import org.techtown.ideaconcert.R;
-import org.techtown.ideaconcert.SQLiteDir.DBHelper;
-import org.techtown.ideaconcert.SQLiteDir.DBNames;
 import org.techtown.ideaconcert.WebtoonDir.WebtoonActivity;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -44,19 +30,69 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
     // 이미지만 따로 동적으로 설정하도록 바꾸어서 컨텐츠 로딩에 걸리는 시간을 단축할 필요가 있음
     // 변수명 통일 시키기 ... 귀찮
 
-    private final String getContentsItemURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsItem";
+    public static ArrayList<WorksListViewItem> itemList; // WebtonActivity에서도 사용하기 위해 public static으로 선언
 //    private final String getContentsItemURL = "http://lle21cen.cafe24.com/GetContentsItem.php";
-
+    private final String getContentsItemURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsItem";
     private int selected_contents_pk;
-
     private ListView listView;
     private WorksListViewAdapter adapter;
     private Spinner sortSpinner;
-
-    public static ArrayList<WorksListViewItem> itemList; // WebtonActivity에서도 사용하기 위해 public static으로 선언
     private TextView totalListText;
 
     private Fragment1Webtoon fragment;
+    private Response.Listener<String> getContentsItemListener = new Response.Listener<String>() {
+        private String title, watch_num;
+        private double star_rating;
+        private int contents_item_pk, contents_num, comments_count;
+        private String thumbnail_url, movie_url;
+
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonResponse = new JSONObject(response);
+                // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
+                boolean exist = jsonResponse.getBoolean("exist");
+                if (exist) {
+                    JSONArray result = jsonResponse.getJSONArray("result");
+                    int num_result = jsonResponse.getInt("num_result");
+
+                    for (int i = 0; i < num_result; i++) {
+                        try {
+                            JSONObject temp = result.getJSONObject(i);
+                            contents_item_pk = temp.getInt("contents_item_pk");
+                            contents_num = temp.getInt("contents_num");
+                            title = temp.getString("contents_name");
+                            thumbnail_url = temp.getString("url");
+                            watch_num = temp.getString("view_count");
+                            star_rating = temp.getDouble("star_rating");
+                            comments_count = temp.getInt("comments_count");
+
+                            movie_url = null;
+                            if (temp.has("movie_url"))
+                                movie_url = temp.getString("movie_url");
+
+                            adapter.addItem(contents_item_pk, contents_num, title, thumbnail_url, watch_num, star_rating, comments_count, movie_url);
+                        } catch (Exception e) {
+                            Log.e("컨텐츠아이템어뎁터설정에러", e.getMessage());
+                        }
+                    }
+                    if (sortSpinner.getSelectedItemPosition() != 0) {
+                        // '첫편부터'가 선택되어 있을 경우 리스트의 순서를 역으로 정렬
+                        Collections.reverse(adapter.getWorksListViewItems());
+                    }
+                    listView.setAdapter(adapter);
+                    fragment.setAdapter(adapter);
+                    // 전체 작품 수와 열람 작품 수, 캐시 보유량 textview를 설정.
+                    totalListText.setText("전체 (" + num_result + "화)");
+                } else {
+                    Log.e("컨텐츠리스트", "데이터가 없습니다.");
+                }
+            } catch (Exception e) {
+                Log.e("컨텐츠아이템리스너", e.getMessage());
+            }
+        }
+    };
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -121,59 +157,6 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
         fragment = new Fragment1Webtoon();
         getSupportFragmentManager().beginTransaction().replace(R.id.contents_main_container, fragment, "webtoon").commit();
     }
-
-    private Response.Listener<String> getContentsItemListener = new Response.Listener<String>() {
-        private String title, watch_num;
-        private double star_rating;
-        private int contents_item_pk, contents_num, comments_count;
-        private String thumbnail_url, movie_url;
-
-        @Override
-        public void onResponse(String response) {
-            try {
-                JSONObject jsonResponse = new JSONObject(response);
-                // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
-                boolean exist = jsonResponse.getBoolean("exist");
-                if (exist) {
-                    JSONArray result = jsonResponse.getJSONArray("result");
-                    int num_result = jsonResponse.getInt("num_result");
-
-                    for (int i = 0; i < num_result; i++) {
-                        try {
-                            JSONObject temp = result.getJSONObject(i);
-                            contents_item_pk = temp.getInt("contents_item_pk");
-                            contents_num = temp.getInt("contents_num");
-                            title = temp.getString("contents_name");
-                            thumbnail_url = temp.getString("url");
-                            watch_num = temp.getString("view_count");
-                            star_rating = temp.getDouble("star_rating");
-                            comments_count = temp.getInt("comments_count");
-
-                            movie_url = null;
-                            if (temp.has("movie_url"))
-                                movie_url = temp.getString("movie_url");
-
-                            adapter.addItem(contents_item_pk, contents_num, title, thumbnail_url, watch_num, star_rating, comments_count, movie_url);
-                        } catch (Exception e) {
-                            Log.e("컨텐츠아이템어뎁터설정에러", e.getMessage());
-                        }
-                    }
-                    if (sortSpinner.getSelectedItemPosition() != 0) {
-                        // '첫편부터'가 선택되어 있을 경우 리스트의 순서를 역으로 정렬
-                        Collections.reverse(adapter.getWorksListViewItems());
-                    }
-                    listView.setAdapter(adapter);
-                    fragment.setAdapter(adapter);
-                    // 전체 작품 수와 열람 작품 수, 캐시 보유량 textview를 설정.
-                    totalListText.setText("전체 (" + num_result + "화)");
-                } else {
-                    Log.e("컨텐츠리스트", "데이터가 없습니다.");
-                }
-            } catch (Exception e) {
-                Log.e("컨텐츠아이템리스너", e.getMessage());
-            }
-        }
-    };
 
     @Override
     public void onClick(View view) {

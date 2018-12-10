@@ -23,22 +23,6 @@ public class ParentFragment2RecyclerAdapter extends RecyclerView.Adapter<Recycle
     ArrayList<ParentFragment2SearchResultItem> items = new ArrayList<>();
     Context context;
 
-    class ParentFragment2ViewHolder extends RecyclerView.ViewHolder {
-
-        View view;
-        ImageView thumbnailView;
-        TextView contentsNameView, authorNameView, starRatingView;
-
-        public ParentFragment2ViewHolder(View view) {
-            super(view);
-            this.view = view;
-            thumbnailView = view.findViewById(R.id.search_result_item_thumbnail);
-            contentsNameView = view.findViewById(R.id.search_result_item_contents_name);
-            authorNameView = view.findViewById(R.id.search_result_item_author_name);
-            starRatingView = view.findViewById(R.id.search_result_item_star_rating);
-        }
-    }
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
@@ -77,6 +61,22 @@ public class ParentFragment2RecyclerAdapter extends RecyclerView.Adapter<Recycle
     public void addItem(int contents_pk, String thumbnail_url, String contents_name, String author_name, double star_rating, int movie) {
         items.add(new ParentFragment2SearchResultItem(contents_pk, thumbnail_url, contents_name, author_name, star_rating, movie));
         Log.e("검색결과정보 in Adapter", contents_pk + " " + thumbnail_url + " " + contents_name + " " + star_rating + " " + movie);
+    }
+
+    class ParentFragment2ViewHolder extends RecyclerView.ViewHolder {
+
+        View view;
+        ImageView thumbnailView;
+        TextView contentsNameView, authorNameView, starRatingView;
+
+        public ParentFragment2ViewHolder(View view) {
+            super(view);
+            this.view = view;
+            thumbnailView = view.findViewById(R.id.search_result_item_thumbnail);
+            contentsNameView = view.findViewById(R.id.search_result_item_contents_name);
+            authorNameView = view.findViewById(R.id.search_result_item_author_name);
+            starRatingView = view.findViewById(R.id.search_result_item_star_rating);
+        }
     }
 
 }

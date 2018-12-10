@@ -1,15 +1,11 @@
 package org.techtown.ideaconcert.FAQDir;
 
 import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TableLayout;
 import android.widget.TextView;
-
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 
 import org.techtown.ideaconcert.R;
 
@@ -49,7 +45,7 @@ public class FAQActivity extends AppCompatActivity implements View.OnClickListen
         if (prevClickedButton != null)
             prevClickedButton.setBackgroundColor(Color.rgb(255, 255, 255));
         TextView nowClickedButton = (TextView) view;
-        nowClickedButton.setBackgroundColor(Color.rgb(192,192,192));
+        nowClickedButton.setBackgroundColor(Color.rgb(192, 192, 192));
         prevClickedButton = nowClickedButton;
 
         switch (view.getId()) {
@@ -79,7 +75,7 @@ public class FAQActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     protected void setInitState(TextView nowClickedButton) {
-        nowClickedButton.setBackgroundColor(Color.rgb(192,192,192));
+        nowClickedButton.setBackgroundColor(Color.rgb(192, 192, 192));
         prevClickedButton = nowClickedButton;
         getFragmentManager().beginTransaction().replace(R.id.faq_fragment_layout, new FragmentByCategory(0)).commit();
     }

@@ -1,9 +1,7 @@
 package org.techtown.ideaconcert.MainActivityDir;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,7 +49,7 @@ public class ExpandedContentsItemLayout extends RelativeLayout {
             movieImageView.setVisibility(VISIBLE);
         }
         authorNameView.setText(author_name);
-        viewCountView.setText(""+view_count);
+        viewCountView.setText("" + view_count);
 
         this.setOnClickListener(new OnClickListener() {
             @Override

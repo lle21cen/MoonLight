@@ -13,7 +13,7 @@ import android.widget.Button;
 
 import org.techtown.ideaconcert.R;
 
-public class ParentFragment1Search extends Fragment implements View.OnClickListener{
+public class ParentFragment1Search extends Fragment implements View.OnClickListener {
     View view;
     ViewPager viewPager;
     Button recentBtn, popBtn;
@@ -40,7 +40,7 @@ public class ParentFragment1Search extends Fragment implements View.OnClickListe
             public void onPageSelected(int position) {
                 if (position == 0) {
                     changeButtonColor(true);
-                }else {
+                } else {
                     changeButtonColor(false);
                 }
             }
@@ -54,6 +54,7 @@ public class ParentFragment1Search extends Fragment implements View.OnClickListe
         viewPager.setCurrentItem(0);
         return view;
     }
+
     protected void changeButtonColor(boolean recentBtnPurple) {
         if (recentBtnPurple) {
             popBtn.setBackgroundColor(Color.rgb(120, 106, 170));
@@ -67,14 +68,15 @@ public class ParentFragment1Search extends Fragment implements View.OnClickListe
             popBtn.setTextColor(Color.rgb(120, 106, 170));
         }
     }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.search_recent_btn :
+            case R.id.search_recent_btn:
                 viewPager.setCurrentItem(0);
                 changeButtonColor(true);
                 break;
-            case R.id.search_pop_btn :
+            case R.id.search_pop_btn:
                 viewPager.setCurrentItem(1);
                 changeButtonColor(false);
                 break;

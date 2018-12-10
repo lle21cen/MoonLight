@@ -9,8 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,13 +16,10 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.techtown.ideaconcert.ActivityCodes;
-import org.techtown.ideaconcert.DatabaseRequest;
 import org.techtown.ideaconcert.R;
 import org.techtown.ideaconcert.UserInformation;
-import org.techtown.ideaconcert.WebtoonDir.WebtoonActivity;
 
 public class CommentActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -32,6 +27,31 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
     Button bestButton, allButton;
     ViewPager commentPager;
     EditText commentEditText;
+    private Response.Listener<String> commentInsertDeleteListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonResponse = new JSONObject(response);
+                boolean success = jsonResponse.getBoolean("success");
+                if (success) {
+                    Toast.makeText(CommentActivity.this, "댓글이 달렸습니다.", Toast.LENGTH_SHORT).show();
+                    Intent intent = getIntent();
+                    intent.putExtra("isRefresh", true);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    startActivityForResult(intent, ActivityCodes.COMMENT_REQUEST);
+                    finish();
+//                    commentEditText.setText("");
+//                    commentPager.setCurrentItem(1, true);
+                } else {
+                    Toast.makeText(CommentActivity.this, "댓글 달기에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                    String errmsg = jsonResponse.getString("errmsg");
+                    Log.e("댓글달기실패이유", "" + errmsg);
+                }
+            } catch (Exception e) {
+                Log.e("댓글 삽입 삭제 리스너", e.getMessage());
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,30 +143,4 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
             bestButton.setBackgroundColor(Color.rgb(120, 106, 170));
         }
     }
-
-    private Response.Listener<String> commentInsertDeleteListener = new Response.Listener<String>() {
-        @Override
-        public void onResponse(String response) {
-            try {
-                JSONObject jsonResponse = new JSONObject(response);
-                boolean success = jsonResponse.getBoolean("success");
-                if (success) {
-                    Toast.makeText(CommentActivity.this, "댓글이 달렸습니다.", Toast.LENGTH_SHORT).show();
-                    Intent intent = getIntent();
-                    intent.putExtra("isRefresh", true);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    startActivityForResult(intent, ActivityCodes.COMMENT_REQUEST);
-                    finish();
-//                    commentEditText.setText("");
-//                    commentPager.setCurrentItem(1, true);
-                } else {
-                    Toast.makeText(CommentActivity.this, "댓글 달기에 실패했습니다.", Toast.LENGTH_SHORT).show();
-                    String errmsg = jsonResponse.getString("errmsg");
-                    Log.e("댓글달기실패이유", "" + errmsg);
-                }
-            } catch (Exception e) {
-                Log.e("댓글 삽입 삭제 리스너", e.getMessage());
-            }
-        }
-    };
 }

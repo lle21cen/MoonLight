@@ -1,7 +1,7 @@
 package org.techtown.ideaconcert.SettingsDir;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.view.View;
 import android.widget.Button;

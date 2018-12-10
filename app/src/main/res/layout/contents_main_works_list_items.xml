@@ -114,16 +114,16 @@
             android:orientation="vertical">
 
             <ImageView
-                android:layout_gravity="center"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
+                android:layout_gravity="center"
                 android:src="@drawable/coin" />
 
             <TextView
-                android:layout_gravity="center"
                 android:id="@+id/contents_main_item_cash"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="0"
                 android:textAlignment="center"
                 android:textColor="#ffffff" />

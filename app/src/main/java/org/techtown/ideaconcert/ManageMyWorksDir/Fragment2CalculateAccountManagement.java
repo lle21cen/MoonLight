@@ -20,14 +20,13 @@ import java.util.Calendar;
 
 public class Fragment2CalculateAccountManagement extends Fragment implements View.OnClickListener {
 
+    protected static int totalAmount;
     int currentMonth, currentYear, endDayOfMonth;
     LinearLayout calculateContainer;
     View view;
-
     private TextView dateFromText, dateToText, summaryPeriodView, totalAmountView;
     private int selectedFromYear, selectedFromMonth, selectedToYear, selectedToMonth;
 
-    protected static int totalAmount;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -57,7 +56,7 @@ public class Fragment2CalculateAccountManagement extends Fragment implements Vie
         setTextSummaryPeriodView(); // 기간조회설정의 기간을 이용하여 요약사항의 기간을 설정한다.
 
         TextView summaryTitle = view.findViewById(R.id.calculate_title);
-        summaryTitle.setText((currentMonth+1) + "월 정산금액");
+        summaryTitle.setText((currentMonth + 1) + "월 정산금액");
         return view;
     }
 
@@ -84,10 +83,10 @@ public class Fragment2CalculateAccountManagement extends Fragment implements Vie
                 parsePeriodTextView(); // 기간설정에서 설정된 날짜 텍스트에서 년월 정보를 추출해 오는 함수
                 addMonthDataLayoutToContainer(selectedFromYear, selectedFromMonth, selectedToYear, selectedToMonth);
                 break;
-            case R.id.calculate_period_from_text :
+            case R.id.calculate_period_from_text:
                 openMonthPickerDialog(dateFromText, false);
                 break;
-            case R.id.calculate_period_to_text :
+            case R.id.calculate_period_to_text:
                 openMonthPickerDialog(dateToText, true);
                 break;
         }

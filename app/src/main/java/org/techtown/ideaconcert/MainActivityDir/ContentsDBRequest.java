@@ -6,7 +6,7 @@ import com.android.volley.toolbox.StringRequest;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ContentsDBRequest extends StringRequest{
+public class ContentsDBRequest extends StringRequest {
     private Map<String, String> parameters;
 
     public ContentsDBRequest(Response.Listener<String> listener, String URL, int tag) {

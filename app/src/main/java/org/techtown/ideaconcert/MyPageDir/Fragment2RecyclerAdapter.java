@@ -28,28 +28,13 @@ import java.util.ArrayList;
 
 public class Fragment2RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private ArrayList<Fragment2RecyclerItem> items = new ArrayList<>();
     private final String insertDeleteContentsLikeDataURL = ActivityCodes.DATABASE_IP + "/platform/InsertDeleteContentsLikeData";
+    private ArrayList<Fragment2RecyclerItem> items = new ArrayList<>();
     private boolean is_like_clicked;
     private int user_pk;
 
     public Fragment2RecyclerAdapter(int user_pk) {
         this.user_pk = user_pk;
-    }
-
-    public static class Fragment2Holder extends RecyclerView.ViewHolder {
-
-        ImageView thumbnail;
-        TextView date_text, contents_name_text;
-        Button pick;
-
-        Fragment2Holder(View view) {
-            super(view);
-            thumbnail = view.findViewById(R.id.my_page_fragment2_thumbnail);
-            date_text = view.findViewById(R.id.my_page_fragment2_date);
-            contents_name_text = view.findViewById(R.id.my_page_fragment2_contents_name);
-            pick = view.findViewById(R.id.my_page_fragment2_pick);
-        }
     }
 
     @Override
@@ -79,14 +64,44 @@ public class Fragment2RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
                 if (!is_like_clicked) {
 //                    fragment2Holder.pick.setBackgroundDrawable(ContextCompat.getDrawable(view.getContext(), R.drawable.pick_2));
                     request = new ContentsLikeDBRequest(insertDeleteContentsLikeDataURL, listener, item.getContents_pk(), user_pk, 1);
-                }
-                else {
+                } else {
 //                    fragment2Holder.pick.setBackgroundDrawable(ContextCompat.getDrawable(view.getContext(), R.drawable.pick_1));
                     request = new ContentsLikeDBRequest(insertDeleteContentsLikeDataURL, listener, item.getContents_pk(), user_pk, 2);
                 }
                 queue.add(request);
             }
         });
+    }
+
+    @Override
+    public int getItemCount() {
+        return items.size();
+    }
+
+    protected void addItem(Bitmap thumbnail, String date, String contents_name, int contents_pk, int alarm, String url) {
+        Fragment2RecyclerItem item = new Fragment2RecyclerItem();
+        item.setThumbnail(thumbnail);
+        item.setDate(date);
+        item.setContents_name(contents_name);
+        item.setContents_pk(contents_pk);
+        item.setAlarm(alarm);
+        item.setUrl(url);
+        items.add(item);
+    }
+
+    public static class Fragment2Holder extends RecyclerView.ViewHolder {
+
+        ImageView thumbnail;
+        TextView date_text, contents_name_text;
+        Button pick;
+
+        Fragment2Holder(View view) {
+            super(view);
+            thumbnail = view.findViewById(R.id.my_page_fragment2_thumbnail);
+            date_text = view.findViewById(R.id.my_page_fragment2_date);
+            contents_name_text = view.findViewById(R.id.my_page_fragment2_contents_name);
+            pick = view.findViewById(R.id.my_page_fragment2_pick);
+        }
     }
 
     public class SuccessCheckListener implements Response.Listener<String> {
@@ -121,21 +136,5 @@ public class Fragment2RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
             }
 
         }
-    }
-
-    @Override
-    public int getItemCount() {
-        return items.size();
-    }
-
-    protected void addItem(Bitmap thumbnail, String date, String contents_name, int contents_pk, int alarm, String url) {
-        Fragment2RecyclerItem item = new Fragment2RecyclerItem();
-        item.setThumbnail(thumbnail);
-        item.setDate(date);
-        item.setContents_name(contents_name);
-        item.setContents_pk(contents_pk);
-        item.setAlarm(alarm);
-        item.setUrl(url);
-        items.add(item);
     }
 }

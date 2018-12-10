@@ -14,12 +14,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,7 +28,6 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.techtown.ideaconcert.ActivityCodes;
-import org.techtown.ideaconcert.ContentsMainDir.ContentsMainActivity;
 import org.techtown.ideaconcert.MyPageDir.MyPageActivity;
 import org.techtown.ideaconcert.R;
 import org.techtown.ideaconcert.SQLiteDir.DBHelper;
@@ -53,52 +49,240 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     final private String selectedContentsURL = ActivityCodes.DATABASE_IP + "/platform/GetSelectedContents";
     //    final private String discountContentsURL = "http://lle21cen.cafe24.com/GetDiscountContents.php";
     final private int MAX_CONTENTS_NUM = 3; // 10으로 변경 필.
-
+    private final int BANNER_FLIP_TIME = 5000; // 배너가 자동으로 넘어가는 시간 (1000 = 1초)
     ScrollView mainScrollView; // 메인 액태비티 최상위 레이아웃 ScrollView
-
     UserInformation info; // 로그인 한 사용자의 정보를 저장. Application 수준에서 관리됨.
     Button mypage_btn, open_category_btn, footer_up_btn;
-
     boolean isLoginTurn = true; // 로그인이 된 상태인지 안된 상태인지 판단. true일 경우 로그인이 안 된 상태 -----------> 지울지 판단할 필요 생김 나중에 귀찮
-
+    // categoryContentsListener 클래스 선언
+    CategoryContentsListener categoryContentsListener;
     private SharedPreferences loginData; // 사용자의 로그인 정보를 파일로 저장하여 로그인 상태를 유지함
-
     private ViewPager bannerPager; // (???) 배너
-    private final int BANNER_FLIP_TIME = 5000; // 배너가 자동으로 넘어가는 시간 (1000 = 1초)
     private int banner_data_num; // 배너 데이터베이스에 들어있는 데이터의 개수를 저장
     private Handler bannerHandler; // 배너가 일정 시간 경과 시 자동으로 넘어가도록 만드는 핸들러
-
     // 카테고리 메뉴에 필요한 변수들
     private CategoryContentsRecyclerAdapter popAdapter, loveAdapter, academyAdapter, chivalryAdapter, actionAdapter, comicAdapter;
-
     private RecyclerView categoryRecycler;
     private RecyclerView.LayoutManager categoryRecyclerLayoutManager, newArrivalLayoutManger,
             bestRecyclerManager, recommendRecyclerManager, eventRecyclerManager;
-
     // 신작 메뉴에 필요한 변수들
     private NewArrivalRecyclerAdapter newArrivalRecyclerAdapter;
     private RecyclerView arrivalRecycler;
-
     // 할인 메뉴에 필요한 변수들
     private ViewPager discountPager;
     private CircleAnimIndicator circleAnimIndicator;
-
     // 베스트 메뉴에 필요한 변수들
     private NewArrivalRecyclerAdapter bestRecyclerAdapter;
     private RecyclerView bestRecycler;
-
     // 추천 메뉴에 필요한 변수들
     private NewArrivalRecyclerAdapter recommendRecyclerAdapter;
     private RecyclerView recommendRecycler;
-
     // 이벤트 배너에 필요한 변수들
     private EventRecyclerAdapter eventRecyclerAdapter;
     private RecyclerView eventBannerRecycler;
-
-    // categoryContentsListener 클래스 선언
-    CategoryContentsListener categoryContentsListener;
-
     private int deviceWidth;
+    private ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            circleAnimIndicator.selectDot(position);
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
+    };
+    // 광고 배너가 일정 주기로 자동으로 넘어가도록 하는 Thread
+    private Thread bannerThread = new Thread() {
+        @Override
+        public void run() {
+            super.run();
+            while (true) {
+                try {
+                    // 5초에 한번 Handler에 신호를 보내 배너가 다음으로 넘어가도록 함.
+                    Thread.sleep(BANNER_FLIP_TIME);
+                    bannerHandler.sendEmptyMessage(0);
+                } catch (Exception e) {
+                    Log.e("thread", e.getMessage());
+                }
+            }
+        }
+    };
+    // 광고 배너 데이터베이스에서 배너의 개수와 정보를 알아 와 처리하기 위한 listener
+    private Response.Listener<String> bannerListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonResponse = new JSONObject(response);
+
+                // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
+                JSONArray result = jsonResponse.getJSONArray("result");
+                boolean exist = jsonResponse.getBoolean("exist");
+                if (exist) {
+                    ArrayList<BannerPagerItem> items = new ArrayList<>();
+                    int num_result = jsonResponse.getInt("num_result");
+                    for (int i = 0; i < num_result; i++) {
+                        // 데이터베이스에 들어있는 배너의 수만큼 for문을 돌려 url을 배열에 저장
+                        JSONObject temp = result.getJSONObject(i);
+                        String url = temp.getString("url");
+                        int contents_pk = temp.getInt("contents_pk");
+                        items.add(new BannerPagerItem(url));
+                    }
+                    // 광고 배너 ViewPager 관련 변수 선언, 초기화
+                    banner_data_num = num_result;
+                    BannerPagerAdapter adapter = new BannerPagerAdapter(getLayoutInflater(), num_result, items, deviceWidth, (int) Math.round(deviceWidth / 1.7));
+                    bannerPager.setAdapter(adapter);
+                    bannerThread.start(); // 최상단 배너에 대한 adater가 설정되면 자동으로 넘어가는 Thread가 실행되도록 설정
+                } else {
+                    Log.e("No Banner", "표시 할 배너가 없습니다.");
+                }
+            } catch (Exception e) {
+                Log.e("bannerListener", e.getMessage());
+            }
+        }
+    };
+    private Response.Listener<String> eventBannerListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonResponse = new JSONObject(response);
+                JSONArray result = jsonResponse.getJSONArray("result");
+                boolean exist = jsonResponse.getBoolean("exist");
+                if (exist) {
+                    int num_result = jsonResponse.getInt("num_result");
+                    for (int i = 0; i < num_result; i++) {
+                        // 데이터베이스에 들어있는 배너의 수만큼 for문을 돌려 url을 배열에 저장
+                        JSONObject temp = result.getJSONObject(i);
+                        String url = temp.getString("url");
+                        int contents_pk = temp.getInt("contents_pk");
+                        eventRecyclerAdapter.addItem(contents_pk, url);
+                    }
+                    eventBannerRecycler.setAdapter(eventRecyclerAdapter);
+                } else {
+                    Log.e("No Banner", "표시 할 배너가 없습니다.");
+                }
+            } catch (Exception e) {
+                Log.e("bannerListener", e.getMessage());
+            }
+        }
+    };
+    // 선택된 메뉴 리스너
+    private Response.Listener<String> selectedContentsListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonResponse = new JSONObject(response);
+                JSONArray result = jsonResponse.getJSONArray("result");
+                boolean exist = jsonResponse.getBoolean("exist");
+                int tag = jsonResponse.getInt("tag");
+                NewArrivalRecyclerAdapter adapter;
+                RecyclerView recyclerView;
+                if (tag == 1) {
+                    adapter = newArrivalRecyclerAdapter;
+                    recyclerView = arrivalRecycler;
+                } else if (tag == 3) {
+                    adapter = bestRecyclerAdapter;
+                    recyclerView = bestRecycler;
+                } else if (tag == 4) {
+                    adapter = recommendRecyclerAdapter;
+                    recyclerView = recommendRecycler;
+                } else {
+                    Log.e("tag error", "tag" + tag);
+                    return;
+                }
+                // tag 1 : 신작 2 : 베스트작 3 : 추천작
+
+                if (exist) {
+                    int num_result = jsonResponse.getInt("num_result");
+                    for (int i = 0; i < num_result; i++) {
+                        // 데이터베이스에 들어있는 콘텐츠의 수만큼 for문을 돌려 layout에 image추가
+                        try {
+                            JSONObject temp = result.getJSONObject(i);
+                            String url = temp.getString("url");
+                            int contents_pk = temp.getInt("contents_pk");
+                            String contents_name = temp.getString("contents_name");
+                            String writer_name = temp.getString("writer_name");
+                            String painter_name = temp.getString("painter_name");
+                            double star_rating = temp.getDouble("star_rating");
+
+                            adapter.addItem(contents_pk, url, contents_name, star_rating, painter_name);
+                        } catch (Exception e) {
+                            Log.e("selected contents error", e.getMessage());
+                        }
+                    }
+                    recyclerView.setAdapter(adapter);
+                } else {
+                    Log.e("No Arrival", "표시 할 신작이 없습니다.");
+                }
+            } catch (Exception e) {
+                Log.e("selectedListener", e.getMessage());
+            }
+        }
+    };
+    // 할인메뉴 리스너
+    private Response.Listener<String> disCountContentsListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonResponse = new JSONObject(response);
+                // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
+                JSONArray result = jsonResponse.getJSONArray("result");
+                boolean exist = jsonResponse.getBoolean("exist");
+                if (exist) {
+                    int num_category_contents_data = jsonResponse.getInt("num_result");
+                    ArrayList<DiscountContentsItem> items1 = new ArrayList<>();
+                    ArrayList<DiscountContentsItem> items2 = new ArrayList<>();
+                    ArrayList<DiscountContentsItem> items3 = new ArrayList<>();
+                    ArrayList<DiscountContentsItem> items;
+                    for (int i = 0; i < num_category_contents_data; i++) {
+                        // 데이터베이스에 들어있는 콘텐츠의 수만큼 for문을 돌려 layout에 image추가
+                        try {
+                            if (i % 3 == 0) items = items1;
+                            else if (i % 3 == 1) items = items2;
+                            else items = items3;
+
+                            JSONObject temp = result.getJSONObject(i);
+                            String url = temp.getString("url");
+
+                            int contents_pk = temp.getInt("contents_pk");
+                            String contents_name = temp.getString("contents_name");
+                            String writer_name = temp.getString("writer_name");
+                            String painter_name = temp.getString("painter_name");
+                            String summary = temp.getString("summary");
+                            int view_count = temp.getInt("view_count");
+                            double star_rating = temp.getDouble("star_rating");
+
+                            DiscountContentsItem item = new DiscountContentsItem();
+                            item.setThumbnailUrl(url);
+                            item.setContents_pk(contents_pk);
+                            item.setTitle(contents_name);
+                            item.setWriter(writer_name);
+                            item.setPainter(painter_name);
+                            item.setSummary(summary);
+                            item.setView_count(view_count);
+                            item.setStar_rating(star_rating);
+                            items.add(item);
+
+                        } catch (Exception e) {
+                            Log.e("discount contents error", e.getMessage());
+                        }
+                    }
+                    DiscountPagerAdapter adapter = new DiscountPagerAdapter(getLayoutInflater(), items1, items2, items3);
+                    discountPager.setAdapter(adapter);
+                    initIndicator(items1.size());
+                } else {
+                    Log.e("No Arrival", "할인 목록이 없습니다..");
+                }
+            } catch (Exception e) {
+                Log.e("할인작품리스너에러", e.getMessage());
+            }
+        }
+    };
 
     @SuppressLint("HandlerLeak")
     @Override
@@ -320,262 +504,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         circleAnimIndicator.createDotPanel(count, R.drawable.ic_circle_black_10dp, R.drawable.ic_circle_purple_10dp);
     }
 
-    private ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-        }
-
-        @Override
-        public void onPageSelected(int position) {
-            circleAnimIndicator.selectDot(position);
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
-
-        }
-    };
-
-    // 광고 배너가 일정 주기로 자동으로 넘어가도록 하는 Thread
-    private Thread bannerThread = new Thread() {
-        @Override
-        public void run() {
-            super.run();
-            while (true) {
-                try {
-                    // 5초에 한번 Handler에 신호를 보내 배너가 다음으로 넘어가도록 함.
-                    Thread.sleep(BANNER_FLIP_TIME);
-                    bannerHandler.sendEmptyMessage(0);
-                } catch (Exception e) {
-                    Log.e("thread", e.getMessage());
-                }
-            }
-        }
-    };
-
-    // 광고 배너 데이터베이스에서 배너의 개수와 정보를 알아 와 처리하기 위한 listener
-    private Response.Listener<String> bannerListener = new Response.Listener<String>() {
-        @Override
-        public void onResponse(String response) {
-            try {
-                JSONObject jsonResponse = new JSONObject(response);
-
-                // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
-                JSONArray result = jsonResponse.getJSONArray("result");
-                boolean exist = jsonResponse.getBoolean("exist");
-                if (exist) {
-                    ArrayList<BannerPagerItem> items = new ArrayList<>();
-                    int num_result = jsonResponse.getInt("num_result");
-                    for (int i = 0; i < num_result; i++) {
-                        // 데이터베이스에 들어있는 배너의 수만큼 for문을 돌려 url을 배열에 저장
-                        JSONObject temp = result.getJSONObject(i);
-                        String url = temp.getString("url");
-                        int contents_pk = temp.getInt("contents_pk");
-                        items.add(new BannerPagerItem(url));
-                    }
-                    // 광고 배너 ViewPager 관련 변수 선언, 초기화
-                    banner_data_num = num_result;
-                    BannerPagerAdapter adapter = new BannerPagerAdapter(getLayoutInflater(), num_result, items, deviceWidth, (int) Math.round(deviceWidth / 1.7));
-                    bannerPager.setAdapter(adapter);
-                    bannerThread.start(); // 최상단 배너에 대한 adater가 설정되면 자동으로 넘어가는 Thread가 실행되도록 설정
-                } else {
-                    Log.e("No Banner", "표시 할 배너가 없습니다.");
-                }
-            } catch (Exception e) {
-                Log.e("bannerListener", e.getMessage());
-            }
-        }
-    };
-
-    private Response.Listener<String> eventBannerListener = new Response.Listener<String>() {
-        @Override
-        public void onResponse(String response) {
-            try {
-                JSONObject jsonResponse = new JSONObject(response);
-                JSONArray result = jsonResponse.getJSONArray("result");
-                boolean exist = jsonResponse.getBoolean("exist");
-                if (exist) {
-                    int num_result = jsonResponse.getInt("num_result");
-                    for (int i = 0; i < num_result; i++) {
-                        // 데이터베이스에 들어있는 배너의 수만큼 for문을 돌려 url을 배열에 저장
-                        JSONObject temp = result.getJSONObject(i);
-                        String url = temp.getString("url");
-                        int contents_pk = temp.getInt("contents_pk");
-                        eventRecyclerAdapter.addItem(contents_pk, url);
-                    }
-                    eventBannerRecycler.setAdapter(eventRecyclerAdapter);
-                } else {
-                    Log.e("No Banner", "표시 할 배너가 없습니다.");
-                }
-            } catch (Exception e) {
-                Log.e("bannerListener", e.getMessage());
-            }
-        }
-    };
-
-    // 선택된 메뉴 리스너
-    private Response.Listener<String> selectedContentsListener = new Response.Listener<String>() {
-        @Override
-        public void onResponse(String response) {
-            try {
-                JSONObject jsonResponse = new JSONObject(response);
-                JSONArray result = jsonResponse.getJSONArray("result");
-                boolean exist = jsonResponse.getBoolean("exist");
-                int tag = jsonResponse.getInt("tag");
-                NewArrivalRecyclerAdapter adapter;
-                RecyclerView recyclerView;
-                if (tag == 1) {
-                    adapter = newArrivalRecyclerAdapter;
-                    recyclerView = arrivalRecycler;
-                } else if (tag == 3) {
-                    adapter = bestRecyclerAdapter;
-                    recyclerView = bestRecycler;
-                } else if (tag == 4) {
-                    adapter = recommendRecyclerAdapter;
-                    recyclerView = recommendRecycler;
-                } else {
-                    Log.e("tag error", "tag" + tag);
-                    return;
-                }
-                // tag 1 : 신작 2 : 베스트작 3 : 추천작
-
-                if (exist) {
-                    int num_result = jsonResponse.getInt("num_result");
-                    for (int i = 0; i < num_result; i++) {
-                        // 데이터베이스에 들어있는 콘텐츠의 수만큼 for문을 돌려 layout에 image추가
-                        try {
-                            JSONObject temp = result.getJSONObject(i);
-                            String url = temp.getString("url");
-                            int contents_pk = temp.getInt("contents_pk");
-                            String contents_name = temp.getString("contents_name");
-                            String writer_name = temp.getString("writer_name");
-                            String painter_name = temp.getString("painter_name");
-                            double star_rating = temp.getDouble("star_rating");
-
-                            adapter.addItem(contents_pk, url, contents_name, star_rating, painter_name);
-                        } catch (Exception e) {
-                            Log.e("selected contents error", e.getMessage());
-                        }
-                    }
-                    recyclerView.setAdapter(adapter);
-                } else {
-                    Log.e("No Arrival", "표시 할 신작이 없습니다.");
-                }
-            } catch (Exception e) {
-                Log.e("selectedListener", e.getMessage());
-            }
-        }
-    };
-
-    class CategoryContentsListener implements Response.Listener<String> {
-        CategoryContentsRecyclerAdapter adapter;
-        int position;
-
-        public CategoryContentsListener(CategoryContentsRecyclerAdapter adapter, int position) {
-            this.adapter = adapter;
-            this.position = position;
-        }
-
-        @Override
-        public void onResponse(String response) {
-            int num_category_contents_data = 0;
-            try {
-                JSONObject jsonResponse = new JSONObject(response);
-                // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
-                boolean exist = jsonResponse.getBoolean("exist");
-                if (exist) {
-                    JSONArray result = jsonResponse.getJSONArray("result");
-                    num_category_contents_data = jsonResponse.getInt("num_result");
-                    for (int i = 0; i < Math.min(num_category_contents_data, MAX_CONTENTS_NUM); i++) {
-                        // 데이터베이스에 들어있는 콘텐츠의 수만큼 for문을 돌려 layout에 image추가
-                        try {
-                            JSONObject temp = result.getJSONObject(i);
-                            int contents_pk = temp.getInt("contents_pk");
-                            String url = temp.getString("url");
-                            String contents_name = temp.getString("contents_name");
-                            String painter_name = temp.getString("painter_name");
-//                            String writer_name = temp.getString("writer_name"); // 글 작가 이름 추가?
-                            int view_count = temp.getInt("view_count");
-                            int movie = temp.getInt("movie");
-                            adapter.addItem(url, contents_name, painter_name, view_count, contents_pk, movie);
-                        } catch (Exception e) {
-                            Log.e("카테고리아이템에러", e.getMessage());
-                        }
-                    }
-                } else {
-                    Log.e("메인페이지컨텐츠리스너클래스", "표시 할 컨텐츠가 없습니다.");
-                }
-            } catch (Exception e) {
-                Log.e("카테고리리스너에러", "리스너에러");
-            }
-            if (num_category_contents_data > MAX_CONTENTS_NUM) {
-                adapter.addItem("CategoryContents", "", "", 0, 0, position); // movie에 카테고리 번호 저장
-            }
-            categoryRecycler.swapAdapter(adapter, true);
-        }
-    }
-
-    // 할인메뉴 리스너
-    private Response.Listener<String> disCountContentsListener = new Response.Listener<String>() {
-        @Override
-        public void onResponse(String response) {
-            try {
-                JSONObject jsonResponse = new JSONObject(response);
-                // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
-                JSONArray result = jsonResponse.getJSONArray("result");
-                boolean exist = jsonResponse.getBoolean("exist");
-                if (exist) {
-                    int num_category_contents_data = jsonResponse.getInt("num_result");
-                    ArrayList<DiscountContentsItem> items1 = new ArrayList<>();
-                    ArrayList<DiscountContentsItem> items2 = new ArrayList<>();
-                    ArrayList<DiscountContentsItem> items3 = new ArrayList<>();
-                    ArrayList<DiscountContentsItem> items;
-                    for (int i = 0; i < num_category_contents_data; i++) {
-                        // 데이터베이스에 들어있는 콘텐츠의 수만큼 for문을 돌려 layout에 image추가
-                        try {
-                            if (i % 3 == 0) items = items1;
-                            else if (i % 3 == 1) items = items2;
-                            else items = items3;
-
-                            JSONObject temp = result.getJSONObject(i);
-                            String url = temp.getString("url");
-
-                            int contents_pk = temp.getInt("contents_pk");
-                            String contents_name = temp.getString("contents_name");
-                            String writer_name = temp.getString("writer_name");
-                            String painter_name = temp.getString("painter_name");
-                            String summary = temp.getString("summary");
-                            int view_count = temp.getInt("view_count");
-                            double star_rating = temp.getDouble("star_rating");
-
-                            DiscountContentsItem item = new DiscountContentsItem();
-                            item.setThumbnailUrl(url);
-                            item.setContents_pk(contents_pk);
-                            item.setTitle(contents_name);
-                            item.setWriter(writer_name);
-                            item.setPainter(painter_name);
-                            item.setSummary(summary);
-                            item.setView_count(view_count);
-                            item.setStar_rating(star_rating);
-                            items.add(item);
-
-                        } catch (Exception e) {
-                            Log.e("discount contents error", e.getMessage());
-                        }
-                    }
-                    DiscountPagerAdapter adapter = new DiscountPagerAdapter(getLayoutInflater(), items1, items2, items3);
-                    discountPager.setAdapter(adapter);
-                    initIndicator(items1.size());
-                } else {
-                    Log.e("No Arrival", "할인 목록이 없습니다..");
-                }
-            } catch (Exception e) {
-                Log.e("할인작품리스너에러", e.getMessage());
-            }
-        }
-    };
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -694,5 +622,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bestRecycler.removeAllViews();
         recommendRecycler.removeAllViews();
         eventBannerRecycler.removeAllViews();
+    }
+
+    class CategoryContentsListener implements Response.Listener<String> {
+        CategoryContentsRecyclerAdapter adapter;
+        int position;
+
+        public CategoryContentsListener(CategoryContentsRecyclerAdapter adapter, int position) {
+            this.adapter = adapter;
+            this.position = position;
+        }
+
+        @Override
+        public void onResponse(String response) {
+            int num_category_contents_data = 0;
+            try {
+                JSONObject jsonResponse = new JSONObject(response);
+                // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
+                boolean exist = jsonResponse.getBoolean("exist");
+                if (exist) {
+                    JSONArray result = jsonResponse.getJSONArray("result");
+                    num_category_contents_data = jsonResponse.getInt("num_result");
+                    for (int i = 0; i < Math.min(num_category_contents_data, MAX_CONTENTS_NUM); i++) {
+                        // 데이터베이스에 들어있는 콘텐츠의 수만큼 for문을 돌려 layout에 image추가
+                        try {
+                            JSONObject temp = result.getJSONObject(i);
+                            int contents_pk = temp.getInt("contents_pk");
+                            String url = temp.getString("url");
+                            String contents_name = temp.getString("contents_name");
+                            String painter_name = temp.getString("painter_name");
+//                            String writer_name = temp.getString("writer_name"); // 글 작가 이름 추가?
+                            int view_count = temp.getInt("view_count");
+                            int movie = temp.getInt("movie");
+                            adapter.addItem(url, contents_name, painter_name, view_count, contents_pk, movie);
+                        } catch (Exception e) {
+                            Log.e("카테고리아이템에러", e.getMessage());
+                        }
+                    }
+                } else {
+                    Log.e("메인페이지컨텐츠리스너클래스", "표시 할 컨텐츠가 없습니다.");
+                }
+            } catch (Exception e) {
+                Log.e("카테고리리스너에러", "리스너에러");
+            }
+            if (num_category_contents_data > MAX_CONTENTS_NUM) {
+                adapter.addItem("CategoryContents", "", "", 0, 0, position); // movie에 카테고리 번호 저장
+            }
+            categoryRecycler.swapAdapter(adapter, true);
+        }
     }
 }

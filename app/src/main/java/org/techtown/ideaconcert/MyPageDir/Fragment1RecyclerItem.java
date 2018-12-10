@@ -1,7 +1,5 @@
 package org.techtown.ideaconcert.MyPageDir;
 
-import android.graphics.Bitmap;
-
 public class Fragment1RecyclerItem {
     private String thumbnail_url;
     private String date, contents_name;

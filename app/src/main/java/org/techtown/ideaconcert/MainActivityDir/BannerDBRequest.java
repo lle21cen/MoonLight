@@ -19,6 +19,7 @@ public class BannerDBRequest extends StringRequest {
         super(Method.POST, url, listener, null);
         parameters = new HashMap<>();
     }
+
     public Map<String, String> getParams() {
         return parameters;
     }

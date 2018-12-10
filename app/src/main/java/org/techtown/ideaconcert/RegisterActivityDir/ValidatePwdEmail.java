@@ -18,6 +18,7 @@ public class ValidatePwdEmail {
         Matcher matcher = pattern.matcher(password);
         return matcher.matches();
     }
+
     public static boolean validateEmail(String email) {
         /*
          * 이메일 정책은 알파벳과 숫자를 포함하고 '@'와 '.xxx'를 포함해야한다.

@@ -25,6 +25,7 @@ public class EmailCheckAndRegister extends StringRequest {
         parameters.put("email", email);
         parameters.put("userCode", userCode);
     }
+
     public Map<String, String> getParams() {
         return parameters;
     }

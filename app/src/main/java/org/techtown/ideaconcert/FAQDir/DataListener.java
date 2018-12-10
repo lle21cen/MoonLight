@@ -52,7 +52,7 @@ public class DataListener implements Response.Listener<String> {
                         childItems.put(title, childContents);
 
                     } catch (Exception e) {
-                        Log.e("FAQ데이터리스너", e.getMessage ());
+                        Log.e("FAQ데이터리스너", e.getMessage());
                     }
                 }
 

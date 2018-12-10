@@ -4,9 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#efefef"
-    android:orientation="vertical"
     android:focusable="true"
     android:focusableInTouchMode="true"
+    android:orientation="vertical"
     tools:context=".ConsultDir.ConsultActivity">
 
     <TextView
@@ -29,12 +29,12 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -54,12 +54,12 @@
             </LinearLayout>
 
             <LinearLayout
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -82,12 +82,12 @@
             </LinearLayout>
 
             <LinearLayout
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -111,12 +111,12 @@
             </LinearLayout>
 
             <LinearLayout
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -127,8 +127,8 @@
                     android:textSize="15sp" />
 
                 <EditText
-                    android:layout_width="match_parent"
                     android:id="@+id/consult_email"
+                    android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_marginLeft="5dp"
                     android:background="@drawable/round_border_white"
@@ -142,18 +142,18 @@
                 android:id="@+id/consult_checkbox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
                 android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp"
                 android:text="개인정보 수집 및 이용동의(필수)"
                 android:textColor="#000000"
                 android:textSize="15sp" />
 
             <TextView
-                android:layout_marginRight="20dp"
-                android:layout_marginLeft="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:layout_marginBottom="25dp"
                 android:text="@string/personal_information_agreement"
                 android:textColor="#786aaa"

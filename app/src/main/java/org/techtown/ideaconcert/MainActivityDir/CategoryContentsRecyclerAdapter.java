@@ -21,28 +21,6 @@ public class CategoryContentsRecyclerAdapter extends RecyclerView.Adapter<Recycl
 
     private ArrayList<CategoryContentsItem> items = new ArrayList<>();
 
-    public static class CategoryViewHolder extends RecyclerView.ViewHolder {
-        RelativeLayout itemLayout, itemInfoLayout;
-        ImageView worksImageView, movieImageView;
-        TextView contents_name_view;
-        TextView author_name_view;
-        TextView view_count_view;
-        Context context;
-
-        CategoryViewHolder(View view) {
-            super(view);
-            context = view.getContext();
-            itemLayout = view.findViewById(R.id.main_category_item_layout);
-            itemInfoLayout = view.findViewById(R.id.main_category_item_info_layout);
-
-            worksImageView = view.findViewById(R.id.main_category_item_img);
-            movieImageView = view.findViewById(R.id.main_category_movie_img);
-            contents_name_view = view.findViewById(R.id.main_category_item_name);
-            author_name_view = view.findViewById(R.id.main_category_author_name);
-            view_count_view = view.findViewById(R.id.main_category_view_count);
-        }
-    }
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.main_category_contents_item, parent, false);
@@ -114,5 +92,27 @@ public class CategoryContentsRecyclerAdapter extends RecyclerView.Adapter<Recycl
         item.setContents_pk(contents_pk);
         item.setMovie(movie);
         items.add(item);
+    }
+
+    public static class CategoryViewHolder extends RecyclerView.ViewHolder {
+        RelativeLayout itemLayout, itemInfoLayout;
+        ImageView worksImageView, movieImageView;
+        TextView contents_name_view;
+        TextView author_name_view;
+        TextView view_count_view;
+        Context context;
+
+        CategoryViewHolder(View view) {
+            super(view);
+            context = view.getContext();
+            itemLayout = view.findViewById(R.id.main_category_item_layout);
+            itemInfoLayout = view.findViewById(R.id.main_category_item_info_layout);
+
+            worksImageView = view.findViewById(R.id.main_category_item_img);
+            movieImageView = view.findViewById(R.id.main_category_movie_img);
+            contents_name_view = view.findViewById(R.id.main_category_item_name);
+            author_name_view = view.findViewById(R.id.main_category_author_name);
+            view_count_view = view.findViewById(R.id.main_category_view_count);
+        }
     }
 }

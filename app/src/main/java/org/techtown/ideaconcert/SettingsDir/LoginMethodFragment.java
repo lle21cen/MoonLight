@@ -34,7 +34,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -49,23 +48,20 @@ import org.techtown.ideaconcert.UserInformation;
 
 public class LoginMethodFragment extends Fragment implements View.OnClickListener {
 
-    View view;
-    private String email, name, login_method; // user's email and name
-
-    // For google
-    private GoogleApiClient googleApiClient;
-    private FirebaseAuth auth;
     final int GOOGLE_SIGN_IN = 2001;
-
+    View view;
     // For Facebook
     CallbackManager callbackManager;
     LoginButton facebook_login;
     String TAG = "myTag";
     ProfileTracker mProfileTracker;
-    private Button fbCustomBtn, googleCustomBtn;
-
     UserInformation userInformation;
     RequestQueue mRequestQueue;
+    private String email, name, login_method; // user's email and name
+    // For google
+    private GoogleApiClient googleApiClient;
+    private FirebaseAuth auth;
+    private Button fbCustomBtn, googleCustomBtn;
 
     @Nullable
     @Override
@@ -156,7 +152,7 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivityForResult(intent, ActivityCodes.LOGIN_REQUEST);
                 break;
-            case R.id.login_method_custom_google :
+            case R.id.login_method_custom_google:
                 userInformation.logoutSession();
                 Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
                 startActivityForResult(signInIntent, GOOGLE_SIGN_IN);

@@ -1,7 +1,5 @@
 package org.techtown.ideaconcert.MainActivityDir;
 
-import android.graphics.Bitmap;
-
 public class DiscountContentsItem {
     String thumbnailUrl, title, writer, painter, summary;
     int contents_pk, view_count;

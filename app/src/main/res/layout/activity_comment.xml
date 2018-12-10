@@ -2,10 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/comment_top_layout"
     android:layout_width="match_parent"
-    android:focusable="true"
-    android:focusableInTouchMode="true"
+    android:layout_height="wrap_content"
     android:background="#ffffff"
-    android:layout_height="wrap_content">
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/webtoon_comment_toolbar"
@@ -57,15 +57,15 @@
 
     <EditText
         android:id="@+id/comment_edit_text"
-        android:maxLength="500"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_alignParentBottom="true"
-        android:background="#ffffff"
         android:layout_toLeftOf="@id/comment_enter"
-        android:textSize="12sp"
+        android:background="#ffffff"
+        android:hint="댓글을 입력해주세요 :)"
+        android:maxLength="500"
         android:paddingLeft="5dp"
-        android:hint="댓글을 입력해주세요 :)" />
+        android:textSize="12sp" />
 
     <Button
         android:id="@+id/comment_enter"

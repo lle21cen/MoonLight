@@ -9,11 +9,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -21,40 +19,13 @@ import org.json.JSONObject;
 import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.DatabaseRequest;
 import org.techtown.ideaconcert.R;
-import org.techtown.ideaconcert.UserInformation;
-
-import java.net.URL;
 
 public class Fragment2LikeWorks extends Fragment {
+    private final String getLikeWorksListURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsLikeData";
     View view;
     RecyclerView recycler;
     Fragment2RecyclerAdapter adapter;
     LinearLayoutManager recyclerViewManager;
-
-    private final String getLikeWorksListURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsLikeData";
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        Intent intent = getActivity().getIntent();
-        int user_pk = intent.getIntExtra("user_pk", 0);
-
-        view = inflater.inflate(R.layout.fragment_my_page2_like_works, container, false);
-        adapter = new Fragment2RecyclerAdapter(user_pk);
-        recycler = view.findViewById(R.id.my_page_fragment2_recycler);
-        recyclerViewManager = new LinearLayoutManager(getActivity());
-        recycler.setLayoutManager(recyclerViewManager);
-
-        if (user_pk != 0) {
-            DatabaseRequest databaseRequest = new DatabaseRequest(getLikeWorksListListener, getLikeWorksListURL, user_pk);
-            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-            requestQueue.add(databaseRequest);
-        }
-        recycler.setAdapter(adapter);
-        return view;
-    }
-
     Response.Listener<String> getLikeWorksListListener = new Response.Listener<String>() {
         @Override
         public void onResponse(String response) {
@@ -81,4 +52,26 @@ public class Fragment2LikeWorks extends Fragment {
             }
         }
     };
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        Intent intent = getActivity().getIntent();
+        int user_pk = intent.getIntExtra("user_pk", 0);
+
+        view = inflater.inflate(R.layout.fragment_my_page2_like_works, container, false);
+        adapter = new Fragment2RecyclerAdapter(user_pk);
+        recycler = view.findViewById(R.id.my_page_fragment2_recycler);
+        recyclerViewManager = new LinearLayoutManager(getActivity());
+        recycler.setLayoutManager(recyclerViewManager);
+
+        if (user_pk != 0) {
+            DatabaseRequest databaseRequest = new DatabaseRequest(getLikeWorksListListener, getLikeWorksListURL, user_pk);
+            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+            requestQueue.add(databaseRequest);
+        }
+        recycler.setAdapter(adapter);
+        return view;
+    }
 }

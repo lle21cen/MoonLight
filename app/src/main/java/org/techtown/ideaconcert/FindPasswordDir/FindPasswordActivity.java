@@ -3,13 +3,10 @@ package org.techtown.ideaconcert.FindPasswordDir;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -23,8 +20,6 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
 import org.techtown.ideaconcert.ActivityCodes;
-import org.techtown.ideaconcert.LoginDir.LoginActivity;
-import org.techtown.ideaconcert.LoginDir.LoginRequest;
 import org.techtown.ideaconcert.R;
 
 public class FindPasswordActivity extends AppCompatActivity implements View.OnClickListener {
@@ -32,6 +27,35 @@ public class FindPasswordActivity extends AppCompatActivity implements View.OnCl
     private final String IssueTempPasswordURL = ActivityCodes.DATABASE_IP + "/platform/IssueTempPassword";
     EditText emailView, nameView;
     TextView infoTextView;
+    private Response.Listener IssueTempPasswordListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                boolean exist = jsonObject.getBoolean("exist");
+                if (!exist) {
+                    infoTextView.setText("존재하지 않는 회원정보입니다");
+                } else {
+                    boolean success = jsonObject.getBoolean("success");
+                    if (success) {
+                        CustomFindPwDialog dialog = new CustomFindPwDialog(FindPasswordActivity.this);
+                        dialog.show();
+                        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                            @Override
+                            public void onDismiss(DialogInterface dialogInterface) {
+                                setResult(ActivityCodes.FIND_SUCCESS);
+                                finish();
+                            }
+                        });
+                    } else {
+                        Toast.makeText(FindPasswordActivity.this, "임시비번발급실패 " + jsonObject.getString("errmsg"), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            } catch (Exception e) {
+                Log.e("임시비번발급에러", e.getMessage());
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,43 +86,12 @@ public class FindPasswordActivity extends AppCompatActivity implements View.OnCl
                 }
                 break;
             case R.id.find_pw_cancel_btn:
-            case R.id.find_pw_back_btn :
+            case R.id.find_pw_back_btn:
                 setResult(ActivityCodes.FIND_FAIL);
                 finish();
                 break;
         }
     }
-
-    private Response.Listener IssueTempPasswordListener = new Response.Listener<String>() {
-        @Override
-        public void onResponse(String response) {
-            try {
-                JSONObject jsonObject = new JSONObject(response);
-                boolean exist = jsonObject.getBoolean("exist");
-                if (!exist) {
-                    infoTextView.setText("존재하지 않는 회원정보입니다");
-                } else {
-                    boolean success = jsonObject.getBoolean("success");
-                    if (success) {
-                        CustomFindPwDialog dialog = new CustomFindPwDialog(FindPasswordActivity.this);
-                        dialog.show();
-                        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                            @Override
-                            public void onDismiss(DialogInterface dialogInterface) {
-                                setResult(ActivityCodes.FIND_SUCCESS);
-                                finish();
-                            }
-                        });
-                    }
-                    else {
-                        Toast.makeText(FindPasswordActivity.this, "임시비번발급실패 " + jsonObject.getString("errmsg"), Toast.LENGTH_SHORT).show();
-                    }
-                }
-            } catch (Exception e) {
-                Log.e("임시비번발급에러", e.getMessage());
-            }
-        }
-    };
 
     public class CustomFindPwDialog extends Dialog {
 

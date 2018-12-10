@@ -17,7 +17,7 @@ public class ExpandedContentsTabPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         // Returning the current tabs
-        return new ExpandedContentsFragment(position+1);
+        return new ExpandedContentsFragment(position + 1);
     }
 
     @Override

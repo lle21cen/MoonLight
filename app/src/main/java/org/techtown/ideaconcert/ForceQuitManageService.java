@@ -15,15 +15,15 @@ public class ForceQuitManageService extends Service {
     // 사용자가 회원가입 화면에서 강제종료하여 데이터베이스에 임시 저장된 사용자 데이터를 삭제하는 Service
     private String userID;
 
+    public ForceQuitManageService() {
+    }
+
     public String getUserID() {
         return userID;
     }
 
     public void setUserID(String userID) {
         this.userID = userID;
-    }
-
-    public ForceQuitManageService() {
     }
 
     @Override
@@ -56,11 +56,9 @@ public class ForceQuitManageService extends Service {
             DeleteRequest deleteRequest = new DeleteRequest(responseListener, userID);
             RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
             requestQueue.add(deleteRequest);
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             Log.e("Network access error", e.getMessage());
-        }
-        finally {
+        } finally {
             stopSelf();
         }
     }

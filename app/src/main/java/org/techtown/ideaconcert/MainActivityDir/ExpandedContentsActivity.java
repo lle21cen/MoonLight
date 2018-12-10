@@ -9,12 +9,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.techtown.ideaconcert.MyPageDir.TabPagerAdapter;
 import org.techtown.ideaconcert.R;
 
-public class ExpandedContentsActivity extends AppCompatActivity implements View.OnClickListener{
+public class ExpandedContentsActivity extends AppCompatActivity implements View.OnClickListener {
 
     ViewPager viewPager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,8 +62,8 @@ public class ExpandedContentsActivity extends AppCompatActivity implements View.
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.expand_back :
-            case R.id.expand_txt :
+            case R.id.expand_back:
+            case R.id.expand_txt:
                 finish();
                 break;
         }

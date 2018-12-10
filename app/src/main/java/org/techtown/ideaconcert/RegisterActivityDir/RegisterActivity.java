@@ -2,17 +2,11 @@ package org.techtown.ideaconcert.RegisterActivityDir;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -29,14 +23,12 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
 import org.techtown.ideaconcert.ActivityCodes;
-import org.techtown.ideaconcert.DeleteRequest;
-import org.techtown.ideaconcert.ForceQuitManageService;
 import org.techtown.ideaconcert.MainActivityDir.MainActivity;
 import org.techtown.ideaconcert.R;
 import org.techtown.ideaconcert.SettingsDir.TermsAndConditionActivity;
 import org.techtown.ideaconcert.ShowProgressDialog;
 
-public class RegisterActivity extends AppCompatActivity implements View.OnClickListener{
+public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
     /*
     사용자 회원가입 화면
@@ -50,13 +42,31 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     EditText nameText, emailText, pwdText, pwdConfirmText;
     TextView infoText;
     private CheckBox checkBox;
+    private Response.Listener<String> registerListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+                ShowProgressDialog.dismissProgressDialog();
+                JSONObject jsonResponse = new JSONObject(response);
+                boolean exist = jsonResponse.getBoolean("exist");
+                if (exist) {
+                    builder.setMessage("이메일이 이미 사용중입니다.").create().show();
+                } else {
+                    CustomRegisterDialog dialog = new CustomRegisterDialog(RegisterActivity.this);
+                    dialog.show();
+                }
+            } catch (Exception e) {
+                Log.e("Email check error", e.getMessage());
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        emailText =  findViewById(R.id.register_email);
+        emailText = findViewById(R.id.register_email);
         pwdText = findViewById(R.id.register_pw);
         pwdConfirmText = findViewById(R.id.register_pw_confirm);
         nameText = findViewById(R.id.register_name);
@@ -77,71 +87,19 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         registerBtn.setOnClickListener(this);
     }
 
-    private Response.Listener<String> registerListener = new Response.Listener<String>() {
-        @Override
-        public void onResponse(String response) {
-            try {
-                ShowProgressDialog.dismissProgressDialog();
-                JSONObject jsonResponse = new JSONObject(response);
-                boolean exist = jsonResponse.getBoolean("exist");
-                if (exist) {
-                    builder.setMessage("이메일이 이미 사용중입니다.").create().show();
-                } else {
-                    CustomRegisterDialog dialog = new CustomRegisterDialog(RegisterActivity.this);
-                    dialog.show();
-                }
-            } catch (Exception e) {
-                Log.e("Email check error", e.getMessage());
-            }
-        }
-    };
-
-    public class CustomRegisterDialog extends Dialog {
-
-        public CustomRegisterDialog(@NonNull Context context) {
-            super(context);
-        }
-
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            requestWindowFeature(Window.FEATURE_NO_TITLE); //타이틀 바 삭제
-            setContentView(R.layout.sign_up_dialog_layout);
-
-            Button toMainButton = findViewById(R.id.sign_up_dialog_to_main);
-            Button toLoginButton =findViewById(R.id.sign_up_dialog_to_login);
-
-            toMainButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                }
-            });
-
-            toLoginButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                }
-            });
-        }
-    }
-
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.register_terms_and_condition :
+            case R.id.register_terms_and_condition:
                 Intent intent = new Intent(RegisterActivity.this, TermsAndConditionActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.register_cancel_btn :
+            case R.id.register_cancel_btn:
                 Toast.makeText(RegisterActivity.this, "회원가입이 취소 되었습니다.", Toast.LENGTH_SHORT).show();
                 setResult(ActivityCodes.LOGIN_FAIL);
                 finish();
                 break;
-            case R.id.register_join_btn :
+            case R.id.register_join_btn:
                 String email = emailText.getText().toString();
                 String pw = pwdText.getText().toString();
                 String pw_confirm = pwdConfirmText.getText().toString();
@@ -165,16 +123,48 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     pwdText.requestFocus();
                 } else if (!checkBox.isChecked()) {
                     infoText.setText("약관 및 이용안내에 동의해 주십시오");
-                }
-                else {
+                } else {
                     infoText.setText("이메일 형식이 잘못 되었습니다");
                     emailText.requestFocus();
                 }
                 break;
-            case R.id.register_back_btn :
-            case R.id.register_back_txt :
+            case R.id.register_back_btn:
+            case R.id.register_back_txt:
                 setResult(ActivityCodes.REGISTER_FAIL);
                 finish();
+        }
+    }
+
+    public class CustomRegisterDialog extends Dialog {
+
+        public CustomRegisterDialog(@NonNull Context context) {
+            super(context);
+        }
+
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            requestWindowFeature(Window.FEATURE_NO_TITLE); //타이틀 바 삭제
+            setContentView(R.layout.sign_up_dialog_layout);
+
+            Button toMainButton = findViewById(R.id.sign_up_dialog_to_main);
+            Button toLoginButton = findViewById(R.id.sign_up_dialog_to_login);
+
+            toMainButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                }
+            });
+
+            toLoginButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
         }
     }
 }

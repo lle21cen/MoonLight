@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -29,10 +28,30 @@ import org.techtown.ideaconcert.UserInformation;
 public class MyPageActivity extends AppCompatActivity implements View.OnClickListener {
 
     private final String snsLoginProcessURL = ActivityCodes.DATABASE_IP + "/platform/SnsLoginProcess";
-
+    UserInformation userInformation;
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    UserInformation userInformation;
+    private Response.Listener<String> snsLoginProcessListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                int user_pk = jsonObject.getInt("user_pk");
+                int role = jsonObject.getInt("user_type_number");
+                userInformation.setUser_pk(user_pk);
+                userInformation.setRole(role);
+
+                ////////////////////////////// FOR DEBUGGING ////////////////////////////////////////
+                String email = userInformation.getUserEmail();
+                String name = userInformation.getUser_name();
+                int pk = userInformation.getUser_pk();
+//                Toast.makeText(getActivity(), "email= " + email + "name= " + name + "user_pk= " + pk + "role = " + role, Toast.LENGTH_SHORT).show();
+                /////////////////////////////////////////////////////////////////////////////////////
+            } catch (Exception e) {
+                Log.e("sns sign in error", "" + e.getMessage());
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +140,7 @@ public class MyPageActivity extends AppCompatActivity implements View.OnClickLis
                 startActivityForResult(intent, ActivityCodes.MYCASH_REQUEST);
                 break;
 
-            case R.id.my_page_management_btn :
+            case R.id.my_page_management_btn:
                 intent = new Intent(this, ManageMyWorksActivity.class);
                 startActivityForResult(intent, ActivityCodes.MANAGE_MY_WORKS_REQUEST);
                 break;
@@ -162,26 +181,4 @@ public class MyPageActivity extends AppCompatActivity implements View.OnClickLis
             requestQueue.add(databaseRequest);
         }
     }
-
-    private Response.Listener<String> snsLoginProcessListener = new Response.Listener<String>() {
-        @Override
-        public void onResponse(String response) {
-            try {
-                JSONObject jsonObject = new JSONObject(response);
-                int user_pk = jsonObject.getInt("user_pk");
-                int role = jsonObject.getInt("user_type_number");
-                userInformation.setUser_pk(user_pk);
-                userInformation.setRole(role);
-
-                ////////////////////////////// FOR DEBUGGING ////////////////////////////////////////
-                String email = userInformation.getUserEmail();
-                String name = userInformation.getUser_name();
-                int pk = userInformation.getUser_pk();
-//                Toast.makeText(getActivity(), "email= " + email + "name= " + name + "user_pk= " + pk + "role = " + role, Toast.LENGTH_SHORT).show();
-                /////////////////////////////////////////////////////////////////////////////////////
-            } catch (Exception e) {
-                Log.e("sns sign in error", "" + e.getMessage());
-            }
-        }
-    };
 }

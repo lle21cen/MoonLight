@@ -33,10 +33,10 @@
     </LinearLayout>
 
     <ScrollView
-        android:layout_below="@+id/tac_title_layout"
-        android:background="#efefef"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tac_title_layout"
+        android:background="#efefef">
 
         <TextView
             android:id="@+id/tac_text"
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:paddingLeft="10dp"
             android:paddingTop="20dp"
-            android:paddingRight="10dp"/>
+            android:paddingRight="10dp" />
     </ScrollView>
 
 </RelativeLayout>

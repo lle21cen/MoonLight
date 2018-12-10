@@ -30,22 +30,6 @@ public class ChildFragment1RecyclerAdapter extends RecyclerView.Adapter<Recycler
         this.autoSearchHandler = autoSearchHandler;
     }
 
-
-    class Fragment1ViewHolder extends RecyclerView.ViewHolder {
-        View view;
-        TextView contentsNameView, dateView;
-        ImageView cancelImageView;
-
-        Fragment1ViewHolder(View view) {
-            super(view);
-            this.view = view;
-            contentsNameView = view.findViewById(R.id.search_item_contents_name);
-            dateView = view.findViewById(R.id.search_date);
-            cancelImageView = view.findViewById(R.id.search_cancel_image);
-        }
-
-    }
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
@@ -68,7 +52,7 @@ public class ChildFragment1RecyclerAdapter extends RecyclerView.Adapter<Recycler
                     items.remove(position);
                     cancelHandler.sendEmptyMessage(0);
                 } catch (Exception e) {
-                    Log.e("검색기록삭제오류", ""+e.getMessage());
+                    Log.e("검색기록삭제오류", "" + e.getMessage());
                 }
             }
         });
@@ -88,5 +72,20 @@ public class ChildFragment1RecyclerAdapter extends RecyclerView.Adapter<Recycler
     @Override
     public int getItemCount() {
         return items.size();
+    }
+
+    class Fragment1ViewHolder extends RecyclerView.ViewHolder {
+        View view;
+        TextView contentsNameView, dateView;
+        ImageView cancelImageView;
+
+        Fragment1ViewHolder(View view) {
+            super(view);
+            this.view = view;
+            contentsNameView = view.findViewById(R.id.search_item_contents_name);
+            dateView = view.findViewById(R.id.search_date);
+            cancelImageView = view.findViewById(R.id.search_cancel_image);
+        }
+
     }
 }

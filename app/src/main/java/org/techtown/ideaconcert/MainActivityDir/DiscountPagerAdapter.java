@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.techtown.ideaconcert.ContentsMainDir.ContentsMainActivity;
 import org.techtown.ideaconcert.R;
@@ -112,7 +111,7 @@ public class DiscountPagerAdapter extends PagerAdapter {
         writer_name_view3 = view.findViewById(R.id.discount_item_writer3);
         painter_name_view3 = view.findViewById(R.id.discount_item_painter3);
         view_count_view3 = view.findViewById(R.id.discount_item_view_count3);
-        summary_view3= view.findViewById(R.id.discount_item_summary3);
+        summary_view3 = view.findViewById(R.id.discount_item_summary3);
 
 
         if (items3.size() > position) {

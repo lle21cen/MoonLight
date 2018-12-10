@@ -75,14 +75,14 @@ public class WorksListViewAdapter extends BaseAdapter {
         commentsNumView.setText("" + listViewItem.getCommentCount());
 
         watchImageView.setVisibility(View.GONE);
-        String movie_url = listViewItem.getMovie_url();
+        final String movie_url = listViewItem.getMovie_url();
         if (movie_url != null && !movie_url.isEmpty()) {
             watchImageView.setVisibility(View.VISIBLE);
             watchImageView.setImageDrawable(context.getResources().getDrawable(R.drawable.watch_now));
             watchImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    activity.getSupportFragmentManager().beginTransaction().replace(R.id.contents_main_container, new Fragment2Movie(), "movie").commit();
+                    activity.getSupportFragmentManager().beginTransaction().replace(R.id.contents_main_container, new Fragment2Movie(movie_url), "movie").commit();
                 }
             });
         }

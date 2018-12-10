@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -29,44 +28,6 @@ public class Fragment2MonthDataLayout extends RelativeLayout {
     int currentYear, whatMonth, endDayOfMonth, user_pk;
     TextView totalAmountView;
     LinearLayout calLayout;
-
-    public Fragment2MonthDataLayout(Context context, int currentYear, int whatMonth, int user_pk, TextView totalAmountView) {
-        super(context);
-        this.whatMonth = whatMonth;
-        this.currentYear = currentYear;
-        this.user_pk = user_pk;
-        this.totalAmountView = totalAmountView;
-        init(context);
-    }
-
-    public Fragment2MonthDataLayout(Context context, AttributeSet attrs, int currentYear, int whatMonth, int user_pk) {
-        super(context, attrs);
-        this.whatMonth = whatMonth;
-        this.currentYear = currentYear;
-        this.user_pk = user_pk;
-        init(context);
-    }
-
-    private void init(Context context) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.myworks_fragment2_month_data_layout, this, true);
-
-        TextView monthText = view.findViewById(R.id.calculate_month_text);
-        monthText.setText(currentYear + "년 " + whatMonth + "월");
-
-        TextView monthPeriodText = view.findViewById(R.id.calculate_month_period_text);
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(currentYear, whatMonth, 1);
-        endDayOfMonth = calendar.getActualMaximum(Calendar.DATE);
-        String periodText = currentYear + "/" + whatMonth + "/01 ~ " + currentYear + "/" + whatMonth + "/" + endDayOfMonth;
-        monthPeriodText.setText(periodText);
-
-        calLayout = view.findViewById(R.id.calculate_layout);
-        GetFragmentDataRequest request = new GetFragmentDataRequest(GetProfitDataURL, getCalculationDataListener, user_pk, currentYear, whatMonth);
-        RequestQueue queue = Volley.newRequestQueue(getContext());
-        queue.add(request);
-    }
-
     private Response.Listener<String> getCalculationDataListener = new Response.Listener<String>() {
         @Override
         public void onResponse(String response) {
@@ -106,4 +67,41 @@ public class Fragment2MonthDataLayout extends RelativeLayout {
             }
         }
     };
+
+    public Fragment2MonthDataLayout(Context context, int currentYear, int whatMonth, int user_pk, TextView totalAmountView) {
+        super(context);
+        this.whatMonth = whatMonth;
+        this.currentYear = currentYear;
+        this.user_pk = user_pk;
+        this.totalAmountView = totalAmountView;
+        init(context);
+    }
+
+    public Fragment2MonthDataLayout(Context context, AttributeSet attrs, int currentYear, int whatMonth, int user_pk) {
+        super(context, attrs);
+        this.whatMonth = whatMonth;
+        this.currentYear = currentYear;
+        this.user_pk = user_pk;
+        init(context);
+    }
+
+    private void init(Context context) {
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.myworks_fragment2_month_data_layout, this, true);
+
+        TextView monthText = view.findViewById(R.id.calculate_month_text);
+        monthText.setText(currentYear + "년 " + whatMonth + "월");
+
+        TextView monthPeriodText = view.findViewById(R.id.calculate_month_period_text);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(currentYear, whatMonth, 1);
+        endDayOfMonth = calendar.getActualMaximum(Calendar.DATE);
+        String periodText = currentYear + "/" + whatMonth + "/01 ~ " + currentYear + "/" + whatMonth + "/" + endDayOfMonth;
+        monthPeriodText.setText(periodText);
+
+        calLayout = view.findViewById(R.id.calculate_layout);
+        GetFragmentDataRequest request = new GetFragmentDataRequest(GetProfitDataURL, getCalculationDataListener, user_pk, currentYear, whatMonth);
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        queue.add(request);
+    }
 }

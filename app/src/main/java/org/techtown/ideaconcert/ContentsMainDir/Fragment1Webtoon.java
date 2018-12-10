@@ -1,13 +1,10 @@
 package org.techtown.ideaconcert.ContentsMainDir;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -39,14 +36,12 @@ import java.util.ArrayList;
 
 public class Fragment1Webtoon extends Fragment implements View.OnClickListener {
 
-    View view;
-    int selected_contents_pk;
     private final String getContentsItemURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsInfoData";
-//    private final String getContentsItemURL = "http://lle21cen.cafe24.com/GetContentsInfoData.php";
-
     private final String getContentsLIkeCountURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsLikeCount";
     private final String insertDeleteContentsLikeDataURL = ActivityCodes.DATABASE_IP + "/platform/InsertDeleteContentsLikeData";
-
+//    private final String getContentsItemURL = "http://lle21cen.cafe24.com/GetContentsInfoData.php";
+    View view;
+    int selected_contents_pk;
     private boolean is_like_clicked = false, is_summary_opened = false;
 
     private Button first_episode_btn, contents_like_btn, summary_btn, follow_up_btn;
@@ -59,6 +54,82 @@ public class Fragment1Webtoon extends Fragment implements View.OnClickListener {
     private int user_pk;
 
     private WorksListViewAdapter adapter;
+    private Response.Listener<String> getContentsLikeCountListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                boolean exist = jsonObject.getBoolean("exist");
+                if (exist) {
+                    contents_like_btn.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.pick_2));
+                    is_like_clicked = true;
+                }
+                int count = jsonObject.getInt("count");
+                contents_like_count.setText("" + count);
+            } catch (Exception e) {
+                Log.e("like count error", e.getMessage());
+            }
+        }
+    };
+    private Response.Listener<String> getContentsItemListener = new Response.Listener<String>() {
+
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonResponse = new JSONObject(response);
+                // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
+                boolean exist = jsonResponse.getBoolean("exist");
+                if (exist) {
+                    String info_img_url = jsonResponse.getString("url");
+                    String main_contents_name = jsonResponse.getString("contents_name");
+                    String writer_name = jsonResponse.getString("writer_name");
+                    String painter_name = jsonResponse.getString("painter_name");
+                    int view_count = jsonResponse.getInt("view_count");
+                    String summary = jsonResponse.getString("summary");
+
+                    SetBitmapImageFromUrlTask task = new SetBitmapImageFromUrlTask(thumbnail, ActivityCodes.CONTENTS_MAIN_INFO_WIDTH, ActivityCodes.CONTENTS_MAIN_INFO_HEIGHT);
+                    task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, info_img_url);
+
+                    titlebar_title.setText(main_contents_name);
+                    info_title.setText(main_contents_name);
+                    info_writer.setText(writer_name);
+                    info_painter.setText(painter_name);
+                    info_view_count.setText("" + view_count);
+                    summary_text.setText(summary);
+                } else {
+                    Log.e("No Data", "데이터가 없습니다.");
+                }
+            } catch (Exception e) {
+                Log.e("works listener", e.getMessage());
+            }
+        }
+    };
+    private Response.Listener<String> successCheckListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                boolean success = jsonObject.getBoolean("success");
+                if (success) {
+                    if (is_like_clicked) {
+                        is_like_clicked = false;
+                        Toast.makeText(getActivity(), "취소되었습니다.", Toast.LENGTH_SHORT).show();
+                        contents_like_count.setText(String.valueOf(Integer.parseInt(contents_like_count.getText().toString()) - 1));
+                        contents_like_btn.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_favorite_border_black_24dp));
+                    } else {
+                        is_like_clicked = true;
+                        Toast.makeText(getActivity(), "관심목록에 담겼습니다.", Toast.LENGTH_SHORT).show();
+                        contents_like_count.setText(String.valueOf(Integer.parseInt(contents_like_count.getText().toString()) + 1));
+                        contents_like_btn.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.pick_2));
+                    }
+                } else {
+                    Log.e("success check errmsg", jsonObject.getString("errmsg"));
+                }
+            } catch (Exception e) {
+                Log.e("success check error", e.getMessage());
+            }
+        }
+    };
 
     public void setAdapter(WorksListViewAdapter adapter) {
         this.adapter = adapter;
@@ -81,12 +152,15 @@ public class Fragment1Webtoon extends Fragment implements View.OnClickListener {
         totalText = view.findViewById(R.id.contents_main_status_total); // 전체 몇 편
         readingText = view.findViewById(R.id.contents_main_status_reading); // 그 중 몇 편을 열람
         cashText = view.findViewById(R.id.contents_main_status_cash); // 보유 캐시
+
+        // INFO
         info_title = view.findViewById(R.id.contents_main_info_title);
         info_writer = view.findViewById(R.id.contents_main_info_writer);
         info_painter = view.findViewById(R.id.contents_main_info_painter);
         info_view_count = view.findViewById(R.id.contents_main_info_view_count);
-        titlebar_title = view.findViewById(R.id.contents_main_title_bar_title);
         contents_like_count = view.findViewById(R.id.contents_main_info_like_count);
+
+        titlebar_title = view.findViewById(R.id.contents_main_title_bar_title);
         summary_text = view.findViewById(R.id.contents_main_summary);
 
         titlebar_title.setOnClickListener(this);
@@ -97,7 +171,7 @@ public class Fragment1Webtoon extends Fragment implements View.OnClickListener {
         back_btn.setOnClickListener(this);
 
         first_episode_btn = view.findViewById(R.id.contents_main_first_episode); // 첫화보기 버튼
-        contents_like_btn = view.findViewById(R.id.contents_main_like_btn);
+        contents_like_btn = view.findViewById(R.id.contents_main_info_like_btn);
         summary_btn = view.findViewById(R.id.contents_main_open_summary_btn);
         follow_up_btn = view.findViewById(R.id.contents_main_follow_up_button);
         first_episode_btn.setOnClickListener(this);
@@ -127,88 +201,6 @@ public class Fragment1Webtoon extends Fragment implements View.OnClickListener {
         return view;
     }
 
-    private Response.Listener<String> getContentsLikeCountListener = new Response.Listener<String>() {
-        @Override
-        public void onResponse(String response) {
-            try {
-                JSONObject jsonObject = new JSONObject(response);
-                boolean exist = jsonObject.getBoolean("exist");
-                if (exist) {
-                    contents_like_btn.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.pick_2));
-                    is_like_clicked = true;
-                }
-                int count = jsonObject.getInt("count");
-                contents_like_count.setText("" + count);
-            } catch (Exception e) {
-                Log.e("like count error", e.getMessage());
-            }
-        }
-    };
-
-    private Response.Listener<String> getContentsItemListener = new Response.Listener<String>() {
-
-        @Override
-        public void onResponse(String response) {
-            try {
-                JSONObject jsonResponse = new JSONObject(response);
-                // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
-                boolean exist = jsonResponse.getBoolean("exist");
-                if (exist) {
-                    String info_img_url = jsonResponse.getString("url");
-                    String main_contents_name = jsonResponse.getString("contents_name");
-                    String writer_name = jsonResponse.getString("writer_name");
-                    String painter_name = jsonResponse.getString("painter_name");
-                    int view_count = jsonResponse.getInt("view_count");
-                    String summary = jsonResponse.getString("summary");
-
-                    SetBitmapImageFromUrlTask task = new SetBitmapImageFromUrlTask(thumbnail, 110, 80);
-                    task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, info_img_url);
-
-                    titlebar_title.setText(main_contents_name);
-                    info_title.setText(main_contents_name);
-                    info_writer.setText(writer_name);
-                    info_painter.setText(painter_name);
-                    info_view_count.setText("" + view_count);
-                    summary_text.setText(summary);
-
-                    // 전체 작품 수 설정
-//                    totalText.setText(String.valueOf(num_result));
-                } else {
-                    Log.e("No Data", "데이터가 없습니다.");
-                }
-            } catch (Exception e) {
-                Log.e("works listener", e.getMessage());
-            }
-        }
-    };
-
-    private Response.Listener<String> successCheckListener = new Response.Listener<String>() {
-        @Override
-        public void onResponse(String response) {
-            try {
-                JSONObject jsonObject = new JSONObject(response);
-                boolean success = jsonObject.getBoolean("success");
-                if (success) {
-                    if (is_like_clicked) {
-                        is_like_clicked = false;
-                        Toast.makeText(getActivity(), "취소되었습니다.", Toast.LENGTH_SHORT).show();
-                        contents_like_count.setText(String.valueOf(Integer.parseInt(contents_like_count.getText().toString()) - 1));
-                        contents_like_btn.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_favorite_border_black_24dp));
-                    } else {
-                        is_like_clicked = true;
-                        Toast.makeText(getActivity(), "관심목록에 담겼습니다.", Toast.LENGTH_SHORT).show();
-                        contents_like_count.setText(String.valueOf(Integer.parseInt(contents_like_count.getText().toString()) + 1));
-                        contents_like_btn.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.pick_2));
-                    }
-                } else {
-                    Log.e("success check errmsg", jsonObject.getString("errmsg"));
-                }
-            } catch (Exception e) {
-                Log.e("success check error", e.getMessage());
-            }
-        }
-    };
-
     @Override
     public void onClick(View view) {
         ArrayList<WorksListViewItem> items;
@@ -229,8 +221,7 @@ public class Fragment1Webtoon extends Fragment implements View.OnClickListener {
             case R.id.contents_main_title_bar_title:
                 getActivity().finish();
                 break;
-            case R.id.contents_main_like_btn:
-                // 타이틀바에 있는 좋아요 버튼을 누르면 해당 작품의 데이터베이스 테이블에 like 1 증가
+            case R.id.contents_main_info_like_btn:
                 ContentsLikeDBRequest contentsItemLikeDBRequest;
                 RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
                 if (is_like_clicked) {
@@ -284,4 +275,5 @@ public class Fragment1Webtoon extends Fragment implements View.OnClickListener {
         DBHelper dbHelper = new DBHelper(getActivity(), DBNames.CONTENTS_DB, null, 1);
         return dbHelper.getLastViewContentsNum(selected_contents_pk);
     }
+
 }

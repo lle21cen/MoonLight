@@ -2,7 +2,6 @@ package org.techtown.ideaconcert.MainActivityDir;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -29,27 +28,6 @@ public class ExpandedContentsFragment extends Fragment {
     View view;
     GridLayout gridLayout;
     Context context;
-    private int category;
-
-    @SuppressLint("ValidFragment")
-    public ExpandedContentsFragment(int category) {
-        this.category = category;
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.expand_contents_fragment, container, false);
-        gridLayout = view.findViewById(R.id.expand_grid_layout);
-        context = view.getContext();
-
-        ContentsDBRequest request = new ContentsDBRequest(getContentsListener, categoryContentsURL, 0, category);
-        RequestQueue queue = Volley.newRequestQueue(context);
-        queue.add(request);
-
-        return view;
-    }
-
     Response.Listener<String> getContentsListener = new Response.Listener<String>() {
         @Override
         public void onResponse(String response) {
@@ -90,4 +68,24 @@ public class ExpandedContentsFragment extends Fragment {
             }
         }
     };
+    private int category;
+
+    @SuppressLint("ValidFragment")
+    public ExpandedContentsFragment(int category) {
+        this.category = category;
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.expand_contents_fragment, container, false);
+        gridLayout = view.findViewById(R.id.expand_grid_layout);
+        context = view.getContext();
+
+        ContentsDBRequest request = new ContentsDBRequest(getContentsListener, categoryContentsURL, 0, category);
+        RequestQueue queue = Volley.newRequestQueue(context);
+        queue.add(request);
+
+        return view;
+    }
 }

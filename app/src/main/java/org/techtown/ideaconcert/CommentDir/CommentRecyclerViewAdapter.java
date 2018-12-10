@@ -25,39 +25,13 @@ import java.util.ArrayList;
 
 public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private ArrayList<CommentListViewItem> items = new ArrayList<>();
+    static final int FROM_BESTFRAGMENT = 1, FROM_ALLFRAGMENT = 2;
     final private String getCommentReplyURL = ActivityCodes.DATABASE_IP + "/platform/GetCommentReply";
     final private String insertCommentLikeDataURL = ActivityCodes.DATABASE_IP + "/platform/InsertCommentLikeData";
-    private int user_pk;
-
-
-    private int fragment_from; // 1이면 BestCommentsFragment에서 호출 2이면 AllCommentFragment에서 호출
-    static final int FROM_BESTFRAGMENT = 1, FROM_ALLFRAGMENT = 2;
-
     final private String blankForBestComment = "                "; // 건드리지 말것!!
-
-    public class CommentViewHolder extends RecyclerView.ViewHolder {
-
-        private RecyclerView replyRecyclerView;
-        TextView emailView, dateView, commentView, replyView, accusationView;
-        final TextView likeNumView;
-        ImageView likeButton, bestImage;
-
-        CommentViewHolder(View view) {
-            super(view);
-            emailView = view.findViewById(R.id.comment_item_email);
-            dateView = view.findViewById(R.id.comment_item_date);
-            commentView = view.findViewById(R.id.comment_item_comment);
-            replyView = view.findViewById(R.id.comment_reply);
-            likeNumView = view.findViewById(R.id.comment_item_like_num);
-            accusationView = view.findViewById(R.id.comment_accusation);
-            likeButton = view.findViewById(R.id.comment_like_btn);
-            bestImage = view.findViewById(R.id.comment_best_img);
-
-            replyRecyclerView = view.findViewById(R.id.comment_item_recycler_view);
-            replyRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        }
-    }
+    private ArrayList<CommentListViewItem> items = new ArrayList<>();
+    private int user_pk;
+    private int fragment_from; // 1이면 BestCommentsFragment에서 호출 2이면 AllCommentFragment에서 호출
 
     public CommentRecyclerViewAdapter(int user_pk) {
         this.user_pk = user_pk;
@@ -124,15 +98,64 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
     }
 
+    @Override
+    public int getItemCount() {
+        return items.size();
+    }
+
+    public void addItem(int comment_pk, String email, String date, String comment, int reply_num, int like_num) {
+        CommentListViewItem item = new CommentListViewItem();
+        item.setComment_pk(comment_pk);
+        item.setEmail(email);
+        item.setDate(date);
+        item.setComment(comment);
+        item.setReply_num(reply_num);
+        item.setLike_num(like_num);
+        items.add(item);
+    }
+
+    void clearItem() {
+        items.clear();
+    }
+
+    public void setFragment_from(int fragment_from) {
+        this.fragment_from = fragment_from;
+    }
+
+    public class CommentViewHolder extends RecyclerView.ViewHolder {
+
+        final TextView likeNumView;
+        TextView emailView, dateView, commentView, replyView, accusationView;
+        ImageView likeButton, bestImage;
+        private RecyclerView replyRecyclerView;
+
+        CommentViewHolder(View view) {
+            super(view);
+            emailView = view.findViewById(R.id.comment_item_email);
+            dateView = view.findViewById(R.id.comment_item_date);
+            commentView = view.findViewById(R.id.comment_item_comment);
+            replyView = view.findViewById(R.id.comment_reply);
+            likeNumView = view.findViewById(R.id.comment_item_like_num);
+            accusationView = view.findViewById(R.id.comment_accusation);
+            likeButton = view.findViewById(R.id.comment_like_btn);
+            bestImage = view.findViewById(R.id.comment_best_img);
+
+            replyRecyclerView = view.findViewById(R.id.comment_item_recycler_view);
+            replyRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        }
+    }
+
     class GetReplyCommentListener implements Response.Listener<String> {
+        RecyclerView replyRecyclerView;
         private int position;
         private Context context;
-        RecyclerView replyRecyclerView;
+
         public GetReplyCommentListener(final int position, Context context, final RecyclerView replyRecyclerView) {
             this.position = position;
             this.context = context;
             this.replyRecyclerView = replyRecyclerView;
         }
+
         @Override
         public void onResponse(String response) {
             try {
@@ -197,30 +220,6 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 Log.e("댓글좋아요리스너", e.getMessage());
             }
         }
-    }
-
-    @Override
-    public int getItemCount() {
-        return items.size();
-    }
-
-    public void addItem(int comment_pk, String email, String date, String comment, int reply_num, int like_num) {
-        CommentListViewItem item = new CommentListViewItem();
-        item.setComment_pk(comment_pk);
-        item.setEmail(email);
-        item.setDate(date);
-        item.setComment(comment);
-        item.setReply_num(reply_num);
-        item.setLike_num(like_num);
-        items.add(item);
-    }
-
-    void clearItem() {
-        items.clear();
-    }
-
-    public void setFragment_from(int fragment_from) {
-        this.fragment_from = fragment_from;
     }
 
 }

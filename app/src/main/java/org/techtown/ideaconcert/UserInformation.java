@@ -2,7 +2,6 @@ package org.techtown.ideaconcert;
 
 import android.app.Application;
 import android.content.SharedPreferences;
-import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
@@ -96,6 +95,7 @@ public class UserInformation extends Application {
         editor.clear();
         editor.apply();
     }
+
     public void setUserInformation(String method, int pk, String name, String email, boolean autoLogin, int role) {
         user_pk = pk;
         login_method = method;

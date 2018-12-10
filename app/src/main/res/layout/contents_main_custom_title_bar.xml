@@ -31,11 +31,11 @@
         android:orientation="horizontal">
 
         <!--<Button-->
-            <!--android:id="@+id/contents_main_like"-->
-            <!--android:layout_width="24dp"-->
-            <!--android:layout_height="24dp"-->
-            <!--android:layout_marginRight="5dp"-->
-            <!--android:background="@drawable/ic_favorite_border_black_24dp" />-->
+        <!--android:id="@+id/contents_main_like"-->
+        <!--android:layout_width="24dp"-->
+        <!--android:layout_height="24dp"-->
+        <!--android:layout_marginRight="5dp"-->
+        <!--android:background="@drawable/ic_favorite_border_black_24dp" />-->
 
         <Button
             android:id="@+id/contents_main_bell"

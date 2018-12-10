@@ -11,37 +11,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.techtown.ideaconcert.ContentsMainDir.ContentsMainActivity;
 import org.techtown.ideaconcert.MainActivityDir.SetBitmapImageFromUrlTask;
 import org.techtown.ideaconcert.R;
-import org.techtown.ideaconcert.UserInformation;
 
 import java.util.ArrayList;
 
 public class Fragment1RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private ArrayList<Fragment1RecyclerItem> items = new ArrayList<>();
-
-    public static class Fragment1Holder extends RecyclerView.ViewHolder {
-
-        ImageView thumbnail;
-        TextView date_text, contents_name_text, contents_num;
-        RelativeLayout continue_layout;
-
-        Fragment1Holder(View view) {
-            super(view);
-            thumbnail = view.findViewById(R.id.my_page_fragment1_thumbnail);
-            date_text = view.findViewById(R.id.my_page_fragment1_date );
-            contents_name_text = view.findViewById(R.id.my_page_fragment1_contents_name);
-            contents_num = view.findViewById(R.id.my_page_fragment1_contents_num);
-            continue_layout = view.findViewById(R.id.my_page_fragment1_continue_layout);
-            SharedPreferences preferences = view.getContext().getSharedPreferences("loginData", Context.MODE_PRIVATE);
-            int role = preferences.getInt("userRole", 2);
-//            Toast.makeText(view.getContext(), "" + role, Toast.LENGTH_SHORT).show();
-        }
-    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -92,5 +71,24 @@ public class Fragment1RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 
     public void setItems(ArrayList<Fragment1RecyclerItem> items) {
         this.items = items;
+    }
+
+    public static class Fragment1Holder extends RecyclerView.ViewHolder {
+
+        ImageView thumbnail;
+        TextView date_text, contents_name_text, contents_num;
+        RelativeLayout continue_layout;
+
+        Fragment1Holder(View view) {
+            super(view);
+            thumbnail = view.findViewById(R.id.my_page_fragment1_thumbnail);
+            date_text = view.findViewById(R.id.my_page_fragment1_date);
+            contents_name_text = view.findViewById(R.id.my_page_fragment1_contents_name);
+            contents_num = view.findViewById(R.id.my_page_fragment1_contents_num);
+            continue_layout = view.findViewById(R.id.my_page_fragment1_continue_layout);
+            SharedPreferences preferences = view.getContext().getSharedPreferences("loginData", Context.MODE_PRIVATE);
+            int role = preferences.getInt("userRole", 2);
+//            Toast.makeText(view.getContext(), "" + role, Toast.LENGTH_SHORT).show();
+        }
     }
 }

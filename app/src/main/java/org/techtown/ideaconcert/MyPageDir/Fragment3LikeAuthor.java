@@ -15,6 +15,7 @@ public class Fragment3LikeAuthor extends Fragment {
     RecyclerView recyclerView;
     Fragment3RecyclerAdapter adapter;
     LinearLayoutManager linearLayoutManager;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

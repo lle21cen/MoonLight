@@ -14,6 +14,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,24 +41,130 @@ import java.util.Date;
 
 public class WebtoonActivity extends AppCompatActivity implements View.OnClickListener {
 
-    LinearLayout headerLayout, footerLayout, webtoonLayout, contents_option_menu;
-    TextView title_text, star_rating_text, like_count_text, comments_count_text, order_text;
-    Button option_btn, comments_btn, prev_btn, next_btn, like_btn;
     private final String getContentsItemImageURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsItemImage";
     private final String getContentsLIkeCountURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsLikeCount";
     private final String insertDeleteContentsItemLikeDataURL = ActivityCodes.DATABASE_IP + "/platform/InsertDeleteContentsItemLikeData";
     private final String PlusViewCountURL = ActivityCodes.DATABASE_IP + "/platform/PlusViewCount";
-//    private final String PlusViewCountURL = "http://lle21cen.cafe24.com/PlusViewCount.php";
-
+    LinearLayout headerLayout, footerLayout, webtoonLayout, contents_option_menu;
+    RelativeLayout ratingStarLayout;
+    TextView title_text, star_rating_text, like_count_text, comments_count_text, order_text;
+    Button option_btn, comments_btn, prev_btn, next_btn, like_btn;
     int user_pk, contents_item_pk, item_comments_count, contents_num, contents_pk;
     String item_title;
     int item_position;
-
-    private boolean is_like_clicked;
     ListView contents_listView;
     ArrayList<WorksListViewItem> items;
-
+    private boolean is_like_clicked;
     private int deviceWidth;
+    private Response.Listener<String> plusViewCountListener = new Response.Listener<String>() {
+        // 사용자가 웹튼을 보려고 할 경우 웹툰의 뷰카운트를 1증가 시키는 리스너
+        // 실패시 로그에 오류 메시지를 출력하고 종료
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                boolean success = jsonObject.getBoolean("success");
+                if (success) {
+
+                } else {
+                    Log.e("뷰카운트증가실패", "" + jsonObject.getString("errmsg"));
+                }
+            } catch (JSONException je) {
+                Log.e("뷰카운트증가리스너 1", "" + je.getMessage());
+            } catch (Exception e) {
+                Log.e("뷰카운트증가리스너 2", "" + e.getMessage());
+            }
+        }
+    };
+    private Response.Listener<String> getContentsItemLikeCountListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonResponse = new JSONObject(response);
+                boolean exist = jsonResponse.getBoolean("exist");
+                int count = jsonResponse.getInt("count");
+                like_count_text.setText("" + count);
+                if (exist) {
+                    like_btn.setBackgroundDrawable(ContextCompat.getDrawable(WebtoonActivity.this, R.drawable.pick_2));
+                    is_like_clicked = true;
+                } else {
+                    like_btn.setBackgroundDrawable(ContextCompat.getDrawable(WebtoonActivity.this, R.drawable.ic_favorite_border_white_24dp));
+                    is_like_clicked = false;
+                }
+            } catch (Exception e) {
+                Log.e("좋아요를", e.getMessage());
+            }
+        }
+    };
+    private Response.Listener<String> getItemImageListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonResponse = new JSONObject(response);
+                // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
+                JSONArray result = jsonResponse.getJSONArray("result");
+                boolean exist = jsonResponse.getBoolean("exist");
+
+                if (exist) {
+                    int num_category_contents_data = jsonResponse.getInt("num_result");
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    lp.setMargins(10, 10, 10, 10);
+                    for (int i = 0; i < num_category_contents_data; i++) {
+                        // 데이터베이스에 들어있는 컨텐츠의 수만큼 for문을 돌려 layout에 image추가
+                        try {
+                            JSONObject temp = result.getJSONObject(i);
+
+                            String url_str = temp.getString("image_url");
+
+                            ImageView webtoon = new ImageView(WebtoonActivity.this);
+                            webtoon.setAdjustViewBounds(true); // 이미지의 가로를 화면 전체 크기에 맞춤
+                            webtoon.setLayoutParams(lp);
+
+                            SetBitmapImageFromUrlTask task = new SetBitmapImageFromUrlTask(webtoon, deviceWidth, 0);
+                            task.execute(url_str);
+
+                            webtoonLayout.addView(webtoon);
+                        } catch (Exception e) {
+                            Log.e("Except in webtoon", e.getMessage());
+                        }
+                    }
+
+                } else {
+                    Log.e("No Data", "데이터가 없습니다.");
+                }
+            } catch (Exception e) {
+                Log.e("works listener", e.getMessage());
+            }
+        }
+    };
+    private Response.Listener<String> successCheckListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                boolean success = jsonObject.getBoolean("success");
+                if (success) {
+                    int likeCount = Integer.parseInt(like_count_text.getText().toString());
+                    if (!is_like_clicked) {
+                        is_like_clicked = true;
+                        Toast.makeText(WebtoonActivity.this, "이 작품을 좋아합니다.", Toast.LENGTH_SHORT).show();
+                        like_btn.setBackgroundDrawable(ContextCompat.getDrawable(WebtoonActivity.this, R.drawable.pick_2));
+                        like_count_text.setText(String.valueOf(likeCount + 1));
+                    } else {
+                        Toast.makeText(WebtoonActivity.this, "취소되었습니다.", Toast.LENGTH_SHORT).show();
+                        is_like_clicked = false;
+                        like_count_text.setText(String.valueOf(likeCount - 1));
+                        like_btn.setBackgroundDrawable(ContextCompat.getDrawable(WebtoonActivity.this, R.drawable.ic_favorite_border_white_24dp));
+                    }
+                } else {
+                    Log.e("웹툰좋아요삽입삭제실패", jsonObject.getString("errmsg"));
+                }
+            } catch (Exception e) {
+                Log.e("웹툰좋아요삽입삭제오류", e.getMessage());
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,7 +177,8 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
         }
 
         LinearLayout commentLayout = findViewById(R.id.webtoon_comment_layout);
-        headerLayout = findViewById(R.id.webtoon_header_layout);
+        headerLayout = findViewById(R.id.webtoon_header_include);
+        ratingStarLayout = findViewById(R.id.ratingStar_layout);
         footerLayout = findViewById(R.id.webtoon_footer_layout);
         webtoonLayout = findViewById(R.id.main_webtoon_layout);
         contents_option_menu = findViewById(R.id.webtoon_option_layout);
@@ -99,6 +208,18 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
         comments_count_text.setText("" + item_comments_count);
         order_text.setText("" + contents_num);
         star_rating_text.setText("" + items.get(item_position).getStar_rating());
+        star_rating_text.setOnClickListener(this);
+        ImageView starImg = findViewById(R.id.webtoon_star);
+        starImg.setOnClickListener(this);
+
+        RatingBar starRating = findViewById(R.id.ratingStar);
+        starRating.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                Toast.makeText(WebtoonActivity.this, "rating : " + rating + " fromUser " + fromUser, Toast.LENGTH_SHORT).show();
+                ApplyStarRatingRequest request = new ApplyStarRatingRequest()
+            }
+        });
 
         contents_listView = findViewById(R.id.webtoon_contents_num_listview);
         final ContentsNumListViewAdapter adapter = new ContentsNumListViewAdapter();
@@ -125,6 +246,8 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
         like_btn.setOnClickListener(this);
         like_count_text.setOnClickListener(this);
         commentLayout.setOnClickListener(this);
+        Button ratingStarConfirmButton = findViewById(R.id.rating_confirm);
+        ratingStarConfirmButton.setOnClickListener(this);
 
         contents_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -169,126 +292,6 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
         RequestQueue queue = Volley.newRequestQueue(this);
         queue.add(request);
     }
-
-    private Response.Listener<String> plusViewCountListener = new Response.Listener<String>() {
-        // 사용자가 웹튼을 보려고 할 경우 웹툰의 뷰카운트를 1증가 시키는 리스너
-        // 실패시 로그에 오류 메시지를 출력하고 종료
-        @Override
-        public void onResponse(String response) {
-            try {
-                JSONObject jsonObject = new JSONObject(response);
-                boolean success = jsonObject.getBoolean("success");
-                if (success) {
-
-                }
-                else {
-                    Log.e("뷰카운트증가실패", ""+jsonObject.getString("errmsg"));
-                }
-            } catch (JSONException je) {
-                Log.e("뷰카운트증가리스너 1", ""+je.getMessage());
-            } catch (Exception e) {
-                Log.e("뷰카운트증가리스너 2", ""+e.getMessage());
-            }
-        }
-    };
-
-    private Response.Listener<String> getContentsItemLikeCountListener = new Response.Listener<String>() {
-        @Override
-        public void onResponse(String response) {
-            try {
-                JSONObject jsonResponse = new JSONObject(response);
-                boolean exist = jsonResponse.getBoolean("exist");
-                int count = jsonResponse.getInt("count");
-                like_count_text.setText("" + count);
-                if (exist) {
-                    like_btn.setBackgroundDrawable(ContextCompat.getDrawable(WebtoonActivity.this, R.drawable.pick_2));
-                    is_like_clicked = true;
-                } else {
-                    like_btn.setBackgroundDrawable(ContextCompat.getDrawable(WebtoonActivity.this, R.drawable.ic_favorite_border_white_24dp));
-                    is_like_clicked = false;
-                }
-            } catch (Exception e) {
-                Log.e("좋아요를", e.getMessage());
-            }
-        }
-    };
-
-    private Response.Listener<String> getItemImageListener = new Response.Listener<String>() {
-        @Override
-        public void onResponse(String response) {
-            try {
-                JSONObject jsonResponse = new JSONObject(response);
-                // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
-                JSONArray result = jsonResponse.getJSONArray("result");
-                boolean exist = jsonResponse.getBoolean("exist");
-
-                if (exist) {
-                    int num_category_contents_data = jsonResponse.getInt("num_result");
-                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                    lp.setMargins(10, 10, 10, 10);
-                    for (int i = 0; i < num_category_contents_data; i++) {
-                        // 데이터베이스에 들어있는 컨텐츠의 수만큼 for문을 돌려 layout에 image추가
-                        try {
-                            JSONObject temp = result.getJSONObject(i);
-
-                            String url_str = temp.getString("image_url");
-
-                            ImageView webtoon = new ImageView(WebtoonActivity.this);
-                            webtoon.setAdjustViewBounds(true); // 이미지의 가로를 화면 전체 크기에 맞춤
-                            webtoon.setLayoutParams(lp);
-
-                            SetBitmapImageFromUrlTask task = new SetBitmapImageFromUrlTask(webtoon, deviceWidth, 0);
-                            task.execute(url_str);
-
-//                            URL url = new URL(ActivityCodes.DATABASE_IP + temp.getString("image_url"));
-//                            GetBitmapImageFromURL getBitmapImageFromURL = new GetBitmapImageFromURL(url);
-//                            getBitmapImageFromURL.start();
-//                            getBitmapImageFromURL.join();
-//                            webtoon.setImageBitmap(getBitmapImageFromURL.getBitmap());
-
-                            webtoonLayout.addView(webtoon);
-                        } catch (Exception e) {
-                            Log.e("Except in webtoon", e.getMessage());
-                        }
-                    }
-
-                } else {
-                    Log.e("No Data", "데이터가 없습니다.");
-                }
-            } catch (Exception e) {
-                Log.e("works listener", e.getMessage());
-            }
-        }
-    };
-
-
-    private Response.Listener<String> successCheckListener = new Response.Listener<String>() {
-        @Override
-        public void onResponse(String response) {
-            try {
-                JSONObject jsonObject = new JSONObject(response);
-                boolean success = jsonObject.getBoolean("success");
-                if (success) {
-                    int likeCount = Integer.parseInt(like_count_text.getText().toString());
-                    if (!is_like_clicked) {
-                        is_like_clicked = true;
-                        Toast.makeText(WebtoonActivity.this, "이 작품을 좋아합니다.", Toast.LENGTH_SHORT).show();
-                        like_btn.setBackgroundDrawable(ContextCompat.getDrawable(WebtoonActivity.this, R.drawable.pick_2));
-                        like_count_text.setText(String.valueOf(likeCount + 1));
-                    } else {
-                        Toast.makeText(WebtoonActivity.this, "취소되었습니다.", Toast.LENGTH_SHORT).show();
-                        is_like_clicked = false;
-                        like_count_text.setText(String.valueOf(likeCount - 1));
-                        like_btn.setBackgroundDrawable(ContextCompat.getDrawable(WebtoonActivity.this, R.drawable.ic_favorite_border_white_24dp));
-                    }
-                } else {
-                    Log.e("웹툰좋아요삽입삭제실패", jsonObject.getString("errmsg"));
-                }
-            } catch (Exception e) {
-                Log.e("웹툰좋아요삽입삭제오류", e.getMessage());
-            }
-        }
-    };
 
     @Override
     public void onClick(View view) {
@@ -348,6 +351,7 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
                     headerLayout.setVisibility(View.GONE);
                     footerLayout.setVisibility(View.GONE);
                 }
+                ratingStarLayout.setVisibility(View.GONE);
                 contents_option_menu.setVisibility(View.GONE);
                 contents_listView.setVisibility(View.GONE);
                 break;
@@ -357,7 +361,17 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
                 else
                     contents_listView.setVisibility(View.GONE);
                 break;
-
+            case R.id.webtoon_star_rating:
+            case R.id.webtoon_star:
+                if (ratingStarLayout.getVisibility() == View.GONE)
+                    ratingStarLayout.setVisibility(View.VISIBLE);
+                else
+                    ratingStarLayout.setVisibility(View.GONE);
+                break;
+            case R.id.rating_confirm:
+                Toast.makeText(this, "별점이 적용되었습니다.", Toast.LENGTH_SHORT).show();
+                ratingStarLayout.setVisibility(View.GONE);
+                break;
         }
     }
 

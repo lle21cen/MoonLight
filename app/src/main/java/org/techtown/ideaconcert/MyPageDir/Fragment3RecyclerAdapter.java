@@ -18,22 +18,6 @@ public class Fragment3RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 
     private ArrayList<Fragment3RecyclerItem> items = new ArrayList<>();
 
-    public static class Fragment3Holder extends RecyclerView.ViewHolder {
-
-        ImageView thumbnail;
-        TextView date_text, contents_name_text;
-        Button like;
-
-        Fragment3Holder(View view) {
-            super(view);
-            thumbnail = view.findViewById(R.id.my_page_fragment3_thumbnail);
-            contents_name_text = view.findViewById(R.id.my_page_fragment3_contents_name);
-            like = view.findViewById(R.id.my_page_fragment3_like);
-            like.setTag("unchecked");
-        }
-
-    }
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_my_page3_recycler_item, parent, false);
@@ -73,5 +57,21 @@ public class Fragment3RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         item.setAuthor_name(author_name);
         item.setContents_pk(contents_pk);
         items.add(item);
+    }
+
+    public static class Fragment3Holder extends RecyclerView.ViewHolder {
+
+        ImageView thumbnail;
+        TextView date_text, contents_name_text;
+        Button like;
+
+        Fragment3Holder(View view) {
+            super(view);
+            thumbnail = view.findViewById(R.id.my_page_fragment3_thumbnail);
+            contents_name_text = view.findViewById(R.id.my_page_fragment3_contents_name);
+            like = view.findViewById(R.id.my_page_fragment3_like);
+            like.setTag("unchecked");
+        }
+
     }
 }

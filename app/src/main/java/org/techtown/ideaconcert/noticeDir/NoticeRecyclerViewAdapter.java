@@ -1,13 +1,11 @@
 package org.techtown.ideaconcert.noticeDir;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.techtown.ideaconcert.R;
 
@@ -15,19 +13,6 @@ import java.util.ArrayList;
 
 public class NoticeRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ArrayList<NoticeRecyclerViewItem> items = new ArrayList<>();
-
-    public static class NoticeRecyclerViewHolder extends RecyclerView.ViewHolder {
-        ImageView openCloseButton;
-        TextView titleView, dateView, contentView;
-
-        NoticeRecyclerViewHolder(View view) {
-            super(view);
-            titleView = view.findViewById(R.id.notice_title);
-            dateView = view.findViewById(R.id.notice_date);
-            contentView = view.findViewById(R.id.notice_content);
-            openCloseButton = view.findViewById(R.id.notice_open_close_image);
-        }
-    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -50,8 +35,7 @@ public class NoticeRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 if (recyclerViewHolder.contentView.getVisibility() == View.VISIBLE) {
                     recyclerViewHolder.contentView.setVisibility(View.GONE);
                     recyclerViewHolder.openCloseButton.setImageResource(R.drawable.open);
-                }
-                else {
+                } else {
                     recyclerViewHolder.contentView.setVisibility(View.VISIBLE);
                     recyclerViewHolder.openCloseButton.setImageResource(R.drawable.closing);
                 }
@@ -66,5 +50,18 @@ public class NoticeRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
     public void addItem(int board_pk, String title, String date, String content, TextView contentView) {
         items.add(new NoticeRecyclerViewItem(board_pk, title, date, content, contentView));
+    }
+
+    public static class NoticeRecyclerViewHolder extends RecyclerView.ViewHolder {
+        ImageView openCloseButton;
+        TextView titleView, dateView, contentView;
+
+        NoticeRecyclerViewHolder(View view) {
+            super(view);
+            titleView = view.findViewById(R.id.notice_title);
+            dateView = view.findViewById(R.id.notice_date);
+            contentView = view.findViewById(R.id.notice_content);
+            openCloseButton = view.findViewById(R.id.notice_open_close_image);
+        }
     }
 }

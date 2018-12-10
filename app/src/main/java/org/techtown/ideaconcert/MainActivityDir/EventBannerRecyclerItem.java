@@ -1,7 +1,5 @@
 package org.techtown.ideaconcert.MainActivityDir;
 
-import android.graphics.Bitmap;
-
 public class EventBannerRecyclerItem {
     int contents_pk;
     String image_url;

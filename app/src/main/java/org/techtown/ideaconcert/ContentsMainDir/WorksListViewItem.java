@@ -1,7 +1,5 @@
 package org.techtown.ideaconcert.ContentsMainDir;
 
-import android.graphics.Bitmap;
-
 public class WorksListViewItem {
     private int contentsItemPk, contentsNum, commentCount;
     private String thumbnail_url;
@@ -53,12 +51,15 @@ public class WorksListViewItem {
     public int getCommentCount() {
         return commentCount;
     }
+
     public void setCommentCount(int commentCount) {
         this.commentCount = commentCount;
     }
+
     public int getContentsItemPk() {
         return contentsItemPk;
     }
+
     public void setContentsItemPk(int contentsItemPk) {
         this.contentsItemPk = contentsItemPk;
     }

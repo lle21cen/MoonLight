@@ -33,7 +33,7 @@ public class Fragment1ProfitManagementLayout extends Fragment implements View.On
         Button oneMonthButton = view.findViewById(R.id.manage_one_month);
         Button threeMonthButton = view.findViewById(R.id.manage_three_month);
         Button sixMonthButton = view.findViewById(R.id.manage_six_month);
-        Button  oneYearButton = view.findViewById(R.id.manage_one_year);
+        Button oneYearButton = view.findViewById(R.id.manage_one_year);
         Button inquiryButton = view.findViewById(R.id.manage_inquiry_button);
         oneMonthButton.setOnClickListener(this);
         threeMonthButton.setOnClickListener(this);
@@ -69,14 +69,14 @@ public class Fragment1ProfitManagementLayout extends Fragment implements View.On
             case R.id.manage_one_year:
                 setDateTextToCurrentDate(currentYear, currentMonth - 11);
                 break;
-            case R.id.manage_inquiry_button :
+            case R.id.manage_inquiry_button:
                 parsePeriodTextView(); // 기간설정에서 설정된 날짜 텍스트에서 년월 정보를 추출해 오는 함수
                 addProfitLayoutToContainer(selectedFromYear, selectedFromMonth, selectedToYear, selectedToMonth);
                 break;
-            case R.id.manage_period_from_text :
+            case R.id.manage_period_from_text:
                 openMonthPickerDialog(dateFromText, false);
                 break;
-            case R.id.manage_period_to_text :
+            case R.id.manage_period_to_text:
                 openMonthPickerDialog(dateToText, true);
                 break;
         }
@@ -131,6 +131,7 @@ public class Fragment1ProfitManagementLayout extends Fragment implements View.On
         dateFromText.setText(year + "/" + month + "/1");
         dateToText.setText(currentYear + "/" + currentMonth + "/" + endDayOfMonth);
     }
+
     private void parsePeriodTextView() {
         // 조회버튼을 눌렀을 때 설정된 기간들의 텍스트에서 년월 정보를 파싱하여 조회하는데 사용
         String fromText = dateFromText.getText().toString();
@@ -144,6 +145,7 @@ public class Fragment1ProfitManagementLayout extends Fragment implements View.On
         selectedToYear = Integer.parseInt(arr[0]);
         selectedToMonth = Integer.parseInt(arr[1]);
     }
+
     private void setLastDayOfMonth() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(currentYear, currentMonth, 1);

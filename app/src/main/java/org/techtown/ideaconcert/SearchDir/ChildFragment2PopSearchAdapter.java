@@ -22,19 +22,6 @@ public class ChildFragment2PopSearchAdapter extends RecyclerView.Adapter<Recycle
         this.autoSearchHandler = autoSearchHandler;
     }
 
-    class PopSearchViewHolder extends RecyclerView.ViewHolder {
-
-        View view;
-        TextView keywordNumView, keywordView;
-
-        PopSearchViewHolder(View itemView) {
-            super(itemView);
-            view = itemView;
-            keywordNumView = itemView.findViewById(R.id.pop_search_item_keyword_num);
-            keywordView = itemView.findViewById(R.id.pop_search_item_keyword);
-        }
-    }
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_child_fragment2_pop_item, parent, false);
@@ -46,7 +33,7 @@ public class ChildFragment2PopSearchAdapter extends RecyclerView.Adapter<Recycle
         final PopSearchViewHolder viewHolder = (PopSearchViewHolder) holder;
         final ChildFragment2PopSearchItem item = items.get(position);
 
-        viewHolder.keywordNumView.setText(String.valueOf(position+1));
+        viewHolder.keywordNumView.setText(String.valueOf(position + 1));
         viewHolder.keywordView.setText(item.getKeyword());
 
         viewHolder.view.setOnClickListener(new View.OnClickListener() {
@@ -68,5 +55,18 @@ public class ChildFragment2PopSearchAdapter extends RecyclerView.Adapter<Recycle
 
     public void addItem(int contents_pk, String keyword) {
         items.add(new ChildFragment2PopSearchItem(contents_pk, keyword));
+    }
+
+    class PopSearchViewHolder extends RecyclerView.ViewHolder {
+
+        View view;
+        TextView keywordNumView, keywordView;
+
+        PopSearchViewHolder(View itemView) {
+            super(itemView);
+            view = itemView;
+            keywordNumView = itemView.findViewById(R.id.pop_search_item_keyword_num);
+            keywordView = itemView.findViewById(R.id.pop_search_item_keyword);
+        }
     }
 }

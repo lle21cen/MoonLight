@@ -10,7 +10,7 @@
         <item>Wi-Fi 에서만 보기</item>
         <item>항상사용</item>
     </string-array>
-    
+
     <string-array name="consult_category">
         <item>문의유형을 선택해주세요</item>
         <item>서비스 이용</item>

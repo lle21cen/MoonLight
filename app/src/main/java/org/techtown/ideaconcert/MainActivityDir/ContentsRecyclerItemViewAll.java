@@ -1,9 +1,7 @@
 package org.techtown.ideaconcert.MainActivityDir;
 
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.RelativeLayout;
 
 import org.techtown.ideaconcert.R;

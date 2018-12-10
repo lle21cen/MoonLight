@@ -24,35 +24,13 @@ import org.techtown.ideaconcert.R;
 
 public class ParentFragment2SearchResult extends Fragment {
 
+    private final String GetContentsByKeywordURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsByKeyword";
     private View view;
     private TextView resultNumberView, searchText;
     private String keyword;
     private RecyclerView resultList;
     private ParentFragment2RecyclerAdapter adapter;
-
-    private final String GetContentsByKeywordURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsByKeyword";
 //    private final String GetContentsByKeywordURL = "http://lle21cen.cafe24.com/GetContentsByKeyword.php";
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.search_parent_fragment2_result, container, false);
-        resultNumberView = view.findViewById(R.id.search_result_number);
-        resultList = view.findViewById(R.id.search_result_recycler);
-        RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        resultList.setLayoutManager(manager);
-
-        searchText = getActivity().findViewById(R.id.search_keyword);
-        keyword = searchText.getText().toString().trim();
-
-        adapter = new ParentFragment2RecyclerAdapter();
-        GetContentsByKeywordRequest request = new GetContentsByKeywordRequest(GetContentsByKeywordURL, getContentsByKeywordListener, keyword);
-        RequestQueue queue = Volley.newRequestQueue(getActivity());
-        queue.add(request);
-
-        return view;
-    }
-
     Response.Listener<String> getContentsByKeywordListener = new Response.Listener<String>() {
         @Override
         public void onResponse(String response) {
@@ -90,4 +68,24 @@ public class ParentFragment2SearchResult extends Fragment {
             }
         }
     };
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.search_parent_fragment2_result, container, false);
+        resultNumberView = view.findViewById(R.id.search_result_number);
+        resultList = view.findViewById(R.id.search_result_recycler);
+        RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        resultList.setLayoutManager(manager);
+
+        searchText = getActivity().findViewById(R.id.search_keyword);
+        keyword = searchText.getText().toString().trim();
+
+        adapter = new ParentFragment2RecyclerAdapter();
+        GetContentsByKeywordRequest request = new GetContentsByKeywordRequest(GetContentsByKeywordURL, getContentsByKeywordListener, keyword);
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        queue.add(request);
+
+        return view;
+    }
 }

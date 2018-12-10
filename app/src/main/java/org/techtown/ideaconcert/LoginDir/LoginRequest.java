@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LoginRequest extends StringRequest {
-    private Map<String, String> parameters;
     final static private String URL = ActivityCodes.DATABASE_IP + "/platform/Login";
+    private Map<String, String> parameters;
 
     public LoginRequest(String email, String pw, Response.Listener<String> listener) {
         super(Method.POST, URL, listener, null);

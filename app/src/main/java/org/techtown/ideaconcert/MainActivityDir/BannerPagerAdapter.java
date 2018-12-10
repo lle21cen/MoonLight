@@ -1,6 +1,5 @@
 package org.techtown.ideaconcert.MainActivityDir;
 
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
@@ -10,12 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import org.techtown.ideaconcert.MainActivityDir.GetBitmapImageFromURL;
 import org.techtown.ideaconcert.R;
 
-import java.net.URL;
 import java.util.ArrayList;
 
 public class BannerPagerAdapter extends PagerAdapter {

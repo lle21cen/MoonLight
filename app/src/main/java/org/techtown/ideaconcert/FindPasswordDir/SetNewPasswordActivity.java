@@ -1,7 +1,7 @@
 package org.techtown.ideaconcert.FindPasswordDir;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -23,10 +23,30 @@ public class SetNewPasswordActivity extends AppCompatActivity implements View.On
 
     private final String SetNewPasswordURL = ActivityCodes.DATABASE_IP + "/platform/UpdatePassword";
 
-    EditText newPwView,newPwConfirmView;
+    EditText newPwView, newPwConfirmView;
     TextView infoTextView;
 
     private String email;
+    private Response.Listener setNewPwListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                boolean success = jsonObject.getBoolean("success");
+                if (success) {
+                    Toast.makeText(SetNewPasswordActivity.this, "비밀번호 변경이 완료되었습니다.", Toast.LENGTH_SHORT).show();
+                    setResult(ActivityCodes.SET_NEW_PW_SUCCESS);
+                    finish();
+                } else {
+                    Toast.makeText(SetNewPasswordActivity.this, "비밀버호 변경에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                    Log.e("비밀번호 변경 실패", "" + jsonObject.getString("errmsg"));
+                }
+            } catch (JSONException e) {
+                Log.e("비밀번호 변경 리스너", e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,11 +73,11 @@ public class SetNewPasswordActivity extends AppCompatActivity implements View.On
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.new_pw_back_btn :
+            case R.id.new_pw_back_btn:
                 setResult(ActivityCodes.SET_NEW_PW_FAIL);
                 finish();
                 break;
-            case R.id.new_pw_confirm_btn :
+            case R.id.new_pw_confirm_btn:
                 ValidatePwdEmail validatePwdEmail = new ValidatePwdEmail();
                 String pw = newPwView.getText().toString();
                 boolean isPwValidate = validatePwdEmail.validatePwd(pw);
@@ -75,25 +95,4 @@ public class SetNewPasswordActivity extends AppCompatActivity implements View.On
                 break;
         }
     }
-
-    private Response.Listener setNewPwListener = new Response.Listener<String>() {
-        @Override
-        public void onResponse(String  response) {
-            try {
-                JSONObject jsonObject = new JSONObject(response);
-                boolean success = jsonObject.getBoolean("success");
-                if (success) {
-                    Toast.makeText(SetNewPasswordActivity.this, "비밀번호 변경이 완료되었습니다.", Toast.LENGTH_SHORT).show();
-                    setResult(ActivityCodes.SET_NEW_PW_SUCCESS);
-                    finish();
-                } else {
-                    Toast.makeText(SetNewPasswordActivity.this, "비밀버호 변경에 실패했습니다.", Toast.LENGTH_SHORT).show();
-                    Log.e("비밀번호 변경 실패", ""+jsonObject.getString("errmsg"));
-                }
-            } catch (JSONException e) {
-                Log.e("비밀번호 변경 리스너", e.getMessage());
-                e.printStackTrace();
-            }
-        }
-    };
 }

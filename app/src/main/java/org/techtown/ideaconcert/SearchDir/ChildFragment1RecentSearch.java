@@ -29,6 +29,22 @@ public class ChildFragment1RecentSearch extends Fragment {
     ChildFragment1RecyclerAdapter adapter;
     TextView searchText;
     Button searchButton;
+    private Handler cancelHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message message) {
+            recyclerView.swapAdapter(adapter, true);
+            return true;
+        }
+    });
+    private Handler autoSearchHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message message) {
+            String keyword = message.getData().getString("keyword");
+            searchText.setText(keyword);
+            searchButton.performClick();
+            return true;
+        }
+    });
 
     @Nullable
     @Override
@@ -52,22 +68,4 @@ public class ChildFragment1RecentSearch extends Fragment {
         }
         return view;
     }
-
-    private Handler cancelHandler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message message) {
-            recyclerView.swapAdapter(adapter, true);
-            return true;
-        }
-    });
-
-    private Handler autoSearchHandler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message message) {
-            String keyword = message.getData().getString("keyword");
-            searchText.setText(keyword);
-            searchButton.performClick();
-            return true;
-        }
-    });
 }

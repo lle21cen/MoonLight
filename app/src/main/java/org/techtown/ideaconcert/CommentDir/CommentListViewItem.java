@@ -1,7 +1,5 @@
 package org.techtown.ideaconcert.CommentDir;
 
-import android.support.v7.widget.RecyclerView;
-
 public class CommentListViewItem {
     private String email, date, comment;
     private int comment_pk, reply_num, like_num; // tag값이 1이면 댓글 아이템, 2이면 답글 아이템

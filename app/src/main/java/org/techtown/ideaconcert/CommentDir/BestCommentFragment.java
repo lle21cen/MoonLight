@@ -31,35 +31,6 @@ public class BestCommentFragment extends Fragment {
     CommentRecyclerViewAdapter adapter;
     RecyclerView bestCommentRecyclerView;
     Button bestButton;
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        UserInformation userInformation = (UserInformation) getActivity().getApplication();
-        int user_pk = userInformation.getUser_pk();
-
-        view = inflater.inflate(R.layout.comment_fragment_recycler, container, false);
-        bestCommentRecyclerView = view.findViewById(R.id.comment_recycler_view);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        bestCommentRecyclerView.setLayoutManager(layoutManager);
-        adapter = new CommentRecyclerViewAdapter(user_pk);
-
-        adapter.setFragment_from(CommentRecyclerViewAdapter.FROM_BESTFRAGMENT);
-        bestButton = getActivity().findViewById(R.id.comment_best_btn);
-
-        Intent intent = getActivity().getIntent();
-        int item_pk = intent.getIntExtra("item_pk", 0);
-
-        try {
-            CommentDBRequest commentDBRequest = new CommentDBRequest(getCommentURL, commentListener, item_pk, 1);
-            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-            requestQueue.add(commentDBRequest);
-        } catch (Exception e) {
-            Log.e("comment error", "" + e.getMessage());
-        }
-        return view;
-    }
-
     private Response.Listener<String> commentListener = new Response.Listener<String>() {
         private String email, date, comment;
         private int reply_num, like_num, comment_pk;
@@ -98,4 +69,32 @@ public class BestCommentFragment extends Fragment {
             }
         }
     };
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        UserInformation userInformation = (UserInformation) getActivity().getApplication();
+        int user_pk = userInformation.getUser_pk();
+
+        view = inflater.inflate(R.layout.comment_fragment_recycler, container, false);
+        bestCommentRecyclerView = view.findViewById(R.id.comment_recycler_view);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        bestCommentRecyclerView.setLayoutManager(layoutManager);
+        adapter = new CommentRecyclerViewAdapter(user_pk);
+
+        adapter.setFragment_from(CommentRecyclerViewAdapter.FROM_BESTFRAGMENT);
+        bestButton = getActivity().findViewById(R.id.comment_best_btn);
+
+        Intent intent = getActivity().getIntent();
+        int item_pk = intent.getIntExtra("item_pk", 0);
+
+        try {
+            CommentDBRequest commentDBRequest = new CommentDBRequest(getCommentURL, commentListener, item_pk, 1);
+            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+            requestQueue.add(commentDBRequest);
+        } catch (Exception e) {
+            Log.e("comment error", "" + e.getMessage());
+        }
+        return view;
+    }
 }

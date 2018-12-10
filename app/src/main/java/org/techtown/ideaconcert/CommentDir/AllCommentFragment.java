@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ListView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -31,36 +30,6 @@ public class AllCommentFragment extends Fragment {
     CommentRecyclerViewAdapter adapter;
     RecyclerView allCommentRecyclerView;
     Button allButton;
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        UserInformation userInformation = (UserInformation) getActivity().getApplication();
-        int user_pk = userInformation.getUser_pk();
-
-        view = inflater.inflate(R.layout.comment_fragment_recycler, container, false);
-        allCommentRecyclerView = view.findViewById(R.id.comment_recycler_view);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        allCommentRecyclerView.setLayoutManager(layoutManager);
-        adapter = new CommentRecyclerViewAdapter(user_pk);
-
-        adapter.setFragment_from(CommentRecyclerViewAdapter.FROM_ALLFRAGMENT);
-
-        allButton = getActivity().findViewById(R.id.comment_all_btn);
-
-        Intent intent = getActivity().getIntent();
-        int item_pk = intent.getIntExtra("item_pk", 0);
-
-        try {
-            CommentDBRequest commentDBRequest = new CommentDBRequest(getCommentURL, commentListener, item_pk, 2); // tag = 2 : 최신 순 정렬
-            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-            requestQueue.add(commentDBRequest);
-        } catch (Exception e) {
-            Log.e("comment error", "" + e.getMessage());
-        }
-        return view;
-    }
-
     private Response.Listener<String> commentListener = new Response.Listener<String>() {
         private String email, date, comment;
         private int reply_num, like_num, comment_pk;
@@ -99,5 +68,34 @@ public class AllCommentFragment extends Fragment {
             }
         }
     };
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        UserInformation userInformation = (UserInformation) getActivity().getApplication();
+        int user_pk = userInformation.getUser_pk();
+
+        view = inflater.inflate(R.layout.comment_fragment_recycler, container, false);
+        allCommentRecyclerView = view.findViewById(R.id.comment_recycler_view);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        allCommentRecyclerView.setLayoutManager(layoutManager);
+        adapter = new CommentRecyclerViewAdapter(user_pk);
+
+        adapter.setFragment_from(CommentRecyclerViewAdapter.FROM_ALLFRAGMENT);
+
+        allButton = getActivity().findViewById(R.id.comment_all_btn);
+
+        Intent intent = getActivity().getIntent();
+        int item_pk = intent.getIntExtra("item_pk", 0);
+
+        try {
+            CommentDBRequest commentDBRequest = new CommentDBRequest(getCommentURL, commentListener, item_pk, 2); // tag = 2 : 최신 순 정렬
+            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+            requestQueue.add(commentDBRequest);
+        } catch (Exception e) {
+            Log.e("comment error", "" + e.getMessage());
+        }
+        return view;
+    }
 
 }

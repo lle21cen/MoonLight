@@ -15,9 +15,9 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/main_recommend_text"
         android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
-        android:layout_alignBottom="@+id/main_recommend_text"
         android:gravity="center">
 
         <TextView

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <include
@@ -55,18 +55,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="#786aaa"
             android:background="#ffffff"
-            android:text="첫화보기" />
+            android:text="첫화보기"
+            android:textColor="#786aaa" />
 
         <Button
             android:id="@+id/contents_main_follow_up_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="#fefefe"
             android:background="#786aaa"
-            android:text="이어보기" />
+            android:text="이어보기"
+            android:textColor="#fefefe" />
     </LinearLayout>
 
     <include

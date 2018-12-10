@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.techtown.ideaconcert.R;
+
 public class Fragment4NoticeList extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

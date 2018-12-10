@@ -4,11 +4,10 @@ import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-public class RecyclerViewDecoration  extends RecyclerView.ItemDecoration {
+public class RecyclerViewDecoration extends RecyclerView.ItemDecoration {
     private final int divRight;
 
-    public RecyclerViewDecoration(int divRight)
-    {
+    public RecyclerViewDecoration(int divRight) {
         this.divRight = divRight;
     }
 

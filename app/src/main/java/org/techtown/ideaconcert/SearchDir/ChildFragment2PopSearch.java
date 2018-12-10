@@ -22,19 +22,48 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.R;
 
 public class ChildFragment2PopSearch extends Fragment {
+    private final String GetPopSearchKeywordURL = "http://lle21cen.cafe24.com/GetPopSearchKeyword.php";
     View view;
     RecyclerView recyclerView;
     ChildFragment2PopSearchAdapter adapter;
-
     private TextView searchText;
     private Button searchButton;
+    private Response.Listener<String> getPopSearchKeywordListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                boolean exist = jsonObject.getBoolean("exist");
+                if (exist) {
+                    int num_result = jsonObject.getInt("num_result");
+                    JSONArray resultArray = jsonObject.getJSONArray("result");
+                    for (int i = 0; i < num_result; i++) {
+                        JSONObject temp = resultArray.getJSONObject(i);
+                        int contents_pk = temp.getInt("contents_pk");
+                        String contents_name = temp.getString("contents_name");
+                        adapter.addItem(contents_pk, contents_name);
+                    }
+                    recyclerView.setAdapter(adapter);
+                }
+            } catch (JSONException je) {
+                Log.e("인기검색키워드리스너오류", je.getMessage());
+            }
+        }
+    };
+    private Handler autoSearchHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message message) {
+            String keyword = message.getData().getString("keyword");
+            searchText.setText(keyword);
+            searchButton.performClick();
+            return true;
+        }
+    });
 
-    private final String GetPopSearchKeywordURL = "http://lle21cen.cafe24.com/GetPopSearchKeyword.php";
-//    private final String GetContentsByKeywordURL = ActivityCodes.DATABASE_IP "/GetPopSearchKeyword";
+    //    private final String GetContentsByKeywordURL = ActivityCodes.DATABASE_IP "/GetPopSearchKeyword";
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -57,37 +86,5 @@ public class ChildFragment2PopSearch extends Fragment {
         queue.add(request);
         return view;
     }
-
-    private Response.Listener<String> getPopSearchKeywordListener = new Response.Listener<String>() {
-        @Override
-        public void onResponse(String response) {
-            try {
-                JSONObject jsonObject = new JSONObject(response);
-                boolean exist = jsonObject.getBoolean("exist");
-                if (exist) {
-                    int num_result = jsonObject.getInt("num_result");
-                    JSONArray resultArray = jsonObject.getJSONArray("result");
-                    for (int i=0; i<num_result; i++) {
-                        JSONObject temp = resultArray.getJSONObject(i);
-                        int contents_pk = temp.getInt("contents_pk");
-                        String contents_name = temp.getString("contents_name");
-                        adapter.addItem(contents_pk, contents_name);
-                    }
-                    recyclerView.setAdapter(adapter);
-                }
-            } catch (JSONException je) {
-                Log.e("인기검색키워드리스너오류", je.getMessage());
-            }
-        }
-    };
-    private Handler autoSearchHandler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message message) {
-            String keyword = message.getData().getString("keyword");
-            searchText.setText(keyword);
-            searchButton.performClick();
-            return true;
-        }
-    });
 
 }

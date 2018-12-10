@@ -8,7 +8,7 @@
     <org.techtown.ideaconcert.WebtoonMovieDir.CustomVideoView
         android:id="@+id/webtoon_movie_video_view"
         android:layout_width="match_parent"
-        android:layout_height="200dp" />
+        android:layout_height="250dp" />
 
     <FrameLayout
         android:id="@+id/videoViewWrapper"

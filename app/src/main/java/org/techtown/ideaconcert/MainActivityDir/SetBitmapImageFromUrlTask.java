@@ -4,10 +4,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.os.AsyncTask;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import org.techtown.ideaconcert.ActivityCodes;
 
@@ -16,9 +14,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class SetBitmapImageFromUrlTask extends AsyncTask<String, Void, Bitmap> {
     ImageView imageView;

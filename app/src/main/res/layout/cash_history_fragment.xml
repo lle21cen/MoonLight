@@ -10,7 +10,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginBottom="120dp"
-        android:background="#efefef"/>
+        android:background="#efefef" />
 
     <ImageView
         android:layout_width="25dp"

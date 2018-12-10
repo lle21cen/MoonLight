@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
@@ -25,14 +24,6 @@ public class CircleAnimIndicator extends LinearLayout {
 
     private ImageView[] imageDot;
 
-    public void setAnimDuration(int animDuration) {
-        this.animDuration = animDuration;
-    }
-
-    public void setItemMargin(int itemMargin) {
-        this.itemMargin = itemMargin;
-    }
-
     public CircleAnimIndicator(Context context) {
         super(context);
         this.context = context;
@@ -43,8 +34,17 @@ public class CircleAnimIndicator extends LinearLayout {
         this.context = context;
     }
 
+    public void setAnimDuration(int animDuration) {
+        this.animDuration = animDuration;
+    }
+
+    public void setItemMargin(int itemMargin) {
+        this.itemMargin = itemMargin;
+    }
+
     /**
      * 기본 점 생성
+     *
      * @param count         점의 갯수
      * @param defaultCircle 점의 이미지
      */

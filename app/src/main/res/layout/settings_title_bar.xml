@@ -15,8 +15,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@id/setting_back_btn"
         android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@id/setting_back_btn"
         android:text="설정"
         android:textSize="18sp"
         android:textStyle="bold" />

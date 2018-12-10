@@ -31,22 +31,6 @@ public class ReplyRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         this.user_pk = user_pk;
     }
 
-    public static class ReplyViewHolder extends RecyclerView.ViewHolder {
-
-        TextView emailView, dateView, commentView, likeNumView, accusationView;
-        ImageView likeButton;
-
-        ReplyViewHolder(View view) {
-            super(view);
-            emailView = view.findViewById(R.id.reply_item_email);
-            dateView = view.findViewById(R.id.reply_item_date);
-            commentView = view.findViewById(R.id.reply_item_comment);
-            likeNumView = view.findViewById(R.id.reply_item_like_num);
-            accusationView = view.findViewById(R.id.reply_accusation);
-            likeButton = view.findViewById(R.id.reply_like_btn);
-        }
-    }
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_reply_item, parent, false);
@@ -61,7 +45,7 @@ public class ReplyRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         replyViewHolder.emailView.setText(item.getEmail());
         replyViewHolder.dateView.setText(item.getDate());
         replyViewHolder.commentView.setText(item.getComment());
-        replyViewHolder.likeNumView.setText(""+item.getLike_num());
+        replyViewHolder.likeNumView.setText("" + item.getLike_num());
         replyViewHolder.likeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -71,6 +55,41 @@ public class ReplyRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
                 requestQueue.add(request);
             }
         });
+    }
+
+    @Override
+    public int getItemCount() {
+        return items.size();
+    }
+
+    public void addItem(int comment_pk, String email, String date, String comment, int like_num) {
+        CommentListViewItem item = new CommentListViewItem();
+        item.setComment_pk(comment_pk);
+        item.setEmail(email);
+        item.setDate(date);
+        item.setComment(comment);
+        item.setLike_num(like_num);
+        items.add(item);
+    }
+
+    void clearItem() {
+        items.clear();
+    }
+
+    public static class ReplyViewHolder extends RecyclerView.ViewHolder {
+
+        TextView emailView, dateView, commentView, likeNumView, accusationView;
+        ImageView likeButton;
+
+        ReplyViewHolder(View view) {
+            super(view);
+            emailView = view.findViewById(R.id.reply_item_email);
+            dateView = view.findViewById(R.id.reply_item_date);
+            commentView = view.findViewById(R.id.reply_item_comment);
+            likeNumView = view.findViewById(R.id.reply_item_like_num);
+            accusationView = view.findViewById(R.id.reply_accusation);
+            likeButton = view.findViewById(R.id.reply_like_btn);
+        }
     }
 
     class InsertCommentLikeDataListener implements Response.Listener<String> {
@@ -105,24 +124,5 @@ public class ReplyRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
                 Log.e("답글좋아요리스너", e.getMessage());
             }
         }
-    }
-
-    @Override
-    public int getItemCount() {
-        return items.size();
-    }
-
-    public void addItem(int comment_pk, String email, String date, String comment, int like_num) {
-        CommentListViewItem item = new CommentListViewItem();
-        item.setComment_pk(comment_pk);
-        item.setEmail(email);
-        item.setDate(date);
-        item.setComment(comment);
-        item.setLike_num(like_num);
-        items.add(item);
-    }
-
-    void clearItem() {
-        items.clear();
     }
 }

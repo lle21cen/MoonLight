@@ -1,8 +1,8 @@
 package org.techtown.ideaconcert.MainActivityDir;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -24,47 +24,6 @@ public class SelectedContetnsExpandActivity extends AppCompatActivity implements
 
     final private String selectedContentsURL = ActivityCodes.DATABASE_IP + "/platform/GetSelectedContents";
     GridLayout gridLayout;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_selected_contents_expand);
-
-        Button backBtn = findViewById(R.id.sc_expand_back);
-        TextView backText = findViewById(R.id.sc_expand_txt);
-        backBtn.setOnClickListener(this);
-        backText.setOnClickListener(this);
-
-        Intent intent = getIntent();
-        int tag = intent.getIntExtra("tag", 2); // tag 1 :신작, 2 :베스트작, 3 :추천작
-        TextView titleView = findViewById(R.id.sc_selected_name);
-        if (tag == 1) {
-            titleView.setText("이달의 신작보기");
-        } else if (tag == 2) {
-            titleView.setText("주말특가 50%할인 작품");
-        } else if (tag == 3) {
-            titleView.setText("이달의 베스트 9");
-        } else if (tag == 4) {
-            titleView.setText("추천 작품");
-        }
-
-        gridLayout = findViewById(R.id.sc_grid_layout);
-
-        ContentsDBRequest request = new ContentsDBRequest(selectedContentsListener, selectedContentsURL, tag);
-        RequestQueue queue = Volley.newRequestQueue(this);
-        queue.add(request);
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.sc_expand_back:
-            case R.id.sc_expand_txt:
-                finish();
-                break;
-        }
-    }
-
     private Response.Listener<String> selectedContentsListener = new Response.Listener<String>() {
         @Override
         public void onResponse(String response) {
@@ -105,4 +64,44 @@ public class SelectedContetnsExpandActivity extends AppCompatActivity implements
             }
         }
     };
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_selected_contents_expand);
+
+        Button backBtn = findViewById(R.id.sc_expand_back);
+        TextView backText = findViewById(R.id.sc_expand_txt);
+        backBtn.setOnClickListener(this);
+        backText.setOnClickListener(this);
+
+        Intent intent = getIntent();
+        int tag = intent.getIntExtra("tag", 2); // tag 1 :신작, 2 :베스트작, 3 :추천작
+        TextView titleView = findViewById(R.id.sc_selected_name);
+        if (tag == 1) {
+            titleView.setText("이달의 신작보기");
+        } else if (tag == 2) {
+            titleView.setText("주말특가 50%할인 작품");
+        } else if (tag == 3) {
+            titleView.setText("이달의 베스트 9");
+        } else if (tag == 4) {
+            titleView.setText("추천 작품");
+        }
+
+        gridLayout = findViewById(R.id.sc_grid_layout);
+
+        ContentsDBRequest request = new ContentsDBRequest(selectedContentsListener, selectedContentsURL, tag);
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(request);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.sc_expand_back:
+            case R.id.sc_expand_txt:
+                finish();
+                break;
+        }
+    }
 }

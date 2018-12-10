@@ -2,7 +2,6 @@ package org.techtown.ideaconcert.MyCashDir;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -10,7 +9,7 @@ import android.widget.Button;
 import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.R;
 
-public class MyCashActivity extends AppCompatActivity implements View.OnClickListener{
+public class MyCashActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button cash_charge_btn, cash_history_btn;
     CashChargeFragment cashChargeFragment;
@@ -37,7 +36,7 @@ public class MyCashActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.cash_cash_charge_btn :
+            case R.id.cash_cash_charge_btn:
                 cash_charge_btn.setBackgroundColor(Color.rgb(255, 255, 255));
                 cash_charge_btn.setTextColor(Color.rgb(120, 106, 170));
                 cash_history_btn.setBackgroundColor(Color.rgb(120, 106, 170));
@@ -45,7 +44,7 @@ public class MyCashActivity extends AppCompatActivity implements View.OnClickLis
                 getSupportFragmentManager().beginTransaction().replace(R.id.cash_container, cashChargeFragment).commit();
                 break;
 
-            case R.id.cash_cash_history :
+            case R.id.cash_cash_history:
                 cash_charge_btn.setBackgroundColor(Color.rgb(120, 106, 170));
                 cash_charge_btn.setTextColor(Color.rgb(255, 255, 255));
                 cash_history_btn.setBackgroundColor(Color.rgb(255, 255, 255));
@@ -53,7 +52,7 @@ public class MyCashActivity extends AppCompatActivity implements View.OnClickLis
                 getSupportFragmentManager().beginTransaction().replace(R.id.cash_container, cashHistoryFragment).commit();
                 break;
 
-            case R.id.cash_back_btn :
+            case R.id.cash_back_btn:
                 setResult(ActivityCodes.MYCASH_SUCCESS);
                 finish();
                 break;
