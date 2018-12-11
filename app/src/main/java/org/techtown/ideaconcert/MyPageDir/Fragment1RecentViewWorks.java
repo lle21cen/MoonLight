@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import org.techtown.ideaconcert.R;
 import org.techtown.ideaconcert.SQLiteDir.DBHelper;
@@ -40,6 +41,7 @@ public class Fragment1RecentViewWorks extends Fragment {
             adapter.addItem(data.get(i).getUrl(), data.get(i).getContents_pk(), data.get(i).getDate(), data.get(i).getContents_name(), data.get(i).getContents_num());
             Log.e("마이페이지 thumbnail url", data.get(i).getUrl());
         }
+
         recyclerView.setAdapter(adapter);
         recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
             @Override

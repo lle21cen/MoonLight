@@ -1,5 +1,7 @@
 package org.techtown.ideaconcert.RegisterActivityDir;
 
+import android.widget.Toast;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -8,15 +10,12 @@ public class ValidatePwdEmail {
     public static boolean validatePwd(String password) {
         /*
          * 패스워드 정책은 알파벳, 숫자, 특수문자를 조합하여 8글자 이상으로 설정한다.
-         * (?=.*[a-zA-Z])   하나 이상의 알파벳을 포함한다.
-         * (?=.*[0-9@#$%])  하나 이상의 숫자나 특수문자를 포함한다.
-         * {8,}             최소 8글자 이상이어야 한다.
+         * (?=.{8,})        8자 이상.
+         * (?=..*[0-9])     하나 이상의 숫자 포함
+         * (?=.*[a-z])      하나 이상의 소문자 포함
          */
-//        String passwordPolicy = "((?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*()]).{8,})";
-        String passwordPolicy = "(^[a-zA-Z0-9]{8,16}$)";
-        Pattern pattern = Pattern.compile(passwordPolicy);
-        Matcher matcher = pattern.matcher(password);
-        return matcher.matches();
+        String passwordPolicy = "^.*(?=.{8,})(?=..*[0-9])(?=.*[a-z]).*$";
+        return password.matches(passwordPolicy);
     }
 
     public static boolean validateEmail(String email) {

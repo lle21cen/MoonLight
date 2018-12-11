@@ -76,6 +76,7 @@
         <Preference
             android:key="settings_version_pref"
             android:layout="@layout/settings_preference_layout"
+            android:summary="문라이트 v1.0.0 최신버전입니다."
             android:title="버전정보" />
 
         <Preference

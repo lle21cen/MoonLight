@@ -35,7 +35,7 @@
             android:textAlignment="center"
             android:textSize="12sp" />
 
-        <ImageView
+        <Button
             android:id="@+id/main_title_search_btn"
             android:layout_width="25dp"
             android:layout_height="25dp"

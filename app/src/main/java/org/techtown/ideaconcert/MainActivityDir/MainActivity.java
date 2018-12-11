@@ -372,7 +372,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mypage_btn = findViewById(R.id.title_mypage_btn);
         mypage_btn.setOnClickListener(this);
-        ImageView searchButton = findViewById(R.id.main_title_search_btn);
+        Button searchButton = findViewById(R.id.main_title_search_btn);
         searchButton.setOnClickListener(this);
 
         // 이미 저장된 사용자 로그인 정보가 있는지 확인

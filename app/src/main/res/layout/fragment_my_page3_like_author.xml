@@ -5,41 +5,10 @@
     android:layout_height="match_parent"
     tools:context=".MyPageDir.Fragment3LikeAuthor">
 
-    <RelativeLayout
-        android:id="@+id/my_page_fragment3_title_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="관심작가"
-            android:textSize="9sp" />
-
-        <TextView
-            android:id="@+id/my_page_fragment3_edit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="편집"
-            android:textSize="9sp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_below="@+id/my_page_fragment3_edit"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:background="#000000" />
-    </RelativeLayout>
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/my_page_fragment3_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/my_page_fragment3_title_layout"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="5dp"
         android:layout_marginRight="10dp"

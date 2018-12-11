@@ -60,6 +60,7 @@
             android:layout_width="240dp"
             android:layout_height="40dp"
             android:background="@drawable/round_border_white"
+            android:paddingLeft="5dp"
             android:hint="  이메일을 입력해 주세요"
             android:inputType="textEmailAddress"
             android:textSize="12sp" />
@@ -87,6 +88,7 @@
             android:background="@drawable/round_border_white"
             android:hint="  비밀번호를 입력해주세요"
             android:inputType="textPassword"
+            android:paddingLeft="5dp"
             android:textSize="12sp" />
     </LinearLayout>
 
@@ -112,6 +114,7 @@
             android:background="@drawable/round_border_white"
             android:hint="  비밀번호를 다시 입력해주세요"
             android:inputType="textPassword"
+            android:paddingLeft="5dp"
             android:textSize="12sp" />
     </LinearLayout>
 
@@ -137,6 +140,7 @@
             android:background="@drawable/round_border_white"
             android:hint="  회원 이름을 입력해주세요"
             android:inputType="text"
+            android:paddingLeft="5dp"
             android:textSize="12sp" />
     </LinearLayout>
 

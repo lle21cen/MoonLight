@@ -27,6 +27,7 @@ import org.techtown.ideaconcert.MainActivityDir.MainActivity;
 import org.techtown.ideaconcert.R;
 import org.techtown.ideaconcert.SettingsDir.TermsAndConditionActivity;
 import org.techtown.ideaconcert.ShowProgressDialog;
+import org.w3c.dom.Text;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -85,6 +86,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         final Button registerBtn = findViewById(R.id.register_join_btn);
         registerBtn.setOnClickListener(this);
+
+        final Button backBtn = findViewById(R.id.register_back_btn);
+        final TextView backText = findViewById(R.id.register_back_txt);
+        backBtn.setOnClickListener(this);
+        backText.setOnClickListener(this);
     }
 
     @Override
@@ -116,10 +122,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     requestQueue.add(emailCheckAndRegister);
                     ShowProgressDialog.showProgressDialog(RegisterActivity.this);
                 } else if (!isTwoPasswordAccord) {
-                    infoText.setText("비밀번호 확인과 일치하지 않습니다");
+                    infoText.setText(getString(R.string.is_password_same)); // getString 을 꼭 쓸 필요가 있나?
                     pwdText.requestFocus();
                 } else if (!isPasswordAvailable) {
-                    infoText.setText("비밀번호는 8~16 자리, 영문 숫자 혼용입니다");
+                    infoText.setText(R.string.password_policy);
                     pwdText.requestFocus();
                 } else if (!checkBox.isChecked()) {
                     infoText.setText("약관 및 이용안내에 동의해 주십시오");

@@ -82,7 +82,7 @@ public class SetNewPasswordActivity extends AppCompatActivity implements View.On
                 String pw = newPwView.getText().toString();
                 boolean isPwValidate = validatePwdEmail.validatePwd(pw);
                 if (!isPwValidate) {
-                    infoTextView.setText("비밀번호 형식이 올바르지 않습니다");
+                    infoTextView.setText(R.string.password_policy);
                     newPwView.requestFocus();
                 } else if (!pw.equals(newPwConfirmView.getText().toString())) {
                     infoTextView.setText("비밀번호가 일치하지 않습니다");

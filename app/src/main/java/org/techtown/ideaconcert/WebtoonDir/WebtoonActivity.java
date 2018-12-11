@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -45,10 +46,13 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
     private final String getContentsLIkeCountURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsLikeCount";
     private final String insertDeleteContentsItemLikeDataURL = ActivityCodes.DATABASE_IP + "/platform/InsertDeleteContentsItemLikeData";
     private final String PlusViewCountURL = ActivityCodes.DATABASE_IP + "/platform/PlusViewCount";
+    private final String ApplyStarRatingURL = ActivityCodes.DATABASE_IP + "/platform/ApplyStarRating.php";
+
     LinearLayout headerLayout, footerLayout, webtoonLayout, contents_option_menu;
     RelativeLayout ratingStarLayout;
     TextView title_text, star_rating_text, like_count_text, comments_count_text, order_text;
-    Button option_btn, comments_btn, prev_btn, next_btn, like_btn;
+    Button option_btn, comments_btn, like_btn;
+    ImageButton prev_btn, next_btn;
     int user_pk, contents_item_pk, item_comments_count, contents_num, contents_pk;
     String item_title;
     int item_position;
@@ -56,6 +60,8 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
     ArrayList<WorksListViewItem> items;
     private boolean is_like_clicked;
     private int deviceWidth;
+    private RatingBar starRating;
+
     private Response.Listener<String> plusViewCountListener = new Response.Listener<String>() {
         // 사용자가 웹튼을 보려고 할 경우 웹툰의 뷰카운트를 1증가 시키는 리스너
         // 실패시 로그에 오류 메시지를 출력하고 종료
@@ -196,13 +202,13 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
         like_btn = findViewById(R.id.webtoon_like_btn); // 하단, 좋아요 버튼
 
         items = ContentsMainActivity.itemList;
-        Intent intent = getIntent();
-        item_position = intent.getIntExtra("position", 0); // 0일 경우 오류 처리 - 귀찮
+        Intent mIntent = getIntent();
+        item_position = mIntent.getIntExtra("position", 0); // 0일 경우 오류 처리 - 귀찮
         contents_item_pk = items.get(item_position).getContentsItemPk(); // 0일 경우 오류 처리 - 귀찮
         item_title = items.get(item_position).getWorksTitle();
         item_comments_count = items.get(item_position).getCommentCount();
         contents_num = items.get(item_position).getContentsNum();
-        contents_pk = intent.getIntExtra("contents_pk", 0);
+        contents_pk = mIntent.getIntExtra("contents_pk", 0);
 
         title_text.setText(item_title + " " + contents_num + "화");
         comments_count_text.setText("" + item_comments_count);
@@ -212,14 +218,7 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
         ImageView starImg = findViewById(R.id.webtoon_star);
         starImg.setOnClickListener(this);
 
-        RatingBar starRating = findViewById(R.id.ratingStar);
-        starRating.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-            @Override
-            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                Toast.makeText(WebtoonActivity.this, "rating : " + rating + " fromUser " + fromUser, Toast.LENGTH_SHORT).show();
-                ApplyStarRatingRequest request = new ApplyStarRatingRequest()
-            }
-        });
+        starRating = findViewById(R.id.ratingStar);
 
         contents_listView = findViewById(R.id.webtoon_contents_num_listview);
         final ContentsNumListViewAdapter adapter = new ContentsNumListViewAdapter();
@@ -264,10 +263,10 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
                     }
                 }
                 Intent intent = new Intent(WebtoonActivity.this, WebtoonActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra("position", next_position);
+                intent.putExtra("contents_pk", contents_pk);
                 startActivity(intent);
-                finish();
             }
         });
 
@@ -286,6 +285,30 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
         // 웹툰 뷰 카운트 증가 시키기
         plusViewCount();
     }
+
+    private Response.Listener<String> applyStarRatingListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                boolean success = jsonObject.getBoolean("success");
+                if (success) {
+                    Toast.makeText(WebtoonActivity.this, "별점이 적용되었습니다.", Toast.LENGTH_SHORT).show();
+                    ratingStarLayout.setVisibility(View.GONE);
+                } else  {
+                    String errmsg = jsonObject.getString("errmsg");
+                    if (errmsg.contains("Duplicate")) {
+                        Toast.makeText(WebtoonActivity.this, "이미 별점을 등록했습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                    Log.e("별점등록실패", jsonObject.getString("errmsg"));
+                }
+            } catch (JSONException je){
+                Log.e("별점리스너", je.getMessage());
+            } catch (Exception e) {
+                Log.e("별점리스너", e.getMessage());
+            }
+        }
+    };
 
     private void plusViewCount() {
         PlusViewCountRequest request = new PlusViewCountRequest(PlusViewCountURL, plusViewCountListener, contents_item_pk);
@@ -369,8 +392,9 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
                     ratingStarLayout.setVisibility(View.GONE);
                 break;
             case R.id.rating_confirm:
-                Toast.makeText(this, "별점이 적용되었습니다.", Toast.LENGTH_SHORT).show();
-                ratingStarLayout.setVisibility(View.GONE);
+                ApplyStarRatingRequest request = new ApplyStarRatingRequest(ApplyStarRatingURL, applyStarRatingListener, contents_item_pk, user_pk, starRating.getRating()*2);
+                RequestQueue queue = Volley.newRequestQueue(WebtoonActivity.this);
+                queue.add(request);
                 break;
         }
     }
@@ -385,9 +409,10 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
             else if (!flag && items.get(new_position).getContentsNum() == (contents_num + 1))
                 break;
         }
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("position", new_position);
+        intent.putExtra("contents_pk", contents_pk);
         startActivity(intent);
-        finish();
     }
 
     private void addRecentViewDataToSqlite() {
@@ -395,6 +420,7 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
         Date today = new Date();
         SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd kk:mm"); // 초단위로 저장하여 가장 최근에 본 작품을 갱신.
         DBHelper dbHelper = new DBHelper(this, DBNames.CONTENTS_DB, null, 1);
+        Log.e("info",contents_pk + " " + item_title + " " + date.format(today) + " " + String.valueOf(today) + " " + contents_num);
         dbHelper.insertOrUpdateRecentViewData(contents_pk, item_title, date.format(today), String.valueOf(today), contents_num);
     }
 

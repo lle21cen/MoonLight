@@ -171,7 +171,7 @@ public class SettingsPreferenceFragment extends PreferenceFragment implements Pr
                 startActivity(intent);
                 break;
             case "settings_version_pref":
-                Toast.makeText(getActivity(), preference.getTitle(), Toast.LENGTH_SHORT).show();
+
                 break;
             case "settings_clause_pref":
                 intent = new Intent(getActivity(), TermsAndConditionActivity.class);

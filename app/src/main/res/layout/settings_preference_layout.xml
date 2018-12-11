@@ -18,7 +18,7 @@
         android:layout_alignParentRight="true"
         android:layout_margin="10dp"
         android:textColor="#1d68bf"
-        android:textSize="14sp" />
+        android:textSize="13sp" />
 
     <ImageView
         android:id="@android:id/icon"

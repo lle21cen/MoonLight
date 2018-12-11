@@ -26,9 +26,11 @@
         <ImageView
             android:id="@+id/main_arrival_item_star_img"
             android:layout_width="15dp"
-            android:layout_height="wrap_content"
+            android:layout_height="15dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginLeft="3dp"
             android:layout_below="@id/main_arrival_item_name"
-            android:src="@drawable/ic_star_yellow_24dp" />
+            android:src="@drawable/star" />
 
         <TextView
             android:id="@+id/main_arrival_item_star_rating"

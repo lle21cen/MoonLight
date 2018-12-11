@@ -49,7 +49,6 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:isIndicator="false"
-            android:max="10"
             android:numStars="5"
             android:progressTint="@color/colorStars"
             android:rating="5"

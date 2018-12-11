@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -40,6 +41,7 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
     private TextView totalListText;
 
     private Fragment1Webtoon fragment;
+
     private Response.Listener<String> getContentsItemListener = new Response.Listener<String>() {
         private String title, watch_num;
         private double star_rating;

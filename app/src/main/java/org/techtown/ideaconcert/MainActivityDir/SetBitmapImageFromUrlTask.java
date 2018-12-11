@@ -50,9 +50,9 @@ public class SetBitmapImageFromUrlTask extends AsyncTask<String, Void, Bitmap> {
                 image = Bitmap.createScaledBitmap(src, dstWidth, dstHeight, true);
             }
 
-            if (!src.isRecycled()) {
+//            if (!src.isRecycled()) {
 //                src.recycle();
-            }
+//            }
 
             connection.disconnect();
         } catch (MalformedURLException e) {

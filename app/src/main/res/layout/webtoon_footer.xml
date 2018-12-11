@@ -59,19 +59,20 @@
 
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
         android:layout_weight="1"
         android:gravity="center"
         android:orientation="horizontal">
 
-        <Button
+        <ImageButton
             android:id="@+id/webtoon_prev_btn"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
+            android:background="#00000000"
             android:layout_weight="1"
-            android:background="@drawable/ic_keyboard_arrow_left_white_24dp" />
+            android:src="@drawable/ic_keyboard_arrow_left_white_24dp" />
 
         <TextView
             android:id="@+id/webtoon_order"
@@ -83,12 +84,13 @@
             android:text="0"
             android:textColor="#ffffff" />
 
-        <Button
+        <ImageButton
             android:id="@+id/webtoon_next_btn"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="#00000000"
             android:layout_weight="1"
-            android:background="@drawable/ic_keyboard_arrow_right_white_24dp" />
+            android:src="@drawable/ic_keyboard_arrow_right_white_24dp" />
     </LinearLayout>
 
 </LinearLayout>

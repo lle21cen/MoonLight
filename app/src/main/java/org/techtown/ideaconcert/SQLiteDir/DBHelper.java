@@ -112,7 +112,7 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         String sql = "CREATE TABLE recent_view(contents_pk INTEGER, contents_name VARCHAR(20), view_date DATETIME, date_for_compare DATETIME, contents_num INTEGER, contents_url VARCHAR(100), PRIMARY KEY(contents_pk, contents_num));";
         db.execSQL(sql);
-        Log.e("createRecentViewTable", "테이블 생성 완료");
+        Log.e("createRecentViewTable", "최근 본 작품 테이블 생성 완료");
     }
 
     public void createContentsUrlTable() {
@@ -130,10 +130,14 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public void dropTable(String table_name) {
-        SQLiteDatabase db = getWritableDatabase();
-        String sql = "DROP TABLE " + table_name;
-        db.execSQL(sql);
-        Log.e("dropTable", "테이블 드랍 완료 " + table_name);
+        try {
+            SQLiteDatabase db = getWritableDatabase();
+            String sql = "DROP TABLE " + table_name;
+            db.execSQL(sql);
+            Log.e("dropTable", "테이블 드랍 완료 " + table_name);
+        } catch (SQLException se) {
+            Log.e("드랍테이블에러", se.getMessage());
+        }
     }
 
     public void dropAllTables() {
@@ -161,7 +165,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public ArrayList<RecentViewData> getAllRecentViewData() {
         try {
-            String sql = "SELECT rv.contents_pk, contents_name, view_date, MAX(date_for_compare), contents_num, url FROM recent_view rv, contents_url cu WHERE rv.contents_pk = cu.contents_pk GROUP BY rv.contents_pk";
+            String sql = "SELECT rv.contents_pk, contents_name, view_date, MAX(date_for_compare), contents_num, url FROM recent_view rv, contents_url cu WHERE rv.contents_pk = cu.contents_pk GROUP BY rv.contents_pk ORDER BY date_for_compare DESC";
 //            String sql = "SELECT contents_pk, contents_name, view_date, contents_num FROM recent_view";
             SQLiteDatabase db = getReadableDatabase();
             Cursor cursor = db.rawQuery(sql, null);
