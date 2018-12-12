@@ -28,7 +28,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     // For Database login
     EditText userEmail, userPw;
-    //private SharedPreferences loginData;
+//    private SharedPreferences loginData;
     Button login_btn, backBtn;
     TextView find_btn, login_result_text;
 
@@ -57,7 +57,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         // --------------------------------------------------------------------------
         //                               For save login data
-        //loginData = getSharedPreferences("loginData", MODE_PRIVATE);
+//        loginData = getSharedPreferences("loginData", MODE_PRIVATE);
 
         // --------------------------------------------------------------------------
         //                               DATABASE LOGIN
@@ -82,9 +82,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             if (success) {
                                 boolean pw_correct = jsonResponse.getBoolean("pw_correct");
                                 if (!pw_correct) {
-//                                    String hash = jsonResponse.getString("hash");
-//                                    String user_pw = jsonResponse.getString("user_pw");
-//                                    Toast.makeText(LoginActivity.this, hash + " " + user_pw, Toast.LENGTH_SHORT).show();
                                     Toast.makeText(LoginActivity.this, "비밀번호가 올바르지 않습니다.", Toast.LENGTH_SHORT).show();
                                 } else {
                                     int user_pk = jsonResponse.getInt("user_pk");

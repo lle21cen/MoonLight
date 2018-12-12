@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CommentDir.AccusationAcitivity">
+
+    <LinearLayout
+        android:id="@+id/accusation_title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#ffffff"
+        android:orientation="horizontal"
+        android:paddingLeft="15dp">
+
+        <Button
+            android:id="@+id/accusation_back_btn"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_gravity="center"
+            android:background="@drawable/back" />
+
+        <TextView
+            android:id="@+id/accusation_back_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:text="신고"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#c0c0c0" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/accusation_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/accusation_title_layout"
+        android:background="#ffffff"
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="40dp">
+
+        <TextView
+            android:id="@+id/accusation_email_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:text="mynameiskhan"
+            android:textColor="#000000" />
+
+        <TextView
+            android:id="@+id/accusation_comment_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="와 너무 재미없음 왜 연재하는거?"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/accusation_reason_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/accusation_layout"
+        android:background="#efefef"
+        android:paddingLeft="10dp"
+        android:paddingTop="13dp"
+        android:paddingRight="10dp">
+
+        <TextView
+            android:id="@+id/accusation_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="신고사유"
+            android:textColor="#000000"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/accusation_reason_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/accusation_text"
+            android:layout_alignParentRight="true"
+            android:text="0/100"
+            android:textColor="#666666"
+            android:textSize="10sp" />
+
+        <EditText
+            android:id="@+id/accusation_reason_text"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_below="@id/accusation_reason_count"
+            android:background="#ffffff"
+            android:gravity="start"
+            android:hint="최대 100자까지 내용 입력 가능합니다"
+            android:maxLength="100"
+            android:padding="5dp"
+            android:textSize="11sp" />
+
+        <Button
+            android:id="@+id/accusation_send_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/accusation_reason_text"
+            android:layout_marginLeft="80dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginRight="80dp"
+            android:background="@color/moonlightMain"
+            android:text="신고하기"
+            android:textColor="#ffffff" />
+    </RelativeLayout>
+
+</RelativeLayout>

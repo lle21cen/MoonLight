@@ -14,6 +14,8 @@ public class ActivityCodes extends Application {
     public static final int SET_NEW_PW_SUCCESS = 76, SET_NEW_PW_FAIL = 75, SET_NEW_PW_REQUEST = 74; // from WebtoonActivity
     public static final int CONSULT_SUCCESS = 73, CONSULT_FAIL = 72, CONSULT_REQUEST = 71; // ConsultActivity
     public static final int MANAGE_MY_WORKS_SUCCESS = 70, MANAGE_MY_WORKS_FAIL = 69, MANAGE_MY_WORKS_REQUEST = 68; // ManageMyWorksActivity
+    public static final int ACCUSATION_SUCCESS = 67, ACCUSATION_FAIL = 66, ACCUSATION_REQUEST = 65; // ManageMyWorksActivity
+
 
     public static final String DATABASE_IP = "http://58.77.182.75:8090";
 

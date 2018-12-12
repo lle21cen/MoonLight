@@ -4,4 +4,5 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorStars">#ffc400</color>
+    <color name="moonlightMain">#786aaa</color>
 </resources>

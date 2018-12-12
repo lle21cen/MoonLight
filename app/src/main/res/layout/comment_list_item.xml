@@ -3,15 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#ffffff"
-    android:paddingLeft="15dp"
     android:paddingTop="7dp"
-    android:paddingRight="15dp"
     android:paddingBottom="11dp">
 
     <TextView
         android:id="@+id/comment_item_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
         android:text="mynameiskhan"
         android:textColor="#000000" />
 
@@ -21,6 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_marginTop="4dp"
+        android:layout_marginRight="10dp"
         android:text="2018-09-05 13:03"
         android:textSize="10.5sp" />
 
@@ -30,7 +30,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/comment_item_date"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="25dp"
+        android:layout_marginRight="10dp"
         android:src="@drawable/best" />
 
     <TextView
@@ -38,15 +40,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/comment_item_date"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="25dp"
-        android:text="너무 재밌어요~다음화는 언제 볼 수 있을까요? 벌써부터 시간이 안가네요 ㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠ" />
+        android:layout_marginRight="10dp" />
 
     <LinearLayout
         android:id="@+id/comment_item_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/comment_item_comment"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="25dp"
+        android:layout_marginRight="10dp"
         android:orientation="horizontal">
 
         <TextView
@@ -83,11 +88,21 @@
             android:text="0" />
     </LinearLayout>
 
+    <View
+        android:id="@+id/comment_item_underline"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/comment_item_layout"
+        android:layout_marginTop="15dp"
+        android:background="#efefef" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/comment_item_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/comment_item_layout"
+        android:layout_below="@+id/comment_item_underline"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:orientation="vertical" />
 
 </RelativeLayout>

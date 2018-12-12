@@ -31,6 +31,7 @@ public class BestCommentFragment extends Fragment {
     CommentRecyclerViewAdapter adapter;
     RecyclerView bestCommentRecyclerView;
     Button bestButton;
+
     private Response.Listener<String> commentListener = new Response.Listener<String>() {
         private String email, date, comment;
         private int reply_num, like_num, comment_pk;
@@ -80,13 +81,18 @@ public class BestCommentFragment extends Fragment {
         bestCommentRecyclerView = view.findViewById(R.id.comment_recycler_view);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         bestCommentRecyclerView.setLayoutManager(layoutManager);
-        adapter = new CommentRecyclerViewAdapter(user_pk);
-
-        adapter.setFragment_from(CommentRecyclerViewAdapter.FROM_BESTFRAGMENT);
-        bestButton = getActivity().findViewById(R.id.comment_best_btn);
 
         Intent intent = getActivity().getIntent();
         int item_pk = intent.getIntExtra("item_pk", 0);
+        int sel_comment_pk = intent.getIntExtra("sel_comment_pk", 0);
+        int cur_fragment_num = intent.getIntExtra("cur_fragment_num", 3);
+        if (sel_comment_pk != 0 && cur_fragment_num == 0) {
+            adapter = new CommentRecyclerViewAdapter(user_pk, sel_comment_pk);
+        } else
+            adapter = new CommentRecyclerViewAdapter(user_pk);
+
+        adapter.setFragment_from(CommentRecyclerViewAdapter.FROM_BESTFRAGMENT);
+        bestButton = getActivity().findViewById(R.id.comment_best_btn);
 
         try {
             CommentDBRequest commentDBRequest = new CommentDBRequest(getCommentURL, commentListener, item_pk, 1);

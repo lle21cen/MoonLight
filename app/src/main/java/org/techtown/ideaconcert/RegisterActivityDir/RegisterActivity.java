@@ -23,6 +23,7 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
 import org.techtown.ideaconcert.ActivityCodes;
+import org.techtown.ideaconcert.LoginDir.LoginActivity;
 import org.techtown.ideaconcert.MainActivityDir.MainActivity;
 import org.techtown.ideaconcert.R;
 import org.techtown.ideaconcert.SettingsDir.TermsAndConditionActivity;
@@ -168,7 +169,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             toLoginButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivityForResult(intent, ActivityCodes.LOGIN_REQUEST);
                 }
             });
         }

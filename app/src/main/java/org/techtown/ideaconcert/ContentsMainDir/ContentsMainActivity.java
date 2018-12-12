@@ -32,7 +32,6 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
     // 변수명 통일 시키기 ... 귀찮
 
     public static ArrayList<WorksListViewItem> itemList; // WebtonActivity에서도 사용하기 위해 public static으로 선언
-//    private final String getContentsItemURL = "http://lle21cen.cafe24.com/GetContentsItem.php";
     private final String getContentsItemURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsItem";
     private int selected_contents_pk;
     private ListView listView;

@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -79,14 +80,21 @@ public class AllCommentFragment extends Fragment {
         allCommentRecyclerView = view.findViewById(R.id.comment_recycler_view);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         allCommentRecyclerView.setLayoutManager(layoutManager);
-        adapter = new CommentRecyclerViewAdapter(user_pk);
+
+        Intent intent = getActivity().getIntent();
+        int item_pk = intent.getIntExtra("item_pk", 0);
+        int sel_comment_pk = intent.getIntExtra("sel_comment_pk", 0);
+        int cur_fragment_num = intent.getIntExtra("cur_fragment_num", 3);
+        if (sel_comment_pk != 0 && cur_fragment_num == 1) {
+            adapter = new CommentRecyclerViewAdapter(user_pk, sel_comment_pk);
+        } else
+            adapter = new CommentRecyclerViewAdapter(user_pk);
+
 
         adapter.setFragment_from(CommentRecyclerViewAdapter.FROM_ALLFRAGMENT);
 
         allButton = getActivity().findViewById(R.id.comment_all_btn);
 
-        Intent intent = getActivity().getIntent();
-        int item_pk = intent.getIntExtra("item_pk", 0);
 
         try {
             CommentDBRequest commentDBRequest = new CommentDBRequest(getCommentURL, commentListener, item_pk, 2); // tag = 2 : 최신 순 정렬
@@ -97,5 +105,4 @@ public class AllCommentFragment extends Fragment {
         }
         return view;
     }
-
 }

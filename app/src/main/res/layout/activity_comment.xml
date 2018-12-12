@@ -7,10 +7,6 @@
     android:focusable="true"
     android:focusableInTouchMode="true">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/webtoon_comment_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/comment_work_name_txt"
@@ -20,13 +16,12 @@
             android:gravity="center"
             android:text="작품명"
             android:textStyle="bold" />
-    </android.support.v7.widget.Toolbar>
 
     <LinearLayout
         android:id="@+id/comment_2button_layout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_below="@+id/webtoon_comment_toolbar"
+        android:layout_below="@+id/comment_work_name_txt"
         android:orientation="horizontal">
 
         <Button
@@ -62,7 +57,7 @@
         android:layout_alignParentBottom="true"
         android:layout_toLeftOf="@id/comment_enter"
         android:background="#ffffff"
-        android:hint="댓글을 입력해주세요 :)"
+        android:hint="@string/input_comment"
         android:maxLength="500"
         android:paddingLeft="5dp"
         android:textSize="12sp" />

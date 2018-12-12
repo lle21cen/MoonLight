@@ -27,6 +27,14 @@ public class ReplyRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     private ArrayList<CommentListViewItem> items = new ArrayList<>();
     private int user_pk;
 
+    public ArrayList<CommentListViewItem> getItems() {
+        return items;
+    }
+
+    public void setItems(ArrayList<CommentListViewItem> items) {
+        this.items = items;
+    }
+
     public ReplyRecyclerViewAdapter(int user_pk) {
         this.user_pk = user_pk;
     }

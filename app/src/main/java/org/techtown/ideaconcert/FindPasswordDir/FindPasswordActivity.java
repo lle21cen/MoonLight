@@ -49,6 +49,7 @@ public class FindPasswordActivity extends AppCompatActivity implements View.OnCl
                         });
                     } else {
                         Toast.makeText(FindPasswordActivity.this, "임시비번발급실패 " + jsonObject.getString("errmsg"), Toast.LENGTH_SHORT).show();
+                        infoTextView.setText("비밀번호 발급에 실패했습니다. 관리자에게 문의해 주세요.");
                     }
                 }
             } catch (Exception e) {
@@ -105,6 +106,5 @@ public class FindPasswordActivity extends AppCompatActivity implements View.OnCl
             requestWindowFeature(Window.FEATURE_NO_TITLE); //타이틀 바 삭제
             setContentView(R.layout.send_temp_pw_dialog_layout);
         }
-
     }
 }

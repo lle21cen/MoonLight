@@ -1,6 +1,8 @@
 package org.techtown.ideaconcert.CommentDir;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -33,8 +35,15 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     private int user_pk;
     private int fragment_from; // 1이면 BestCommentsFragment에서 호출 2이면 AllCommentFragment에서 호출
 
+    private int sel_comment_pk = 0;
+
     public CommentRecyclerViewAdapter(int user_pk) {
         this.user_pk = user_pk;
+    }
+
+    public CommentRecyclerViewAdapter(int user_pk, int sel_comment_pk) {
+        this.user_pk = user_pk;
+        this.sel_comment_pk = sel_comment_pk;
     }
 
     @Override
@@ -69,6 +78,17 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             }
         });
 
+        commentViewHolder.view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Message message = new Message();
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("isReply", false);
+                message.setData(bundle);
+                CommentActivity.setCommentTextHintHandler.sendMessage(message);
+            }
+        });
+
         commentViewHolder.replyView.setText("답글 " + item.getReply_num());
         commentViewHolder.replyView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,12 +96,19 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 final Context context = view.getContext();
 
                 if (items.get(position).getReplyAdapter() == null) {
-                    GetReplyCommentListener replyCommentListener = new GetReplyCommentListener(position, context, commentViewHolder.replyRecyclerView);
+                    GetReplyCommentListener replyCommentListener = new GetReplyCommentListener(position, context, commentViewHolder.replyRecyclerView, commentViewHolder.emailView.getText().toString());
                     DatabaseRequest request = new DatabaseRequest(replyCommentListener, getCommentReplyURL);
-
                     request.setComment_pk(item.getComment_pk());
                     RequestQueue requestQueue = Volley.newRequestQueue(view.getContext());
                     requestQueue.add(request);
+                    Message message = new Message();
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean("isReply", true);
+                    bundle.putString("commentEmail", item.getEmail());
+                    bundle.putInt("comment_pk", item.getComment_pk());
+                    bundle.putInt("sel_position", position);
+                    message.setData(bundle);
+                    CommentActivity.setCommentTextHintHandler.sendMessage(message);
                 } else {
                     items.get(position).getReplyAdapter().clearItem();
                     items.get(position).setReplyAdapter(null);
@@ -89,6 +116,11 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 }
             }
         });
+
+        if (sel_comment_pk != 0 && sel_comment_pk == item.getComment_pk()) {
+            commentViewHolder.replyView.requestFocus();
+            commentViewHolder.replyView.performClick();
+        }
 
         if (fragment_from == FROM_BESTFRAGMENT)
             commentViewHolder.commentView.setText(blankForBestComment + item.getComment());
@@ -124,6 +156,7 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
     public class CommentViewHolder extends RecyclerView.ViewHolder {
 
+        View view;
         final TextView likeNumView;
         TextView emailView, dateView, commentView, replyView, accusationView;
         ImageView likeButton, bestImage;
@@ -131,6 +164,7 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
         CommentViewHolder(View view) {
             super(view);
+            this.view = view;
             emailView = view.findViewById(R.id.comment_item_email);
             dateView = view.findViewById(R.id.comment_item_date);
             commentView = view.findViewById(R.id.comment_item_comment);
@@ -149,11 +183,13 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         RecyclerView replyRecyclerView;
         private int position;
         private Context context;
+        private String commentEmail;
 
-        public GetReplyCommentListener(final int position, Context context, final RecyclerView replyRecyclerView) {
+        public GetReplyCommentListener(final int position, Context context, final RecyclerView replyRecyclerView, String commentEmail) {
             this.position = position;
             this.context = context;
             this.replyRecyclerView = replyRecyclerView;
+            this.commentEmail = commentEmail;
         }
 
         @Override
@@ -177,8 +213,8 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                     }
                     items.get(position).setReplyAdapter(replyAdapter);
                     replyRecyclerView.setVisibility(View.VISIBLE);
+
                     replyRecyclerView.setAdapter(replyAdapter);
-//                    Toast.makeText(context, "setAdapter " + position, Toast.LENGTH_SHORT).show();
                 } else {
                     Log.e("답글없음", "답글이 없습니다.");
                 }
@@ -221,5 +257,4 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             }
         }
     }
-
 }
