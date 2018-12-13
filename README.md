@@ -20,8 +20,7 @@ Screenshots
     내정보관리
   <div class="main">
     <img src="https://user-images.githubusercontent.com/8223082/49930107-4149a700-ff07-11e8-80bc-fdfbc1711e63.png" width="25%"/>
-    <img src="https://user-images.githubusercon)
-tent.com/8223082/49930108-4149a700-ff07-11e8-83c1-e348498be341.png" width="25%"/>
+    <img src="https://user-images.githubusercontent.com/8223082/49930108-4149a700-ff07-11e8-83c1-e348498be341.png" width="25%"/>
     <img src="https://user-images.githubusercontent.com/8223082/49930109-4149a700-ff07-11e8-9329-5fdce3fe23e4.png" width="25%"/>
   </div>
     답글 및 댓글
