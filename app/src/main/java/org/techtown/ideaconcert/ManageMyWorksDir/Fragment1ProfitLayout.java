@@ -16,6 +16,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.R;
 
 import java.util.Calendar;
@@ -23,7 +24,8 @@ import java.util.Calendar;
 
 public class Fragment1ProfitLayout extends RelativeLayout {
 
-    private final String GetProfitDataURL = "http://lle21cen.cafe24.com/GetProfitData.php"; // 추후 수정 필요
+//    private final String GetProfitDataURL = "http://lle21cen.cafe24.com/GetProfitData.php"; // 추후 수정 필요
+    private final String GetProfitDataURL = ActivityCodes.DATABASE_IP + "/platform/GetProfitData";
 
     int currentYear, whatMonth, endDayOfMonth, user_pk;
     LinearLayout profitLayout;

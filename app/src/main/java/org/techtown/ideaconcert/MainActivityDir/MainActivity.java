@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //        final private String selectedContentsURL = "http://lle21cen.cafe24.com/GetSelectedContents.php";
     final private String selectedContentsURL = ActivityCodes.DATABASE_IP + "/platform/GetSelectedContents";
     //    final private String discountContentsURL = "http://lle21cen.cafe24.com/GetDiscountContents.php";
-    final private int MAX_CONTENTS_NUM = 3; // 10으로 변경 필.
+    final private int MAX_CONTENTS_NUM = 10; // 10으로 변경 필.
     private final int BANNER_FLIP_TIME = 5000; // 배너가 자동으로 넘어가는 시간 (1000 = 1초)
     ScrollView mainScrollView; // 메인 액태비티 최상위 레이아웃 ScrollView
     UserInformation info; // 로그인 한 사용자의 정보를 저장. Application 수준에서 관리됨.
@@ -119,7 +119,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void onResponse(String response) {
             try {
                 JSONObject jsonResponse = new JSONObject(response);
-
                 // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
                 JSONArray result = jsonResponse.getJSONArray("result");
                 boolean exist = jsonResponse.getBoolean("exist");
@@ -199,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 if (exist) {
                     int num_result = jsonResponse.getInt("num_result");
-                    for (int i = 0; i < num_result; i++) {
+                    for (int i = 0; i < Math.min(num_result, MAX_CONTENTS_NUM); i++) {
                         // 데이터베이스에 들어있는 콘텐츠의 수만큼 for문을 돌려 layout에 image추가
                         try {
                             JSONObject temp = result.getJSONObject(i);
@@ -234,12 +233,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 JSONArray result = jsonResponse.getJSONArray("result");
                 boolean exist = jsonResponse.getBoolean("exist");
                 if (exist) {
-                    int num_category_contents_data = jsonResponse.getInt("num_result");
+                    int num_result = jsonResponse.getInt("num_result");
                     ArrayList<DiscountContentsItem> items1 = new ArrayList<>();
                     ArrayList<DiscountContentsItem> items2 = new ArrayList<>();
                     ArrayList<DiscountContentsItem> items3 = new ArrayList<>();
                     ArrayList<DiscountContentsItem> items;
-                    for (int i = 0; i < num_category_contents_data; i++) {
+                    for (int i = 0; i < Math.min(num_result, MAX_CONTENTS_NUM); i++) {
                         // 데이터베이스에 들어있는 콘텐츠의 수만큼 for문을 돌려 layout에 image추가
                         try {
                             if (i % 3 == 0) items = items1;
@@ -547,11 +546,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.main_title_search_btn:
                 // 디버깅용 코드들 -- 삭제 필요
-                DBHelper dbHelper = new DBHelper(this, DBNames.CONTENTS_DB, null, 1);
-                dbHelper.dropAllTables(); // 디버깅을 위한 테이블 드랍
-                dbHelper.createRecentViewTable(); // 디버깅을 위한 테이블 생성
-                dbHelper.createContentsUrlTable(); // 디버깅을 위한 테이블 생성
-                dbHelper.createRecentSearchTable(); // 디버깅을 위한 테이블 생성
+//                DBHelper dbHelper = new DBHelper(this, DBNames.CONTENTS_DB, null, 1);
+//                dbHelper.dropAllTables(); // 디버깅을 위한 테이블 드랍
+//                dbHelper.createRecentViewTable(); // 디버깅을 위한 테이블 생성
+//                dbHelper.createContentsUrlTable(); // 디버깅을 위한 테이블 생성
+//                dbHelper.createRecentSearchTable(); // 디버깅을 위한 테이블 생성
                 break;
             case R.id.title_mypage_btn:
                 if (info.getUser_pk() == 0) {
@@ -587,7 +586,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 intent = new Intent(getApplicationContext(), SelectedContetnsExpandActivity.class);
                 intent.putExtra("tag", 4);
                 startActivity(intent);
-
                 break;
         }
     }

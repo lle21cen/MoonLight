@@ -1,6 +1,7 @@
 package org.techtown.ideaconcert.CommentDir;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -61,6 +62,16 @@ public class ReplyRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
                 CommentInsertLikeDataRequest request = new CommentInsertLikeDataRequest(insertCommentLikeDataURL, listener, items.get(position).getComment_pk(), user_pk, 2); // tag=2 : 답글 테이블에 정보 저장
                 RequestQueue requestQueue = Volley.newRequestQueue(view.getContext());
                 requestQueue.add(request);
+            }
+        });
+        replyViewHolder.accusationView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(), AccusationAcitivity.class);
+                intent.putExtra("comment_pk", item.getComment_pk());
+                intent.putExtra("accused_email", item.getEmail());
+                intent.putExtra("accused_comment", item.getComment());
+                view.getContext().startActivity(intent);
             }
         });
     }

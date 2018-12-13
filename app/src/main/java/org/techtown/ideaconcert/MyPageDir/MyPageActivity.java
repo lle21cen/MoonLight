@@ -67,6 +67,7 @@ public class MyPageActivity extends AppCompatActivity implements View.OnClickLis
         // 내 캐시 Fragment로 이동하는 TextView와 ImageView의 클릭 리스너 설정
         TextView my_cash = findViewById(R.id.my_page_my_cash);
         TextView user_name = findViewById(R.id.my_page_id);
+        user_name.setOnClickListener(this);
         SharedPreferences preferences = getSharedPreferences("loginData", MODE_PRIVATE);
         String name = preferences.getString("userName", null);
         if (name != null)
@@ -131,6 +132,7 @@ public class MyPageActivity extends AppCompatActivity implements View.OnClickLis
                 break;
 
             case R.id.my_page_back:
+            case R.id.my_page_id:
                 finish();
                 break;
 

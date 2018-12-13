@@ -29,7 +29,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     // For Database login
     EditText userEmail, userPw;
 //    private SharedPreferences loginData;
-    Button login_btn, backBtn;
+    Button login_btn;
     TextView find_btn, login_result_text;
 
     UserInformation userInformation;
@@ -47,7 +47,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         backText.setOnClickListener(this);
 
         // 인터넷 연결 상태 확인하는 코드 추가하기.
-
 
         userInformation = (UserInformation) getApplication();
         // --------------------------------------------------------------------------
@@ -84,6 +83,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 if (!pw_correct) {
                                     Toast.makeText(LoginActivity.this, "비밀번호가 올바르지 않습니다.", Toast.LENGTH_SHORT).show();
                                 } else {
+                                    userInformation.logoutSession();
+
                                     int user_pk = jsonResponse.getInt("user_pk");
                                     String email = jsonResponse.getString("email");
                                     String name = jsonResponse.getString("name");

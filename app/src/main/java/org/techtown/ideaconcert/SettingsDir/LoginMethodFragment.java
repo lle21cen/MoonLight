@@ -68,7 +68,7 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.login_method_fragment, container, false);
         mRequestQueue = Volley.newRequestQueue(getActivity());
-        Button moonlight_login_btn = view.findViewById(R.id.login_method_moonright);
+        Button moonlight_login_btn = view.findViewById(R.id.login_method_moonlight);
         moonlight_login_btn.setOnClickListener(this);
         Button sign_out_btn = view.findViewById(R.id.login_method_sign_out);
         sign_out_btn.setOnClickListener(this);
@@ -147,8 +147,7 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.login_method_moonright:
-                userInformation.logoutSession();
+            case R.id.login_method_moonlight:
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivityForResult(intent, ActivityCodes.LOGIN_REQUEST);
                 break;

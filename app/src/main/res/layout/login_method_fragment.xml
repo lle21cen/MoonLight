@@ -57,13 +57,25 @@
         android:background="@drawable/google_login_btn" />
 
     <Button
-        android:id="@+id/login_method_moonright"
+        android:id="@+id/login_method_moonlight"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="10dp"
         android:layout_marginRight="15dp"
         android:background="@drawable/moonright_login_btn" />
+
+    <Button
+        android:id="@+id/login_method_sign_out"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
+        android:background="#7f66a7"
+        android:text="Sign Out"
+        android:textColor="#ffffff" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -73,15 +85,5 @@
         android:text="다른 계정으로 로그인시 기존 로그인 정보는 자동 로그아웃 됩니다"
         android:textColor="#1d68bf"
         android:textSize="12sp" />
-
-    <Button
-        android:id="@+id/login_method_sign_out"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:background="#7f66a7"
-        android:text="Sign Out"
-        android:textColor="#ffffff" />
 
 </LinearLayout>

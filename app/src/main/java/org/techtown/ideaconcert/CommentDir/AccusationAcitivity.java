@@ -24,10 +24,13 @@ import org.techtown.ideaconcert.UserInformation;
 
 public class AccusationAcitivity extends AppCompatActivity implements View.OnClickListener {
 
-    private final String SendAccusationURL = "http://lle21cen.cafe24.com/SendAccusation.php";
+    //    private final String SendAccusationURL = "http://lle21cen.cafe24.com/SendAccusation.php";
+    private final String SendAccusationURL = ActivityCodes.DATABASE_IP + "/platform/SendAccusation";
     private TextView textCountView;
     private EditText reasonTextView;
-    private String user_email;
+    private String user_email, accused_email, accused_comment;
+    private int comment_pk;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,24 +41,28 @@ public class AccusationAcitivity extends AppCompatActivity implements View.OnCli
         backBtn.setOnClickListener(this);
         backText.setOnClickListener(this);
 
-        TextView commentUserEmailView = findViewById(R.id.accusation_email_text);
-        TextView commentView = findViewById(R.id.accusation_comment_text);
-        Button accustaionSubmitButton = findViewById(R.id.accusation_send_btn);
-        accustaionSubmitButton.setOnClickListener(this);
+        TextView accusedEmailView = findViewById(R.id.accused_email_text);
+        TextView accusedCommentView = findViewById(R.id.accused_comment_text);
+        Button accuseSubmitButton = findViewById(R.id.accuse_send_btn);
+        accuseSubmitButton.setOnClickListener(this);
 
-        reasonTextView = findViewById(R.id.accusation_reason_text);
-        textCountView = findViewById(R.id.accusation_reason_count);
+        reasonTextView = findViewById(R.id.accuse_reason_text);
+        textCountView = findViewById(R.id.accuse_reason_count);
 
         Intent intent = getIntent();
-        String comment_user_email = intent.getStringExtra("comment_user_email");
-        String comment = intent.getStringExtra("comment");
+        comment_pk = intent.getIntExtra("comment_pk", 0);
+        accused_email = intent.getStringExtra("accused_email");
+        accused_comment = intent.getStringExtra("accused_comment");
+        if (comment_pk == 0) {
+            Toast.makeText(this, "정확하지 않은 댓글입니다.", Toast.LENGTH_SHORT).show();
+            finish();
+        }
 
-        commentUserEmailView.setText(comment_user_email);
-        commentView.setText(comment);
+        accusedEmailView.setText(accused_email);
+        accusedCommentView.setText(accused_comment);
 
         UserInformation userInformation = (UserInformation) getApplication();
         user_email = userInformation.getUserEmail();
-
 
         reasonTextView.addTextChangedListener(new TextWatcher() {
             @Override
@@ -80,11 +87,11 @@ public class AccusationAcitivity extends AppCompatActivity implements View.OnCli
         switch (view.getId()) {
             case R.id.accusation_back_btn:
             case R.id.accusation_back_txt:
-                setResult(ActivityCodes.ACCUSATION_SUCCESS);
                 finish();
                 break;
-            case R.id.accusation_send_btn :
-                AccusationRequest request = new AccusationRequest(SendAccusationURL, sendAccusationListener, user_email, reasonTextView.getText().toString());
+            case R.id.accuse_send_btn:
+                AccusationRequest request = new AccusationRequest(SendAccusationURL, sendAccusationListener, comment_pk,
+                        accused_email, accused_comment, user_email, reasonTextView.getText().toString());
                 RequestQueue queue = Volley.newRequestQueue(AccusationAcitivity.this);
                 queue.add(request);
                 break;
@@ -99,6 +106,7 @@ public class AccusationAcitivity extends AppCompatActivity implements View.OnCli
                 boolean success = jsonObject.getBoolean("success");
                 if (success) {
                     Toast.makeText(AccusationAcitivity.this, "신고가 접수되었습니다.", Toast.LENGTH_SHORT).show();
+                    finish();
                 } else {
                     Log.e("신고접수실패", jsonObject.getString("errmsg"));
                 }
@@ -106,5 +114,5 @@ public class AccusationAcitivity extends AppCompatActivity implements View.OnCli
                 Log.e("신고접수리스너오류", je.getMessage());
             }
         }
-    }
+    };
 }

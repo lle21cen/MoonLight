@@ -48,19 +48,17 @@
         android:paddingBottom="40dp">
 
         <TextView
-            android:id="@+id/accusation_email_text"
+            android:id="@+id/accused_email_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="20dp"
-            android:text="mynameiskhan"
             android:textColor="#000000" />
 
         <TextView
-            android:id="@+id/accusation_comment_text"
+            android:id="@+id/accused_comment_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="와 너무 재미없음 왜 연재하는거?"
             android:textSize="12sp" />
     </LinearLayout>
 
@@ -75,7 +73,7 @@
         android:paddingRight="10dp">
 
         <TextView
-            android:id="@+id/accusation_text"
+            android:id="@+id/accuse_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="신고사유"
@@ -83,20 +81,21 @@
             android:textSize="12sp" />
 
         <TextView
-            android:id="@+id/accusation_reason_count"
+            android:id="@+id/accuse_reason_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/accusation_text"
+            android:layout_alignBottom="@+id/accuse_text"
             android:layout_alignParentRight="true"
             android:text="0/100"
             android:textColor="#666666"
             android:textSize="10sp" />
 
         <EditText
-            android:id="@+id/accusation_reason_text"
+            android:id="@+id/accuse_reason_text"
             android:layout_width="match_parent"
             android:layout_height="150dp"
-            android:layout_below="@id/accusation_reason_count"
+            android:layout_below="@id/accuse_reason_count"
+            android:layout_marginTop="10dp"
             android:background="#ffffff"
             android:gravity="start"
             android:hint="최대 100자까지 내용 입력 가능합니다"
@@ -105,13 +104,13 @@
             android:textSize="11sp" />
 
         <Button
-            android:id="@+id/accusation_send_btn"
+            android:id="@+id/accuse_send_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/accusation_reason_text"
-            android:layout_marginLeft="80dp"
+            android:layout_below="@+id/accuse_reason_text"
+            android:layout_marginLeft="60dp"
             android:layout_marginTop="30dp"
-            android:layout_marginRight="80dp"
+            android:layout_marginRight="60dp"
             android:background="@color/moonlightMain"
             android:text="신고하기"
             android:textColor="#ffffff" />

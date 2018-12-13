@@ -26,6 +26,7 @@ import org.techtown.ideaconcert.R;
 
 public class ChildFragment2PopSearch extends Fragment {
     private final String GetPopSearchKeywordURL = "http://lle21cen.cafe24.com/GetPopSearchKeyword.php";
+
     View view;
     RecyclerView recyclerView;
     ChildFragment2PopSearchAdapter adapter;

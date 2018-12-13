@@ -1,6 +1,7 @@
 package org.techtown.ideaconcert.CommentDir;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
@@ -128,6 +129,17 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             commentViewHolder.commentView.setText("" + item.getComment());
             commentViewHolder.bestImage.setVisibility(View.GONE);
         }
+
+        commentViewHolder.accusationView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(), AccusationAcitivity.class);
+                intent.putExtra("comment_pk", item.getComment_pk());
+                intent.putExtra("accused_email", item.getEmail());
+                intent.putExtra("accused_comment", item.getComment());
+                view.getContext().startActivity(intent);
+            }
+        });
     }
 
     @Override

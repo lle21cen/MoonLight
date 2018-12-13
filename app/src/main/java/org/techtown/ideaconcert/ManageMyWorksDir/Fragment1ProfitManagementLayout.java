@@ -44,7 +44,7 @@ public class Fragment1ProfitManagementLayout extends Fragment implements View.On
         dateFromText = view.findViewById(R.id.manage_period_from_text);
         dateToText = view.findViewById(R.id.manage_period_to_text);
         dateFromText.setOnClickListener(this);
-        dateFromText.setOnClickListener(this);
+        dateToText.setOnClickListener(this);
 
         profitLayoutContainer = view.findViewById(R.id.manage_profit_layout_container);
         setCurrentYearAndMonth(); // 현재의 년도와 월을 설정하고
