@@ -133,7 +133,7 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         commentViewHolder.accusationView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), AccusationAcitivity.class);
+                Intent intent = new Intent(view.getContext(), AccusationActivity.class);
                 intent.putExtra("comment_pk", item.getComment_pk());
                 intent.putExtra("accused_email", item.getEmail());
                 intent.putExtra("accused_comment", item.getComment());

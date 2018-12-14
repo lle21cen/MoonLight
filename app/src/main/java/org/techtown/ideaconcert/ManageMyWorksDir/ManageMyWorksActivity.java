@@ -26,7 +26,7 @@ public class ManageMyWorksActivity extends AppCompatActivity implements View.OnC
         TabLayout tabLayout = findViewById(R.id.manage_tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText("수익 관리"));
         tabLayout.addTab(tabLayout.newTab().setText("정산 관리"));
-        tabLayout.addTab(tabLayout.newTab().setText("내 작품"));
+        tabLayout.addTab(tabLayout.newTab().setText("내 작품")); // 왜 있는지를 모르겠음.
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         final ViewPager viewPager = findViewById(R.id.manage_pager);

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp">
+
+    <ImageView
+        android:id="@+id/myworks_thumbnail"
+        android:layout_width="80dp"
+        android:layout_height="60dp" />
+
+    <ImageView
+        android:id="@+id/myworks_movie_icon"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:layout_alignRight="@+id/myworks_thumbnail"
+        android:layout_alignBottom="@id/myworks_thumbnail"
+        android:layout_marginRight="3dp"
+        android:layout_marginBottom="3dp"
+        android:visibility="gone"
+        android:src="@drawable/movie" />
+
+    <RelativeLayout
+        android:id="@+id/my_page_fragment1_layout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@id/myworks_thumbnail">
+
+        <TextView
+            android:id="@+id/myworks_contents_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="용비불패"
+            android:textColor="#000000"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/myworks_author_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/myworks_contents_name"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp"
+            android:text="문정후"
+            android:textColor="#000000"
+            android:textSize="12sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/myworks_author_name"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:src="@drawable/star" />
+
+            <TextView
+                android:id="@+id/myworks_star_rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="9.8"
+                android:textColor="#000000"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+    </RelativeLayout>
+</RelativeLayout>

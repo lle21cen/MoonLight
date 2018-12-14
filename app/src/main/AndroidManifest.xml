@@ -69,7 +69,7 @@
         <activity android:name=".MainActivityDir.ExpandedContentsActivity" />
         <activity android:name=".MainActivityDir.SelectedContetnsExpandActivity" />
         <activity android:name=".SearchDir.SearchActivity" />
-        <activity android:name=".CommentDir.AccusationAcitivity"></activity>
+        <activity android:name=".CommentDir.AccusationActivity"></activity>
     </application>
 
 </manifest>

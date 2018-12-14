@@ -22,9 +22,9 @@ public class ManageTabPagerAdapter extends FragmentStatePagerAdapter {
             case 1:
                 return new Fragment2CalculateAccountManagement();
             case 2:
-                return new Fragment1ProfitManagementLayout();
+                return new Fragment3MyContents();
             default:
-                return new Fragment1ProfitManagementLayout();
+                return null;
         }
     }
 

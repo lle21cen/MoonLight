@@ -22,7 +22,7 @@ import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.R;
 import org.techtown.ideaconcert.UserInformation;
 
-public class AccusationAcitivity extends AppCompatActivity implements View.OnClickListener {
+public class AccusationActivity extends AppCompatActivity implements View.OnClickListener {
 
     //    private final String SendAccusationURL = "http://lle21cen.cafe24.com/SendAccusation.php";
     private final String SendAccusationURL = ActivityCodes.DATABASE_IP + "/platform/SendAccusation";
@@ -92,7 +92,7 @@ public class AccusationAcitivity extends AppCompatActivity implements View.OnCli
             case R.id.accuse_send_btn:
                 AccusationRequest request = new AccusationRequest(SendAccusationURL, sendAccusationListener, comment_pk,
                         accused_email, accused_comment, user_email, reasonTextView.getText().toString());
-                RequestQueue queue = Volley.newRequestQueue(AccusationAcitivity.this);
+                RequestQueue queue = Volley.newRequestQueue(AccusationActivity.this);
                 queue.add(request);
                 break;
         }
@@ -105,7 +105,7 @@ public class AccusationAcitivity extends AppCompatActivity implements View.OnCli
                 JSONObject jsonObject = new JSONObject(response);
                 boolean success = jsonObject.getBoolean("success");
                 if (success) {
-                    Toast.makeText(AccusationAcitivity.this, "신고가 접수되었습니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AccusationActivity.this, "신고가 접수되었습니다.", Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
                     Log.e("신고접수실패", jsonObject.getString("errmsg"));

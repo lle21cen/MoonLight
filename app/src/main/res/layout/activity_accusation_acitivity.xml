@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CommentDir.AccusationAcitivity">
+    tools:context=".CommentDir.AccusationActivity">
 
     <LinearLayout
         android:id="@+id/accusation_title_layout"

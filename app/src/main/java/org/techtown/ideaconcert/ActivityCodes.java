@@ -24,4 +24,5 @@ public class ActivityCodes extends Application {
     public static final int CONTENTS_WIDTH = 100, CONTENTS_HEIGHT = 140;
     public static final int SEARCH_RESULT_CONTENTS_WIDTH = 100, SEARCH_RESULT_CONTENTS_HEIGHT = 140;
     public static final int CONTENTS_MAIN_INFO_WIDTH = 110, CONTENTS_MAIN_INFO_HEIGHT = 80;
+    public static final int MY_CONTENTS_WIDTH = 80, MY_CONTENTS_HEIGHT = 60;
 }

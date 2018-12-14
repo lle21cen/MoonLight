@@ -17,6 +17,12 @@ public class GetFragmentDataRequest extends StringRequest {
         parameters.put("month", String.valueOf(month));
     }
 
+    public GetFragmentDataRequest(String url, Response.Listener<String> listener, int user_pk) {
+        super(Method.POST, url, listener, null);
+        parameters = new HashMap<>();
+        parameters.put("user_pk", String.valueOf(user_pk));
+    }
+
     @Override
     protected Map<String, String> getParams() {
         return parameters;
