@@ -28,7 +28,6 @@ import org.techtown.ideaconcert.MainActivityDir.MainActivity;
 import org.techtown.ideaconcert.R;
 import org.techtown.ideaconcert.SettingsDir.TermsAndConditionActivity;
 import org.techtown.ideaconcert.ShowProgressDialog;
-import org.w3c.dom.Text;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -152,10 +151,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             requestWindowFeature(Window.FEATURE_NO_TITLE); //타이틀 바 삭제
-            setContentView(R.layout.sign_up_dialog_layout);
+            setContentView(R.layout.two_button_dialog_layout);
 
-            Button toMainButton = findViewById(R.id.sign_up_dialog_to_main);
-            Button toLoginButton = findViewById(R.id.sign_up_dialog_to_login);
+            Button toMainButton = findViewById(R.id.two_button_first);
+            Button toLoginButton = findViewById(R.id.two_button_second);
 
             toMainButton.setOnClickListener(new View.OnClickListener() {
                 @Override

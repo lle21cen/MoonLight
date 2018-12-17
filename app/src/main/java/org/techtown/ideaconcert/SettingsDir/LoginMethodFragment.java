@@ -191,7 +191,7 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
                             email = response.getJSONObject().getString("email");
                             name = response.getJSONObject().getString("name");
                             login_method = "Facebook";
-                            userInformation.setUserInformation(login_method, 0, name, email, true, 2);
+                            userInformation.setUserInformation(login_method, 0, name, email, true, 2, 0); // role과 cash는 추후 수정
                             goToMyPageActivity();
                         } catch (JSONException e) {
                             Log.e("facebook error", e.getMessage());
@@ -225,7 +225,7 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
                 name = account.getDisplayName();
                 login_method = "Google";
 
-                userInformation.setUserInformation(login_method, 0, name, email, true, 2);
+                userInformation.setUserInformation(login_method, 0, name, email, true, 2, 0); // role과 cash는 추후 수정
                 // 사용자 정보 입력하고 액티비티 종료, 이름 형식 정리 필요
                 goToMyPageActivity();
             } else {
@@ -254,7 +254,7 @@ public class LoginMethodFragment extends Fragment implements View.OnClickListene
         super.onStart();
         FirebaseUser currentUser = auth.getCurrentUser();
         if (currentUser != null) {
-            userInformation.setUserInformation("Google", 0, currentUser.getDisplayName(), currentUser.getEmail(), true, 2);
+            userInformation.setUserInformation("Google", 0, currentUser.getDisplayName(), currentUser.getEmail(), true, 2, 0);
             replaceFragment(new SettingsPreferenceFragment());
         }
 //        testInfo();

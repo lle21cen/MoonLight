@@ -523,8 +523,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String name = loginData.getString("userName", null);
         String email = loginData.getString("userEmail", null);
         int role = loginData.getInt("userRole", 0);
+        int cash = loginData.getInt("cash", 0);
         if (method != null) {
-            info.setUserInformation(method, user_pk, name, email, false, role);
+            info.setUserInformation(method, user_pk, name, email, false, role, cash);
             testInfo();
             isLoginTurn = false;
         }

@@ -89,7 +89,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     String email = jsonResponse.getString("email");
                                     String name = jsonResponse.getString("name");
                                     int role = jsonResponse.getInt("user_type_number");
-                                    userInformation.setUserInformation("Normal", user_pk, name, email, true, role);
+                                    int cash = jsonResponse.getInt("cash");
+                                    Toast.makeText(LoginActivity.this, "cash = " + cash, Toast.LENGTH_SHORT).show();
+                                    userInformation.setUserInformation("Normal", user_pk, name, email, true, role, cash);
                                     AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                                     builder.setMessage("로그인에 성공했습니다 ").setCancelable(false)
                                             .setPositiveButton("확인", new DialogInterface.OnClickListener() {

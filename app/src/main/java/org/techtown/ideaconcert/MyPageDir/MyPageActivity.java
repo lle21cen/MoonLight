@@ -38,8 +38,10 @@ public class MyPageActivity extends AppCompatActivity implements View.OnClickLis
                 JSONObject jsonObject = new JSONObject(response);
                 int user_pk = jsonObject.getInt("user_pk");
                 int role = jsonObject.getInt("user_type_number");
+                int cash = jsonObject.getInt("cash");
                 userInformation.setUser_pk(user_pk);
                 userInformation.setRole(role);
+                userInformation.setCash(cash);
 
                 ////////////////////////////// FOR DEBUGGING ////////////////////////////////////////
                 String email = userInformation.getUserEmail();
@@ -70,11 +72,13 @@ public class MyPageActivity extends AppCompatActivity implements View.OnClickLis
         user_name.setOnClickListener(this);
         SharedPreferences preferences = getSharedPreferences("loginData", MODE_PRIVATE);
         String name = preferences.getString("userName", null);
+        int cash = preferences.getInt("cash", 0);
+        userInformation.setCash(cash);
         if (name != null)
             user_name.setText(name);
-
         ImageView my_cash_arrow = findViewById(R.id.my_page_my_cash_img);
         my_cash.setOnClickListener(this);
+        my_cash.setText("내 캐시 " + cash);
         my_cash_arrow.setOnClickListener(this);
 
         tabLayout = findViewById(R.id.my_page_tab_layout);

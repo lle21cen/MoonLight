@@ -32,7 +32,9 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
     // 변수명 통일 시키기 ... 귀찮
 
     public static ArrayList<WorksListViewItem> itemList; // WebtonActivity에서도 사용하기 위해 public static으로 선언
-    private final String getContentsItemURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsItem";
+        private final String getContentsItemURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsItem";
+//    private final String getContentsItemURL = "http://lle21cen.cafe24.com/GetContentsItem.php";
+
     private int selected_contents_pk;
     private ListView listView;
     private WorksListViewAdapter adapter;
@@ -44,14 +46,13 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
     private Response.Listener<String> getContentsItemListener = new Response.Listener<String>() {
         private String title, watch_num;
         private double star_rating;
-        private int contents_item_pk, contents_num, comments_count;
+        private int contents_item_pk, contents_num, comments_count, cash, isPurchased;
         private String thumbnail_url, movie_url;
 
         @Override
         public void onResponse(String response) {
             try {
                 JSONObject jsonResponse = new JSONObject(response);
-                // php에서 받아온 JSON오브젝트 중에서 DB에 있던 값들의 배열을 JSON 배열로 변환
                 boolean exist = jsonResponse.getBoolean("exist");
                 if (exist) {
                     JSONArray result = jsonResponse.getJSONArray("result");
@@ -67,12 +68,13 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
                             watch_num = temp.getString("view_count");
                             star_rating = temp.getDouble("star_rating");
                             comments_count = temp.getInt("comments_count");
+                            cash = temp.getInt("cash");
 
                             movie_url = null;
                             if (temp.has("movie_url"))
                                 movie_url = temp.getString("movie_url");
 
-                            adapter.addItem(contents_item_pk, contents_num, title, thumbnail_url, watch_num, star_rating, comments_count, movie_url);
+                            adapter.addItem(contents_item_pk, contents_num, title, thumbnail_url, watch_num, star_rating, comments_count, movie_url, cash, isPurchased);
                         } catch (Exception e) {
                             Log.e("컨텐츠아이템어뎁터설정에러", e.getMessage());
                         }
@@ -150,9 +152,13 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Intent intent = new Intent(ContentsMainActivity.this, WebtoonActivity.class);
-                putExtraData(intent, position);
-                startActivityForResult(intent, ActivityCodes.WEBTOON_REQUEST);
+                if (((WorksListViewItem)adapter.getItem(position)).getIsPurchased() != 0) {
+                    Intent intent = new Intent(ContentsMainActivity.this, WebtoonActivity.class);
+                    putExtraData(intent, position);
+                    startActivityForResult(intent, ActivityCodes.WEBTOON_REQUEST);
+                } else {
+                    Toast.makeText(ContentsMainActivity.this, "구매 후 이용 가능합니다.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         fragment = new Fragment1Webtoon();

@@ -51,7 +51,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="20dp"
             android:layout_toRightOf="@id/my_page_nim"
-            android:text="내 캐시 200"
+            android:text="내 캐시 0"
             android:textColor="#786aaa" />
 
         <ImageView

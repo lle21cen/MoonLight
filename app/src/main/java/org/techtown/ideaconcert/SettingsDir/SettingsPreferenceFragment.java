@@ -71,6 +71,7 @@ public class SettingsPreferenceFragment extends PreferenceFragment implements Pr
             }
         }
     };
+
     private Response.Listener<String> snsLoginProcessListener = new Response.Listener<String>() {
         @Override
         public void onResponse(String response) {
@@ -78,8 +79,10 @@ public class SettingsPreferenceFragment extends PreferenceFragment implements Pr
                 JSONObject jsonObject = new JSONObject(response);
                 int user_pk = jsonObject.getInt("user_pk");
                 int role = jsonObject.getInt("user_type_number");
+                int cash = jsonObject.getInt("cash");
                 userInformation.setUser_pk(user_pk);
                 userInformation.setRole(role);
+                userInformation.setCash(cash);
 
                 ////////////////////////////// FOR DEBUGGING ////////////////////////////////////////
                 String email = userInformation.getUserEmail();

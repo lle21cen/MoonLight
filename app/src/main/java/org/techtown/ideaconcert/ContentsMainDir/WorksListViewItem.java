@@ -1,12 +1,13 @@
 package org.techtown.ideaconcert.ContentsMainDir;
 
 public class WorksListViewItem {
-    private int contentsItemPk, contentsNum, commentCount;
+    private int contentsItemPk, contentsNum, commentCount, cash;
     private String thumbnail_url;
     private String worksTitle;
     private String watchNum;
     private String movie_url;
     private double star_rating;
+    private int isPurchased;
 
     public String getThumbnail_url() {
         return thumbnail_url;
@@ -70,5 +71,21 @@ public class WorksListViewItem {
 
     public void setMovie_url(String movie_url) {
         this.movie_url = movie_url;
+    }
+
+    public int getCash() {
+        return cash;
+    }
+
+    public void setCash(int cash) {
+        this.cash = cash;
+    }
+
+    public int getIsPurchased() {
+        return isPurchased;
+    }
+
+    public void setIsPurchased(int isPurchased) {
+        this.isPurchased = isPurchased;
     }
 }

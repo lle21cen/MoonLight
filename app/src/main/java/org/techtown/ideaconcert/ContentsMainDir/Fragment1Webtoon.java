@@ -185,6 +185,9 @@ public class Fragment1Webtoon extends Fragment implements View.OnClickListener {
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("loginData", Context.MODE_PRIVATE);
         user_pk = sharedPreferences.getInt("userPk", 0);
+        int cash = sharedPreferences.getInt("cash", 0);
+        cashText.setText(String.valueOf(cash));
+
         if (user_pk == 0) {
             Toast.makeText(getActivity(), "로그인이 필요합니다.", Toast.LENGTH_SHORT).show();
         } else {

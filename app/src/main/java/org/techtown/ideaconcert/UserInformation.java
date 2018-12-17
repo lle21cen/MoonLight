@@ -96,12 +96,13 @@ public class UserInformation extends Application {
         editor.apply();
     }
 
-    public void setUserInformation(String method, int pk, String name, String email, boolean autoLogin, int role) {
+    public void setUserInformation(String method, int pk, String name, String email, boolean autoLogin, int role, int cash) {
         user_pk = pk;
         login_method = method;
         user_name = name;
         userEmail = email;
         this.role = role;
+        this.cash = cash;
 
         if (autoLogin) {
             SharedPreferences loginData = getSharedPreferences("loginData", MODE_PRIVATE);
@@ -111,8 +112,8 @@ public class UserInformation extends Application {
             editor.putString("userName", name);
             editor.putString("userEmail", email);
             editor.putInt("userRole", role);
+            editor.putInt("cash", cash);
             editor.apply();
         }
-        // Family name, Given Name need?
     }
 }
