@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //        final private String selectedContentsURL = "http://lle21cen.cafe24.com/GetSelectedContents.php";
     final private String selectedContentsURL = ActivityCodes.DATABASE_IP + "/platform/GetSelectedContents";
     //    final private String discountContentsURL = "http://lle21cen.cafe24.com/GetDiscountContents.php";
+
     final private int MAX_CONTENTS_NUM = 10; // 10으로 변경 필.
     private final int BANNER_FLIP_TIME = 5000; // 배너가 자동으로 넘어가는 시간 (1000 = 1초)
     ScrollView mainScrollView; // 메인 액태비티 최상위 레이아웃 ScrollView

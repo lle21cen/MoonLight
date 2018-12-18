@@ -1,7 +1,10 @@
 package org.techtown.ideaconcert.ContentsMainDir;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -32,7 +35,7 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
     // 변수명 통일 시키기 ... 귀찮
 
     public static ArrayList<WorksListViewItem> itemList; // WebtonActivity에서도 사용하기 위해 public static으로 선언
-        private final String getContentsItemURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsItem";
+    private final String getContentsItemURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsItem";
 //    private final String getContentsItemURL = "http://lle21cen.cafe24.com/GetContentsItem.php";
 
     private int selected_contents_pk;
@@ -44,10 +47,6 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
     private Fragment1Webtoon fragment;
 
     private Response.Listener<String> getContentsItemListener = new Response.Listener<String>() {
-        private String title, watch_num;
-        private double star_rating;
-        private int contents_item_pk, contents_num, comments_count, cash, isPurchased;
-        private String thumbnail_url, movie_url;
 
         @Override
         public void onResponse(String response) {
@@ -57,28 +56,30 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
                 if (exist) {
                     JSONArray result = jsonResponse.getJSONArray("result");
                     int num_result = jsonResponse.getInt("num_result");
-
                     for (int i = 0; i < num_result; i++) {
                         try {
                             JSONObject temp = result.getJSONObject(i);
-                            contents_item_pk = temp.getInt("contents_item_pk");
-                            contents_num = temp.getInt("contents_num");
-                            title = temp.getString("contents_name");
-                            thumbnail_url = temp.getString("url");
-                            watch_num = temp.getString("view_count");
-                            star_rating = temp.getDouble("star_rating");
-                            comments_count = temp.getInt("comments_count");
-                            cash = temp.getInt("cash");
+                            int contents_item_pk = temp.getInt("contents_item_pk");
+                            int contents_num = temp.getInt("contents_num");
+                            String  title = temp.getString("contents_name");
+                            String thumbnail_url = temp.getString("url");
+                            String watch_num = temp.getString("view_count");
+                            double star_rating = temp.getDouble("star_rating");
+                            int comments_count = temp.getInt("comments_count");
+                            int cash = temp.getInt("cash");
+                            int purchased = temp.getInt("purchased");
+                            Log.e("purchased = ", purchased + " num = " + contents_num);
 
-                            movie_url = null;
+                            String movie_url = null;
                             if (temp.has("movie_url"))
                                 movie_url = temp.getString("movie_url");
 
-                            adapter.addItem(contents_item_pk, contents_num, title, thumbnail_url, watch_num, star_rating, comments_count, movie_url, cash, isPurchased);
+                            adapter.addItem(contents_item_pk, contents_num, title, thumbnail_url, watch_num, star_rating, comments_count, movie_url, cash, purchased);
                         } catch (Exception e) {
                             Log.e("컨텐츠아이템어뎁터설정에러", e.getMessage());
                         }
                     }
+
                     if (sortSpinner.getSelectedItemPosition() != 0) {
                         // '첫편부터'가 선택되어 있을 경우 리스트의 순서를 역으로 정렬
                         Collections.reverse(adapter.getWorksListViewItems());
@@ -119,9 +120,12 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
         totalListText = findViewById(R.id.contents_main_list_total_txt);
 
         listView = findViewById(R.id.contents_main_list_works_list);
-        adapter = new WorksListViewAdapter(this, this);
+        adapter = new WorksListViewAdapter(this, this, startWebtoonActHandler);
 
-        WorksDBRequest worksDBRequest = new WorksDBRequest(getContentsItemURL, getContentsItemListener, selected_contents_pk);
+        SharedPreferences preferences = getSharedPreferences("loginData", MODE_PRIVATE);
+        int user_pk = preferences.getInt("userPk", 0);
+
+        WorksDBRequest worksDBRequest = new WorksDBRequest(getContentsItemURL, getContentsItemListener, selected_contents_pk, user_pk);
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(worksDBRequest);
 
@@ -152,12 +156,12 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                if (((WorksListViewItem)adapter.getItem(position)).getIsPurchased() != 0) {
+                if (((WorksListViewItem) adapter.getItem(position)).getPurchased() != 0) {
                     Intent intent = new Intent(ContentsMainActivity.this, WebtoonActivity.class);
                     putExtraData(intent, position);
                     startActivityForResult(intent, ActivityCodes.WEBTOON_REQUEST);
                 } else {
-                    Toast.makeText(ContentsMainActivity.this, "구매 후 이용 가능합니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ContentsMainActivity.this, R.string.contents_not_available, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -177,4 +181,16 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
         intent.putExtra("position", position);
         intent.putExtra("contents_pk", selected_contents_pk);
     }
+
+    private Handler startWebtoonActHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message message) {
+            Bundle bundle = message.getData();
+            int position = bundle.getInt("position");
+            Intent intent = new Intent(ContentsMainActivity.this, WebtoonActivity.class);
+            putExtraData(intent, position);
+            startActivityForResult(intent, ActivityCodes.WEBTOON_REQUEST);
+            return false;
+        }
+    });
 }

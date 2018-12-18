@@ -24,7 +24,7 @@ import org.techtown.ideaconcert.FAQDir.FAQActivity;
 import org.techtown.ideaconcert.FindPasswordDir.SetNewPasswordActivity;
 import org.techtown.ideaconcert.R;
 import org.techtown.ideaconcert.UserInformation;
-import org.techtown.ideaconcert.noticeDir.NoticeActivity;
+import org.techtown.ideaconcert.NoticeDir.NoticeActivity;
 
 public class SettingsPreferenceFragment extends PreferenceFragment implements Preference.OnPreferenceClickListener {
     private final String snsLoginProcessURL = ActivityCodes.DATABASE_IP + "/platform/SnsLoginProcess";

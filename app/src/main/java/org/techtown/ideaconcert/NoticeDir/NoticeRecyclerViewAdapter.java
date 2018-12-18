@@ -1,4 +1,4 @@
-package org.techtown.ideaconcert.noticeDir;
+package org.techtown.ideaconcert.NoticeDir;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

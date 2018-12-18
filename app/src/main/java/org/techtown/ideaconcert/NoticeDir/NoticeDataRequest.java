@@ -1,4 +1,4 @@
-package org.techtown.ideaconcert.noticeDir;
+package org.techtown.ideaconcert.NoticeDir;
 
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;

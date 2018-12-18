@@ -25,11 +25,12 @@
         android:layout_width="100dp"
         android:layout_height="20dp"
         android:layout_marginTop="7dp"
-        android:layout_toLeftOf="@+id/contents_main_cash_layout"
+        android:src="@drawable/watch_now"
+        android:layout_toLeftOf="@id/contents_main_cash_layout"
         android:visibility="gone" />
 
     <LinearLayout
-        android:id="@+id/contents_main__layout1"
+        android:id="@+id/contents_main_layout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -55,7 +56,7 @@
             android:textSize="10.9dp" />
 
         <LinearLayout
-            android:id="@+id/contents_main__layout2"
+            android:id="@+id/contents_main_layout2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -104,6 +105,7 @@
         android:id="@+id/contents_main_cash_layout"
         android:layout_width="55dp"
         android:layout_height="70dp"
+        android:visibility="visible"
         android:layout_alignParentRight="true"
         android:background="#786aaa">
 
@@ -130,4 +132,22 @@
                 android:textColor="#ffffff" />
         </LinearLayout>
     </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/contents_main_download_layout"
+        android:layout_width="55dp"
+        android:layout_height="70dp"
+        android:layout_alignParentRight="true"
+        android:visibility="visible"
+        android:background="#efefef">
+
+        <ImageView
+            android:id="@+id/contents_main_download_img"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/complete" />
+
+    </RelativeLayout>
+
 </RelativeLayout>

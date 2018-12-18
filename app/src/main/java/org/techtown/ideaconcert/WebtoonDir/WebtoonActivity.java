@@ -262,11 +262,16 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
                         break;
                     }
                 }
-                Intent intent = new Intent(WebtoonActivity.this, WebtoonActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.putExtra("position", next_position);
-                intent.putExtra("contents_pk", contents_pk);
-                startActivity(intent);
+
+                if (items.get(next_position).getPurchased() != 0) {
+                    Intent intent = new Intent(WebtoonActivity.this, WebtoonActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("position", next_position);
+                    intent.putExtra("contents_pk", contents_pk);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(WebtoonActivity.this, R.string.contents_not_available, Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -276,7 +281,8 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
         if (user_pk == 0)
             user_pk = 1;
 
-        ContentsItemLikeDBRequest contentsItemLikeDBRequest = new ContentsItemLikeDBRequest(getContentsLIkeCountURL, getContentsItemLikeCountListener, contents_item_pk, user_pk, 2);
+        ContentsItemLikeDBRequest contentsItemLikeDBRequest =
+                new ContentsItemLikeDBRequest(getContentsLIkeCountURL, getContentsItemLikeCountListener, contents_item_pk, user_pk, 2);
         requestQueue.add(contentsItemLikeDBRequest);
 
         addRecentViewDataToSqlite();
@@ -409,10 +415,14 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
             else if (!flag && items.get(new_position).getContentsNum() == (contents_num + 1))
                 break;
         }
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra("position", new_position);
-        intent.putExtra("contents_pk", contents_pk);
-        startActivity(intent);
+        if (items.get(new_position).getPurchased() != 0) {
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("position", new_position);
+            intent.putExtra("contents_pk", contents_pk);
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, R.string.contents_not_available, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void addRecentViewDataToSqlite() {

@@ -62,7 +62,7 @@
         <activity android:name=".FindPasswordDir.FindPasswordActivity" />
         <activity android:name=".FindPasswordDir.SetNewPasswordActivity" />
         <activity android:name=".ConsultDir.ConsultActivity" />
-        <activity android:name=".noticeDir.NoticeActivity" />
+        <activity android:name=".NoticeDir.NoticeActivity" />
         <activity android:name=".SettingsDir.TermsAndConditionActivity" />
         <activity android:name=".FAQDir.FAQActivity" />
         <activity android:name=".ManageMyWorksDir.ManageMyWorksActivity" />

@@ -22,4 +22,5 @@
 
     <string name="input_comment">댓글을 입력해주세요 :)</string>
     <string name="input_reply">님에게 답글을 입력해주세요 :)</string>
+    <string name="contents_not_available">작품 구매 후 이용 가능합니다.</string>
 </resources>

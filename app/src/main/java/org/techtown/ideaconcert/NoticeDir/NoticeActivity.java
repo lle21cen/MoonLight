@@ -1,4 +1,4 @@
-package org.techtown.ideaconcert.noticeDir;
+package org.techtown.ideaconcert.NoticeDir;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

@@ -7,7 +7,7 @@ public class WorksListViewItem {
     private String watchNum;
     private String movie_url;
     private double star_rating;
-    private int isPurchased;
+    private int purchased;
 
     public String getThumbnail_url() {
         return thumbnail_url;
@@ -81,11 +81,11 @@ public class WorksListViewItem {
         this.cash = cash;
     }
 
-    public int getIsPurchased() {
-        return isPurchased;
+    public int getPurchased() {
+        return purchased;
     }
 
-    public void setIsPurchased(int isPurchased) {
-        this.isPurchased = isPurchased;
+    public void setPurchased(int purchased) {
+        this.purchased = purchased;
     }
 }

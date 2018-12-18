@@ -3,9 +3,10 @@ package org.techtown.ideaconcert.ContentsMainDir;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
@@ -24,13 +25,12 @@ import android.widget.Toast;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
-import com.facebook.share.Share;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.MainActivityDir.SetBitmapImageFromUrlTask;
 import org.techtown.ideaconcert.R;
-import org.techtown.ideaconcert.UserInformation;
 
 import java.util.ArrayList;
 
@@ -40,13 +40,17 @@ public class WorksListViewAdapter extends BaseAdapter {
     private Context context;
 
     private FragmentActivity activity;
-    private final String InsertCashDataURL = "http://lle21cen.cafe24.com/InsertCashData.php";
-//    private final String UpdateCashURL = ActivityCodes.DATABASE_IP + "/platform/UpdateCash";
+    //    private final String InsertCashDataURL = "http://lle21cen.cafe24.com/InsertCashData.php";
+    private final String InsertCashDataURL = ActivityCodes.DATABASE_IP + "/platform/InsertCashData";
     private SharedPreferences preferences;
+    private Handler startWebtonActHandler;
 
-    private ImageView itemImageView; // 캐시 이미지 혹은 결제완료 이미지가 들어갈 ImageView
-    private TextView cashView;
-    private RelativeLayout cashLayoutView;
+    public WorksListViewAdapter(Context context, FragmentActivity activity, Handler startWebtonActHandler) {
+        this.context = context;
+        worksListViewItems = new ArrayList<>();
+        this.activity = activity;
+        this.startWebtonActHandler = startWebtonActHandler;
+    }
 
     public WorksListViewAdapter(Context context, FragmentActivity activity) {
         this.context = context;
@@ -84,19 +88,28 @@ public class WorksListViewAdapter extends BaseAdapter {
         TextView ratingView = convertView.findViewById(R.id.contents_main_star_rating);
         TextView commentsNumView = convertView.findViewById(R.id.contents_main_item_comments_num);
         ImageView watchImageView = convertView.findViewById(R.id.contents_main_watch_img);
-        cashView = convertView.findViewById(R.id.contents_main_item_cash);
-        cashLayoutView = convertView.findViewById(R.id.contents_main_cash_layout);
-        itemImageView = convertView.findViewById(R.id.contents_main_cash_img);
+        TextView cashView = convertView.findViewById(R.id.contents_main_item_cash);
+
+        final RelativeLayout cashLayoutView = convertView.findViewById(R.id.contents_main_cash_layout);
+        final RelativeLayout downloadLayout = convertView.findViewById(R.id.contents_main_download_layout); // 두 레이아웃 중 택1
 
         preferences = context.getSharedPreferences("loginData", Context.MODE_PRIVATE);
         final int cash = preferences.getInt("cash", 0);
         final WorksListViewItem listViewItem = worksListViewItems.get(position);
 
+        if (worksListViewItems.get(position).getPurchased() == 0) {
+            cashLayoutView.setVisibility(View.VISIBLE);
+            downloadLayout.setVisibility(View.INVISIBLE);
+        } else {
+            cashLayoutView.setVisibility(View.INVISIBLE);
+            downloadLayout.setVisibility(View.VISIBLE);
+        }
+
         cashLayoutView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (listViewItem.getCash() < cash) {
-                    TwoButtonDialog dialog = new TwoButtonDialog(context, cash, listViewItem.getCash(), listViewItem.getContentsItemPk());
+                    TwoButtonDialog dialog = new TwoButtonDialog(context, cash, listViewItem.getCash(), listViewItem.getContentsItemPk(), position);
                     dialog.setCanceledOnTouchOutside(false);
                     dialog.show();
                 } else {
@@ -125,14 +138,20 @@ public class WorksListViewAdapter extends BaseAdapter {
             watchImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    activity.getSupportFragmentManager().beginTransaction().replace(R.id.contents_main_container, new Fragment2Movie(movie_url), "movie").commit();
+                    if (listViewItem.getPurchased() != 0) {
+                        activity.getSupportFragmentManager().beginTransaction().replace(R.id.contents_main_container, new Fragment2Movie(movie_url), "movie").commit();
+                        cashLayoutView.setVisibility(View.INVISIBLE);
+                        downloadLayout.setVisibility(View.VISIBLE);
+                    } else {
+                        Toast.makeText(context, R.string.contents_not_available, Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
         }
         return convertView;
     }
 
-    public void addItem(int contents_pk, int contents_num, String title, String thumbnail_url, String watch, double star_rating, int comments, String movie_url, int cash, int isPurchased) {
+    public void addItem(int contents_pk, int contents_num, String title, String thumbnail_url, String watch, double star_rating, int comments, String movie_url, int cash, int purchased) {
         WorksListViewItem item = new WorksListViewItem();
         item.setContentsItemPk(contents_pk);
         item.setContentsNum(contents_num);
@@ -143,7 +162,7 @@ public class WorksListViewAdapter extends BaseAdapter {
         item.setCommentCount(comments);
         item.setMovie_url(movie_url);
         item.setCash(cash);
-        item.setIsPurchased(isPurchased);
+        item.setPurchased(purchased);
         worksListViewItems.add(item);
     }
 
@@ -169,13 +188,14 @@ public class WorksListViewAdapter extends BaseAdapter {
 
     class TwoButtonDialog extends Dialog {
 
-        private int cash, price, contents_item_pk;
+        private int cash, price, contents_item_pk, position;
 
-        public TwoButtonDialog(@NonNull Context context, int cash, int price, int contents_item_pk) {
+        public TwoButtonDialog(@NonNull Context context, int cash, int price, int contents_item_pk, int position) {
             super(context);
             this.cash = cash;
             this.price = price;
             this.contents_item_pk = contents_item_pk;
+            this.position = position;
         }
 
         @Override
@@ -185,11 +205,11 @@ public class WorksListViewAdapter extends BaseAdapter {
             setContentView(R.layout.two_button_dialog_layout);
 
             final TextView contentsView = findViewById(R.id.two_button_contents);
-            contentsView.setText("작품을 구매하시겠습니까?\n보유캐시 : " + cash + " 가격 : " +price + "\n구매 후 남는 캐시 : " + (cash-price));
+            contentsView.setText("작품을 구매하시겠습니까?\n보유캐시 : " + cash + " 가격 : " + price + "\n구매 후 남는 캐시 : " + (cash - price));
             Button firstBtn = findViewById(R.id.two_button_first);
             Button secondBtn = findViewById(R.id.two_button_second);
             firstBtn.setText("취소");
-            secondBtn.setText("구매하기");
+            secondBtn.setText("구매 후 보기");
 
             firstBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -206,11 +226,10 @@ public class WorksListViewAdapter extends BaseAdapter {
                         Log.e("user_pk에러", "" + user_pk);
                     }
 
-                    InsertCashDataListener listener = new InsertCashDataListener(price);
+                    InsertCashDataListener listener = new InsertCashDataListener(price, position);
                     InsertCashDataRequest request = new InsertCashDataRequest(InsertCashDataURL, listener, user_pk, -price, contents_item_pk);
                     RequestQueue queue = Volley.newRequestQueue(context);
                     queue.add(request);
-
                     dismiss();
                 }
             });
@@ -219,8 +238,11 @@ public class WorksListViewAdapter extends BaseAdapter {
 
     class InsertCashDataListener implements Response.Listener<String> {
         private int price;
-        InsertCashDataListener(int price) {
+        private int position;
+
+        InsertCashDataListener(int price, int position) {
             this.price = price;
+            this.position = position;
         }
 
         @Override
@@ -229,16 +251,17 @@ public class WorksListViewAdapter extends BaseAdapter {
                 JSONObject jsonObject = new JSONObject(response);
                 boolean success = jsonObject.getBoolean("success");
                 if (success) {
-                    Toast.makeText(context, "구매에 성공했습니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "작품을 구매했습니다.", Toast.LENGTH_SHORT).show();
                     SharedPreferences.Editor cashEditor = preferences.edit();
                     int cash = preferences.getInt("cash", 0);
-                    cashEditor.putInt("cash", cash-price);
+                    cashEditor.putInt("cash", cash - price);
                     cashEditor.apply();
 
-                    // 코인 모양을 다운 완료 모양으로 바꾸고 자동으로 웹툰 실행
-//                    itemImageView.setImageResource(R.drawable.download);
-//                    cashLayoutView.setBackgroundColor(Color.rgb(239, 239, 239));
-//                    cashView.setVisibility(View.GONE);
+                    Message message = new Message();
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("position", position);
+                    message.setData(bundle);
+                    startWebtonActHandler.sendMessage(message);
                 } else {
                     Log.e("구매에러", jsonObject.getString("errmsg"));
                 }
@@ -247,4 +270,5 @@ public class WorksListViewAdapter extends BaseAdapter {
             }
         }
     }
+
 }

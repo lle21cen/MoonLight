@@ -36,10 +36,11 @@ import java.util.ArrayList;
 
 public class Fragment1Webtoon extends Fragment implements View.OnClickListener {
 
-    private final String getContentsItemURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsInfoData";
+    private final String GetContentsInfoDataURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsInfoData";
     private final String getContentsLIkeCountURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsLikeCount";
     private final String insertDeleteContentsLikeDataURL = ActivityCodes.DATABASE_IP + "/platform/InsertDeleteContentsLikeData";
 //    private final String getContentsItemURL = "http://lle21cen.cafe24.com/GetContentsInfoData.php";
+
     View view;
     int selected_contents_pk;
     private boolean is_like_clicked = false, is_summary_opened = false;
@@ -179,7 +180,7 @@ public class Fragment1Webtoon extends Fragment implements View.OnClickListener {
         summary_btn.setOnClickListener(this);
         follow_up_btn.setOnClickListener(this);
 
-        WorksDBRequest worksDBRequest = new WorksDBRequest(getContentsItemURL, getContentsItemListener, selected_contents_pk);
+        WorksDBRequest worksDBRequest = new WorksDBRequest(GetContentsInfoDataURL, getContentsItemListener, selected_contents_pk);
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
         requestQueue.add(worksDBRequest);
 
@@ -211,14 +212,18 @@ public class Fragment1Webtoon extends Fragment implements View.OnClickListener {
         Intent intent;
         switch (view.getId()) {
             case R.id.contents_main_first_episode:
-                items = adapter.getWorksListViewItems();
-                if (sortSpinner.getSelectedItemPosition() == 0)
-                    position = items.size() - 1;
-                else
-                    position = 0;
-                intent = new Intent(getActivity(), WebtoonActivity.class);
-                putExtraData(intent, position);
-                startActivityForResult(intent, ActivityCodes.WEBTOON_REQUEST);
+                try {
+                    items = adapter.getWorksListViewItems();
+                    if (sortSpinner.getSelectedItemPosition() == 0)
+                        position = items.size() - 1;
+                    else
+                        position = 0;
+                    intent = new Intent(getActivity(), WebtoonActivity.class);
+                    putExtraData(intent, position);
+                    startActivityForResult(intent, ActivityCodes.WEBTOON_REQUEST);
+                } catch (NullPointerException ne) {
+                    Log.e("첫화보기 오류", ne.getMessage());
+                }
                 break;
             case R.id.contents_main_back:
             case R.id.contents_main_title_bar_title:
@@ -248,17 +253,21 @@ public class Fragment1Webtoon extends Fragment implements View.OnClickListener {
                 }
                 break;
             case R.id.contents_main_follow_up_button:
-                int last_view_contents_num = getLastViewContentsNum();
-                items = adapter.getWorksListViewItems();
-                for (int i = 0; i < items.size(); i++) {
-                    if (items.get(i).getContentsNum() == last_view_contents_num) {
-                        position = i;
-                        break;
+                try {
+                    int last_view_contents_num = getLastViewContentsNum();
+                    items = adapter.getWorksListViewItems();
+                    for (int i = 0; i < items.size(); i++) {
+                        if (items.get(i).getContentsNum() == last_view_contents_num) {
+                            position = i;
+                            break;
+                        }
                     }
+                    intent = new Intent(getActivity(), WebtoonActivity.class);
+                    putExtraData(intent, position);
+                    startActivityForResult(intent, ActivityCodes.WEBTOON_REQUEST);
+                } catch (NullPointerException ne) {
+                    Log.e("이어보기오류", ne.getMessage());
                 }
-                intent = new Intent(getActivity(), WebtoonActivity.class);
-                putExtraData(intent, position);
-                startActivityForResult(intent, ActivityCodes.WEBTOON_REQUEST);
                 break;
         }
     }
@@ -278,5 +287,4 @@ public class Fragment1Webtoon extends Fragment implements View.OnClickListener {
         DBHelper dbHelper = new DBHelper(getActivity(), DBNames.CONTENTS_DB, null, 1);
         return dbHelper.getLastViewContentsNum(selected_contents_pk);
     }
-
 }
