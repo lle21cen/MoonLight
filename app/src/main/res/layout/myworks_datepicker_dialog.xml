@@ -15,10 +15,9 @@
 
         <ImageView
             android:id="@+id/myworks_dialog_prev_year"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:layout_gravity="center"
-            android:src="@drawable/back" />
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_keyboard_arrow_left_black_24dp" />
 
         <TextView
             android:id="@+id/myworks_dialog_year"

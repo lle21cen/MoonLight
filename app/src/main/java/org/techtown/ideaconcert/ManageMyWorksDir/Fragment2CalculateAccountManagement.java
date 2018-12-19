@@ -111,7 +111,6 @@ public class Fragment2CalculateAccountManagement extends Fragment implements Vie
         int monthGap = toMonth - fromMonth;
         int howMany = yearGap * 12 + monthGap;
         for (int i = 0; i <= howMany; i++) {
-            Log.e("년월", fromYear + "년" + fromMonth + "월");
             monthDataLayout = new Fragment2MonthDataLayout(getActivity(), fromYear, fromMonth++, user_pk, totalAmountView);
             if (fromMonth > 12) {
                 fromMonth -= 12;

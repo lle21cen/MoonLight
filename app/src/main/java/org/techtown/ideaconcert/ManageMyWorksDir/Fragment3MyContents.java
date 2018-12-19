@@ -28,7 +28,8 @@ public class Fragment3MyContents extends Fragment {
     RecyclerView worksList;
     Fragment3MyContentsAdapter adapter;
 
-    private final String GetAuthorContentsURL = "http://lle21cen.cafe24.com/GetAuthorContents.php";
+//    private final String GetAuthorContentsURL = "http://lle21cen.cafe24.com/GetAuthorContents.php";
+    private final String GetAuthorContentsURL = ActivityCodes.DATABASE_IP + "/platform/GetAuthorContents";
 
     @Nullable
     @Override
@@ -60,7 +61,7 @@ public class Fragment3MyContents extends Fragment {
                     for (int i = 0; i < num_result; i++) {
                         JSONObject temp = jsonArray.getJSONObject(i);
 
-                        String thumbnail_url = ActivityCodes.DATABASE_IP + temp.getString("url");
+                        String thumbnail_url = temp.getString("url");
                         String contents_name = temp.getString("contents_name");
                         String writer_name = temp.getString("writer_name");
                         String painter_name = temp.getString("painter_name");

@@ -24,15 +24,6 @@ public class Fragment1ProfitLayoutItem extends LinearLayout {
         init(context);
     }
 
-    public Fragment1ProfitLayoutItem(Context context, @Nullable AttributeSet attrs, String contents_name, int view_count, int cash, int profit) {
-        super(context, attrs);
-        this.contents_name = contents_name;
-        this.view_count = view_count;
-        this.cash = cash;
-        this.profit = profit;
-        init(context);
-    }
-
     private void init(Context context) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.myworks_fragment1_month_data_layout_item, this, true);

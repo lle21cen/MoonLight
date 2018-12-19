@@ -97,7 +97,6 @@ public class Fragment1ProfitManagementLayout extends Fragment implements View.On
         int monthGap = toMonth - fromMonth;
         int howMany = yearGap * 12 + monthGap;
         for (int i = 0; i <= howMany; i++) {
-            Log.e("년월", fromYear + "년" + fromMonth + "월");
             profitLayout = new Fragment1ProfitLayout(getActivity(), fromYear, fromMonth++, user_pk);
             if (fromMonth > 12) {
                 fromMonth -= 12;

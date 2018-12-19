@@ -27,7 +27,7 @@ public class Fragment1ProfitLayout extends RelativeLayout {
 //    private final String GetProfitDataURL = "http://lle21cen.cafe24.com/GetProfitData.php"; // 추후 수정 필요
     private final String GetProfitDataURL = ActivityCodes.DATABASE_IP + "/platform/GetProfitData";
 
-    int currentYear, whatMonth, endDayOfMonth, user_pk;
+    int whatYear, whatMonth, endDayOfMonth, user_pk;
     LinearLayout profitLayout;
     TextView cashSumTextView, profitSumTextView;
     private Response.Listener<String> getProfitDataListener = new Response.Listener<String>() {
@@ -43,10 +43,9 @@ public class Fragment1ProfitLayout extends RelativeLayout {
                     for (int i = 0; i < num_result; i++) {
                         JSONObject temp = result.getJSONObject(i);
 
-                        int profit_pk = temp.getInt("profit_pk");
                         String contents_name = temp.getString("contents_name");
                         int view_count = temp.getInt("view_count");
-                        int cash = temp.getInt("cash");
+                        int cash = temp.getInt("cash_sum");
                         int profit = temp.getInt("profit");
 
                         cashSum += cash;
@@ -72,18 +71,10 @@ public class Fragment1ProfitLayout extends RelativeLayout {
         }
     };
 
-    public Fragment1ProfitLayout(Context context, int currentYear, int whatMonth, int user_pk) {
+    public Fragment1ProfitLayout(Context context, int whatYear, int whatMonth, int user_pk) {
         super(context);
         this.whatMonth = whatMonth;
-        this.currentYear = currentYear;
-        this.user_pk = user_pk;
-        init(context);
-    }
-
-    public Fragment1ProfitLayout(Context context, AttributeSet attrs, int currentYear, int whatMonth, int user_pk) {
-        super(context, attrs);
-        this.whatMonth = whatMonth;
-        this.currentYear = currentYear;
+        this.whatYear = whatYear;
         this.user_pk = user_pk;
         init(context);
     }
@@ -96,17 +87,17 @@ public class Fragment1ProfitLayout extends RelativeLayout {
         profitSumTextView = view.findViewById(R.id.manage_profit_sum);
 
         TextView monthText = view.findViewById(R.id.manage_month_text);
-        monthText.setText(currentYear + "년 " + whatMonth + "월");
+        monthText.setText(whatYear + "년 " + whatMonth + "월");
 
         TextView monthPeriodText = view.findViewById(R.id.manage_month_period_text);
         Calendar calendar = Calendar.getInstance();
-        calendar.set(currentYear, whatMonth, 1);
+        calendar.set(whatYear, whatMonth, 1);
         endDayOfMonth = calendar.getActualMaximum(Calendar.DATE);
-        String periodText = currentYear + "/" + whatMonth + "/01 ~ " + currentYear + "/" + whatMonth + "/" + endDayOfMonth;
+        String periodText = whatYear + "/" + whatMonth + "/01 ~ " + whatYear + "/" + whatMonth + "/" + endDayOfMonth;
         monthPeriodText.setText(periodText);
 
         profitLayout = view.findViewById(R.id.manage_profit_layout);
-        GetFragmentDataRequest request = new GetFragmentDataRequest(GetProfitDataURL, getProfitDataListener, user_pk, currentYear, whatMonth);
+        GetFragmentDataRequest request = new GetFragmentDataRequest(GetProfitDataURL, getProfitDataListener, user_pk, whatYear, whatMonth);
         RequestQueue queue = Volley.newRequestQueue(getContext());
         queue.add(request);
     }
