@@ -39,7 +39,6 @@ public class Fragment1Webtoon extends Fragment implements View.OnClickListener {
     private final String GetContentsInfoDataURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsInfoData";
     private final String getContentsLIkeCountURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsLikeCount";
     private final String insertDeleteContentsLikeDataURL = ActivityCodes.DATABASE_IP + "/platform/InsertDeleteContentsLikeData";
-//    private final String getContentsItemURL = "http://lle21cen.cafe24.com/GetContentsInfoData.php";
 
     View view;
     int selected_contents_pk;

@@ -168,8 +168,8 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
     public class CommentViewHolder extends RecyclerView.ViewHolder {
 
-        View view;
         final TextView likeNumView;
+        View view;
         TextView emailView, dateView, commentView, replyView, accusationView;
         ImageView likeButton, bestImage;
         private RecyclerView replyRecyclerView;

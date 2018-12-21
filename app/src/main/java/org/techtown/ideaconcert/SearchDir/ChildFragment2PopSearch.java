@@ -26,7 +26,6 @@ import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.R;
 
 public class ChildFragment2PopSearch extends Fragment {
-    //    private final String GetPopSearchKeywordURL = "http://lle21cen.cafe24.com/GetPopSearchKeyword.php";
     private final String GetPopSearchKeywordURL = ActivityCodes.DATABASE_IP + "/platform/GetPopSearchKeyword";
     View view;
     RecyclerView recyclerView;

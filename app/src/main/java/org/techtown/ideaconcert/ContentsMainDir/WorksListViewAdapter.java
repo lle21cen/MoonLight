@@ -36,12 +36,10 @@ import java.util.ArrayList;
 
 public class WorksListViewAdapter extends BaseAdapter {
 
+    private final String InsertCashDataURL = ActivityCodes.DATABASE_IP + "/platform/InsertCashData";
     private ArrayList<WorksListViewItem> worksListViewItems;
     private Context context;
-
     private FragmentActivity activity;
-    //    private final String InsertCashDataURL = "http://lle21cen.cafe24.com/InsertCashData.php";
-    private final String InsertCashDataURL = ActivityCodes.DATABASE_IP + "/platform/InsertCashData";
     private SharedPreferences preferences;
     private Handler startWebtonActHandler;
 
@@ -205,7 +203,7 @@ public class WorksListViewAdapter extends BaseAdapter {
             setContentView(R.layout.two_button_dialog_layout);
 
             final TextView contentsView = findViewById(R.id.two_button_contents);
-            contentsView.setText("작품을 구매하시겠습니까?\n보유캐시 : " + cash + " 가격 : " + price + "\n구매 후 남는 캐시 : " + (cash - price));
+            contentsView.setText("작품을 구매하시겠습니까?\n보유캐시 : " + cash + "\n가격 : " + price + "\n구매 후 남는 캐시 : " + (cash - price));
             Button firstBtn = findViewById(R.id.two_button_first);
             Button secondBtn = findViewById(R.id.two_button_second);
             firstBtn.setText("취소");
@@ -225,7 +223,6 @@ public class WorksListViewAdapter extends BaseAdapter {
                     if (user_pk == 0) {
                         Log.e("user_pk에러", "" + user_pk);
                     }
-
                     InsertCashDataListener listener = new InsertCashDataListener(price, position);
                     InsertCashDataRequest request = new InsertCashDataRequest(InsertCashDataURL, listener, user_pk, -price, contents_item_pk);
                     RequestQueue queue = Volley.newRequestQueue(context);

@@ -8,14 +8,14 @@
     android:focusableInTouchMode="true">
 
 
-        <TextView
-            android:id="@+id/comment_work_name_txt"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:drawableLeft="@drawable/ic_navigate_before_black_24dp"
-            android:gravity="center"
-            android:text="작품명"
-            android:textStyle="bold" />
+    <TextView
+        android:id="@+id/comment_work_name_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:drawableLeft="@drawable/ic_navigate_before_black_24dp"
+        android:gravity="center"
+        android:text="작품명"
+        android:textStyle="bold" />
 
     <LinearLayout
         android:id="@+id/comment_2button_layout"

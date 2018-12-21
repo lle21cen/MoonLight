@@ -1,7 +1,5 @@
 package org.techtown.ideaconcert.RegisterActivityDir;
 
-import android.widget.Toast;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

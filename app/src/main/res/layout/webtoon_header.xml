@@ -39,8 +39,8 @@
         android:id="@+id/webtoon_star_rating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="15dp"
         android:layout_marginLeft="5dp"
+        android:layout_marginRight="15dp"
         android:text="9.8"
         android:textColor="#ffffff"
         android:textSize="15dp" />
@@ -50,6 +50,6 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_margin="5dp"
-        android:visibility="gone"
-        android:background="@drawable/ic_open_white_icon" />
+        android:background="@drawable/ic_open_white_icon"
+        android:visibility="gone" />
 </LinearLayout>

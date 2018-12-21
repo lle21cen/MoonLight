@@ -46,12 +46,6 @@
         </activity>
         <activity android:name=".RegisterActivityDir.RegisterActivity" />
 
-        <service
-            android:name=".ForceQuitManageService"
-            android:enabled="true"
-            android:exported="true"
-            android:stopWithTask="false" />
-
         <activity android:name=".ContentsMainDir.ContentsMainActivity" />
         <activity android:name=".WebtoonDir.WebtoonActivity" />
         <activity android:name=".CommentDir.CommentActivity" />

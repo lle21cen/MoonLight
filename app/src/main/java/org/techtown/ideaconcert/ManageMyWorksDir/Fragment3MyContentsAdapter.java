@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.MainActivityDir.SetBitmapImageFromUrlTask;
-import org.techtown.ideaconcert.MyPageDir.Fragment3RecyclerItem;
 import org.techtown.ideaconcert.R;
 
 import java.util.ArrayList;
@@ -18,20 +17,6 @@ import java.util.ArrayList;
 public class Fragment3MyContentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     ArrayList<Fragment3MyContentsItem> items = new ArrayList<>();
-    class MyContentsViewHolder extends RecyclerView.ViewHolder {
-        ImageView thumbnailView, movieIconView;
-        TextView contentNameView, authorNameView, starRatingView;
-
-
-        public MyContentsViewHolder(View itemView) {
-            super(itemView);
-            thumbnailView = itemView.findViewById(R.id.myworks_thumbnail);
-            contentNameView = itemView.findViewById(R.id.myworks_contents_name);
-            authorNameView = itemView.findViewById(R.id.myworks_author_name);
-            starRatingView = itemView.findViewById(R.id.myworks_star_rating);
-            movieIconView = itemView.findViewById(R.id.myworks_movie_icon);
-        }
-    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -60,7 +45,22 @@ public class Fragment3MyContentsAdapter extends RecyclerView.Adapter<RecyclerVie
         return items.size();
     }
 
-    public void addItem(String thumbnail_url, String contents_name, String author_name,int movie, double star_rating) {
+    public void addItem(String thumbnail_url, String contents_name, String author_name, int movie, double star_rating) {
         items.add(new Fragment3MyContentsItem(thumbnail_url, contents_name, author_name, movie, star_rating));
+    }
+
+    class MyContentsViewHolder extends RecyclerView.ViewHolder {
+        ImageView thumbnailView, movieIconView;
+        TextView contentNameView, authorNameView, starRatingView;
+
+
+        public MyContentsViewHolder(View itemView) {
+            super(itemView);
+            thumbnailView = itemView.findViewById(R.id.myworks_thumbnail);
+            contentNameView = itemView.findViewById(R.id.myworks_contents_name);
+            authorNameView = itemView.findViewById(R.id.myworks_author_name);
+            starRatingView = itemView.findViewById(R.id.myworks_star_rating);
+            movieIconView = itemView.findViewById(R.id.myworks_movie_icon);
+        }
     }
 }

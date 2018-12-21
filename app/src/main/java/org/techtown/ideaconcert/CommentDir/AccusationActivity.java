@@ -24,12 +24,28 @@ import org.techtown.ideaconcert.UserInformation;
 
 public class AccusationActivity extends AppCompatActivity implements View.OnClickListener {
 
-    //    private final String SendAccusationURL = "http://lle21cen.cafe24.com/SendAccusation.php";
     private final String SendAccusationURL = ActivityCodes.DATABASE_IP + "/platform/SendAccusation";
     private TextView textCountView;
     private EditText reasonTextView;
     private String user_email, accused_email, accused_comment;
     private int comment_pk;
+    private Response.Listener<String> sendAccusationListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                boolean success = jsonObject.getBoolean("success");
+                if (success) {
+                    Toast.makeText(AccusationActivity.this, "신고가 접수되었습니다.", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    Log.e("신고접수실패", jsonObject.getString("errmsg"));
+                }
+            } catch (JSONException je) {
+                Log.e("신고접수리스너오류", je.getMessage());
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,22 +113,4 @@ public class AccusationActivity extends AppCompatActivity implements View.OnClic
                 break;
         }
     }
-
-    private Response.Listener<String> sendAccusationListener = new Response.Listener<String>() {
-        @Override
-        public void onResponse(String response) {
-            try {
-                JSONObject jsonObject = new JSONObject(response);
-                boolean success = jsonObject.getBoolean("success");
-                if (success) {
-                    Toast.makeText(AccusationActivity.this, "신고가 접수되었습니다.", Toast.LENGTH_SHORT).show();
-                    finish();
-                } else {
-                    Log.e("신고접수실패", jsonObject.getString("errmsg"));
-                }
-            } catch (JSONException je) {
-                Log.e("신고접수리스너오류", je.getMessage());
-            }
-        }
-    };
 }

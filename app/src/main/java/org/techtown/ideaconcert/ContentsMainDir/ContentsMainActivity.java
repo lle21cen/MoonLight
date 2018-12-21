@@ -36,7 +36,6 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
 
     public static ArrayList<WorksListViewItem> itemList; // WebtonActivity에서도 사용하기 위해 public static으로 선언
     private final String getContentsItemURL = ActivityCodes.DATABASE_IP + "/platform/GetContentsItem";
-//    private final String getContentsItemURL = "http://lle21cen.cafe24.com/GetContentsItem.php";
 
     private int selected_contents_pk;
     private ListView listView;
@@ -61,7 +60,7 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
                             JSONObject temp = result.getJSONObject(i);
                             int contents_item_pk = temp.getInt("contents_item_pk");
                             int contents_num = temp.getInt("contents_num");
-                            String  title = temp.getString("contents_name");
+                            String title = temp.getString("contents_name");
                             String thumbnail_url = temp.getString("url");
                             String watch_num = temp.getString("view_count");
                             double star_rating = temp.getDouble("star_rating");
@@ -96,6 +95,17 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
             }
         }
     };
+    private Handler startWebtoonActHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message message) {
+            Bundle bundle = message.getData();
+            int position = bundle.getInt("position");
+            Intent intent = new Intent(ContentsMainActivity.this, WebtoonActivity.class);
+            putExtraData(intent, position);
+            startActivityForResult(intent, ActivityCodes.WEBTOON_REQUEST);
+            return false;
+        }
+    });
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -181,16 +191,4 @@ public class ContentsMainActivity extends AppCompatActivity implements View.OnCl
         intent.putExtra("position", position);
         intent.putExtra("contents_pk", selected_contents_pk);
     }
-
-    private Handler startWebtoonActHandler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message message) {
-            Bundle bundle = message.getData();
-            int position = bundle.getInt("position");
-            Intent intent = new Intent(ContentsMainActivity.this, WebtoonActivity.class);
-            putExtraData(intent, position);
-            startActivityForResult(intent, ActivityCodes.WEBTOON_REQUEST);
-            return false;
-        }
-    });
 }

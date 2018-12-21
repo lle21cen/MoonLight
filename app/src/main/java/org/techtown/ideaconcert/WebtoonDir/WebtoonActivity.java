@@ -170,6 +170,29 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
             }
         }
     };
+    private Response.Listener<String> applyStarRatingListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                boolean success = jsonObject.getBoolean("success");
+                if (success) {
+                    Toast.makeText(WebtoonActivity.this, "별점이 적용되었습니다.", Toast.LENGTH_SHORT).show();
+                    ratingStarLayout.setVisibility(View.GONE);
+                } else {
+                    String errmsg = jsonObject.getString("errmsg");
+                    if (errmsg.contains("Duplicate")) {
+                        Toast.makeText(WebtoonActivity.this, "이미 별점을 등록했습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                    Log.e("별점등록실패", jsonObject.getString("errmsg"));
+                }
+            } catch (JSONException je) {
+                Log.e("별점리스너", je.getMessage());
+            } catch (Exception e) {
+                Log.e("별점리스너", e.getMessage());
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -292,30 +315,6 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
         plusViewCount();
     }
 
-    private Response.Listener<String> applyStarRatingListener = new Response.Listener<String>() {
-        @Override
-        public void onResponse(String response) {
-            try {
-                JSONObject jsonObject = new JSONObject(response);
-                boolean success = jsonObject.getBoolean("success");
-                if (success) {
-                    Toast.makeText(WebtoonActivity.this, "별점이 적용되었습니다.", Toast.LENGTH_SHORT).show();
-                    ratingStarLayout.setVisibility(View.GONE);
-                } else  {
-                    String errmsg = jsonObject.getString("errmsg");
-                    if (errmsg.contains("Duplicate")) {
-                        Toast.makeText(WebtoonActivity.this, "이미 별점을 등록했습니다.", Toast.LENGTH_SHORT).show();
-                    }
-                    Log.e("별점등록실패", jsonObject.getString("errmsg"));
-                }
-            } catch (JSONException je){
-                Log.e("별점리스너", je.getMessage());
-            } catch (Exception e) {
-                Log.e("별점리스너", e.getMessage());
-            }
-        }
-    };
-
     private void plusViewCount() {
         PlusViewCountRequest request = new PlusViewCountRequest(PlusViewCountURL, plusViewCountListener, contents_item_pk);
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -398,7 +397,7 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
                     ratingStarLayout.setVisibility(View.GONE);
                 break;
             case R.id.rating_confirm:
-                ApplyStarRatingRequest request = new ApplyStarRatingRequest(ApplyStarRatingURL, applyStarRatingListener, contents_item_pk, user_pk, starRating.getRating()*2);
+                ApplyStarRatingRequest request = new ApplyStarRatingRequest(ApplyStarRatingURL, applyStarRatingListener, contents_item_pk, user_pk, starRating.getRating() * 2);
                 RequestQueue queue = Volley.newRequestQueue(WebtoonActivity.this);
                 queue.add(request);
                 break;
@@ -430,7 +429,7 @@ public class WebtoonActivity extends AppCompatActivity implements View.OnClickLi
         Date today = new Date();
         SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd kk:mm"); // 초단위로 저장하여 가장 최근에 본 작품을 갱신.
         DBHelper dbHelper = new DBHelper(this, DBNames.CONTENTS_DB, null, 1);
-        Log.e("info",contents_pk + " " + item_title + " " + date.format(today) + " " + String.valueOf(today) + " " + contents_num);
+        Log.e("info", contents_pk + " " + item_title + " " + date.format(today) + " " + String.valueOf(today) + " " + contents_num);
         dbHelper.insertOrUpdateRecentViewData(contents_pk, item_title, date.format(today), String.valueOf(today), contents_num);
     }
 

@@ -28,7 +28,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     // For Database login
     EditText userEmail, userPw;
-//    private SharedPreferences loginData;
+    //    private SharedPreferences loginData;
     Button login_btn;
     TextView find_btn, login_result_text;
 

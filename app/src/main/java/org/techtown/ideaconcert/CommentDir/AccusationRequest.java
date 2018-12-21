@@ -9,7 +9,7 @@ import java.util.Map;
 public class AccusationRequest extends StringRequest {
     Map<String, String> parameters;
 
-    public AccusationRequest(String url, Response.Listener<String> listener, int comment_pk, String accused_email, String accused_comment,  String accuse_email, String accuse_reason) {
+    public AccusationRequest(String url, Response.Listener<String> listener, int comment_pk, String accused_email, String accused_comment, String accuse_email, String accuse_reason) {
         super(Method.POST, url, listener, null);
         parameters = new HashMap<>();
         parameters.put("comment_pk", String.valueOf(comment_pk));

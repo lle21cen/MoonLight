@@ -24,30 +24,10 @@ import org.techtown.ideaconcert.UserInformation;
 
 public class Fragment3MyContents extends Fragment {
 
+    private final String GetAuthorContentsURL = ActivityCodes.DATABASE_IP + "/platform/GetAuthorContents";
     View view;
     RecyclerView worksList;
     Fragment3MyContentsAdapter adapter;
-
-//    private final String GetAuthorContentsURL = "http://lle21cen.cafe24.com/GetAuthorContents.php";
-    private final String GetAuthorContentsURL = ActivityCodes.DATABASE_IP + "/platform/GetAuthorContents";
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.myworks_fragment3_myworks, container, false);
-        worksList = view.findViewById(R.id.myworks_recycler);
-        RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, true);
-        worksList.setLayoutManager(manager);
-
-        adapter = new Fragment3MyContentsAdapter();
-
-        UserInformation userInformation = (UserInformation) getActivity().getApplication();
-        GetFragmentDataRequest request = new GetFragmentDataRequest(GetAuthorContentsURL, myContentsListener, userInformation.getUser_pk());
-        RequestQueue queue = Volley.newRequestQueue(getActivity());
-        queue.add(request);
-        return view;
-    }
-
     private Response.Listener<String> myContentsListener = new Response.Listener<String>() {
         @Override
         public void onResponse(String response) {
@@ -73,8 +53,25 @@ public class Fragment3MyContents extends Fragment {
                     worksList.setAdapter(adapter);
                 }
             } catch (JSONException je) {
-                    Log.e("내작품리스너", je.getMessage());
+                Log.e("내작품리스너", je.getMessage());
             }
         }
     };
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.myworks_fragment3_myworks, container, false);
+        worksList = view.findViewById(R.id.myworks_recycler);
+        RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, true);
+        worksList.setLayoutManager(manager);
+
+        adapter = new Fragment3MyContentsAdapter();
+
+        UserInformation userInformation = (UserInformation) getActivity().getApplication();
+        GetFragmentDataRequest request = new GetFragmentDataRequest(GetAuthorContentsURL, myContentsListener, userInformation.getUser_pk());
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        queue.add(request);
+        return view;
+    }
 }

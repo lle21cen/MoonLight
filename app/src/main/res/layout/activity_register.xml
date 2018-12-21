@@ -60,9 +60,9 @@
             android:layout_width="240dp"
             android:layout_height="40dp"
             android:background="@drawable/round_border_white"
-            android:paddingLeft="5dp"
             android:hint="  이메일을 입력해 주세요"
             android:inputType="textEmailAddress"
+            android:paddingLeft="5dp"
             android:textSize="12sp" />
     </LinearLayout>
 

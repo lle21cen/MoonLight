@@ -24,7 +24,6 @@ import java.util.Calendar;
 
 public class Fragment2MonthDataLayout extends RelativeLayout {
 
-//    private final String GetProfitDataURL = "http://lle21cen.cafe24.com/GetCalculationData.php"; // 추후 수정 필요
     private final String GetProfitDataURL = ActivityCodes.DATABASE_IP + "/platform/GetCalculationData";
 
     int currentYear, whatMonth, endDayOfMonth, user_pk;
@@ -42,11 +41,11 @@ public class Fragment2MonthDataLayout extends RelativeLayout {
                     for (int i = 0; i < num_result; i++) {
                         JSONObject temp = result.getJSONObject(i);
 
-                        int cal_pk = temp.getInt("cal_pk");
                         int profit = temp.getInt("profit");
-                        int deduction = temp.getInt("deduction");
+                        double rate = temp.getDouble("rate");
                         String due_date = temp.getString("due_date");
                         int cal_state = temp.getInt("cal_state");
+                        int deduction = (int) (profit * rate);
 
                         if (cal_state == 1) {
                             Fragment2CalculateAccountManagement.totalAmount += (profit - deduction);

@@ -25,8 +25,8 @@
         android:layout_width="100dp"
         android:layout_height="20dp"
         android:layout_marginTop="7dp"
-        android:src="@drawable/watch_now"
         android:layout_toLeftOf="@id/contents_main_cash_layout"
+        android:src="@drawable/watch_now"
         android:visibility="gone" />
 
     <LinearLayout
@@ -105,9 +105,9 @@
         android:id="@+id/contents_main_cash_layout"
         android:layout_width="55dp"
         android:layout_height="70dp"
-        android:visibility="visible"
         android:layout_alignParentRight="true"
-        android:background="#786aaa">
+        android:background="#786aaa"
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -138,8 +138,8 @@
         android:layout_width="55dp"
         android:layout_height="70dp"
         android:layout_alignParentRight="true"
-        android:visibility="visible"
-        android:background="#efefef">
+        android:background="#efefef"
+        android:visibility="visible">
 
         <ImageView
             android:id="@+id/contents_main_download_img"

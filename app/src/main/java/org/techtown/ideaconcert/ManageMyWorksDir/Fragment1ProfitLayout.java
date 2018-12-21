@@ -1,7 +1,6 @@
 package org.techtown.ideaconcert.ManageMyWorksDir;
 
 import android.content.Context;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +23,6 @@ import java.util.Calendar;
 
 public class Fragment1ProfitLayout extends RelativeLayout {
 
-//    private final String GetProfitDataURL = "http://lle21cen.cafe24.com/GetProfitData.php"; // 추후 수정 필요
     private final String GetProfitDataURL = ActivityCodes.DATABASE_IP + "/platform/GetProfitData";
 
     int whatYear, whatMonth, endDayOfMonth, user_pk;

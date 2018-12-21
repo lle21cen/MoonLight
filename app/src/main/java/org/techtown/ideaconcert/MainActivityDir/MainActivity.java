@@ -30,8 +30,6 @@ import org.json.JSONObject;
 import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.MyPageDir.MyPageActivity;
 import org.techtown.ideaconcert.R;
-import org.techtown.ideaconcert.SQLiteDir.DBHelper;
-import org.techtown.ideaconcert.SQLiteDir.DBNames;
 import org.techtown.ideaconcert.SearchDir.SearchActivity;
 import org.techtown.ideaconcert.SettingsDir.SettingsActivity;
 import org.techtown.ideaconcert.UserInformation;
@@ -42,12 +40,9 @@ import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    //        final private String getBannerInfoURL = "http://lle21cen.cafe24.com/GetBannerInfo.php";
     final private String getBannerInfoURL = ActivityCodes.DATABASE_IP + "/platform/GetBannerInfo";
     final private String categoryContentsURL = ActivityCodes.DATABASE_IP + "/platform/GetCategoryContents";
-    //        final private String selectedContentsURL = "http://lle21cen.cafe24.com/GetSelectedContents.php";
     final private String selectedContentsURL = ActivityCodes.DATABASE_IP + "/platform/GetSelectedContents";
-    //    final private String discountContentsURL = "http://lle21cen.cafe24.com/GetDiscountContents.php";
 
     final private int MAX_CONTENTS_NUM = 10; // 10으로 변경 필.
     private final int BANNER_FLIP_TIME = 5000; // 배너가 자동으로 넘어가는 시간 (1000 = 1초)

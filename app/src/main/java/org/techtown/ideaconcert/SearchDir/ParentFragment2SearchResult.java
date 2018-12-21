@@ -30,7 +30,6 @@ public class ParentFragment2SearchResult extends Fragment {
     private String keyword;
     private RecyclerView resultList;
     private ParentFragment2RecyclerAdapter adapter;
-//    private final String GetContentsByKeywordURL = "http://lle21cen.cafe24.com/GetContentsByKeyword.php";
     Response.Listener<String> getContentsByKeywordListener = new Response.Listener<String>() {
         @Override
         public void onResponse(String response) {

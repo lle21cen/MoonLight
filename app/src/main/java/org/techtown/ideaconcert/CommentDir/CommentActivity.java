@@ -5,8 +5,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -25,20 +23,36 @@ import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.R;
 import org.techtown.ideaconcert.UserInformation;
 
-import java.util.List;
-
 public class CommentActivity extends AppCompatActivity implements View.OnClickListener {
 
+    static EditText commentEditText;
+    static int comment_pk; // 답글달기 시 어떤 댓글이 선택되었는지 Handler를 통해 알아옴
+    public static Handler setCommentTextHintHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message message) {
+            try {
+                Bundle bundle = message.getData();
+                boolean isReply = bundle.getBoolean("isReply");
+                if (isReply) {
+                    String commentEmail = bundle.getString("commentEmail");
+                    comment_pk = bundle.getInt("comment_pk");
+                    commentEditText.setHint(commentEmail + "님에게 답글쓰기");
+                    commentEditText.requestFocus();
+                } else {
+                    commentEditText.setHint("댓글을 입력하세요 :)");
+                }
+                return true;
+            } catch (Exception e) {
+                Log.e("댓글달기 힌트 재설정 에러", e.getMessage());
+                return false;
+            }
+        }
+    });
+    static int sel_position;
     private final String insertDeleteCommentURL = ActivityCodes.DATABASE_IP + "/platform/InsertDeleteComment";
-
-//    private final String insertDeleteReplyURL = "http://lle21cen.cafe24.com/InsertDeleteReply.php";
     private final String insertDeleteReplyURL = ActivityCodes.DATABASE_IP + "/platform/InsertDeleteReply";
     Button bestButton, allButton;
     ViewPager commentPager;
-    static EditText commentEditText;
-    static int comment_pk; // 답글달기 시 어떤 댓글이 선택되었는지 Handler를 통해 알아옴
-    static int sel_position;
-
     private Response.Listener<String> commentInsertListener = new Response.Listener<String>() {
         @Override
         public void onResponse(String response) {
@@ -62,7 +76,6 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
             }
         }
     };
-
     private Response.Listener<String> ReplyInsertListener = new Response.Listener<String>() {
         @Override
         public void onResponse(String response) {
@@ -197,26 +210,4 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
             bestButton.setBackgroundColor(Color.rgb(120, 106, 170));
         }
     }
-
-    public static Handler setCommentTextHintHandler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message message) {
-            try {
-                Bundle bundle = message.getData();
-                boolean isReply = bundle.getBoolean("isReply");
-                if (isReply) {
-                    String commentEmail = bundle.getString("commentEmail");
-                    comment_pk = bundle.getInt("comment_pk");
-                    commentEditText.setHint(commentEmail + "님에게 답글쓰기");
-                    commentEditText.requestFocus();
-                } else {
-                    commentEditText.setHint("댓글을 입력하세요 :)");
-                }
-                return true;
-            } catch (Exception e) {
-                Log.e("댓글달기 힌트 재설정 에러", e.getMessage());
-                return false;
-            }
-        }
-    });
 }

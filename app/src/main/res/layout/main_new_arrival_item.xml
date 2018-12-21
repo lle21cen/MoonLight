@@ -27,9 +27,9 @@
             android:id="@+id/main_arrival_item_star_img"
             android:layout_width="15dp"
             android:layout_height="15dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginLeft="3dp"
             android:layout_below="@id/main_arrival_item_name"
+            android:layout_marginLeft="3dp"
+            android:layout_marginTop="3dp"
             android:src="@drawable/star" />
 
         <TextView

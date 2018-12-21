@@ -11,14 +11,14 @@ import android.widget.TextView;
 import org.techtown.ideaconcert.ActivityCodes;
 import org.techtown.ideaconcert.R;
 
-public class ManageMyWorksActivity extends AppCompatActivity implements View.OnClickListener{
+public class ManageMyWorksActivity extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_my_works);
 
-        Button backBtn =  findViewById(R.id.manage_back_btn);
+        Button backBtn = findViewById(R.id.manage_back_btn);
         TextView backText = findViewById(R.id.manage_title_txt);
         backBtn.setOnClickListener(this);
         backText.setOnClickListener(this);
@@ -55,8 +55,8 @@ public class ManageMyWorksActivity extends AppCompatActivity implements View.OnC
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.manage_back_btn :
-            case R.id.manage_title_txt :
+            case R.id.manage_back_btn:
+            case R.id.manage_title_txt:
                 setResult(ActivityCodes.MANAGE_MY_WORKS_FAIL);
                 finish();
                 break;
