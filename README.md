@@ -1,5 +1,6 @@
 # MoonLight
 
+Count lines of code : 216 files 16694 line (*.java, *.xml)
 
 Screenshots
 -----------
